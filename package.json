@@ -1,0 +1,225 @@
+{
+  "name": "mpbit-studio",
+  "displayName": "MPBit Studio",
+  "description": "MicroPython IDE for ESP32 and MPBit",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.micropythonMenu",
+        "title": "MicroPython",
+        "icon": {
+          "light": "media/light/micropython-menu.svg",
+          "dark": "media/dark/micropython-menu.svg"
+        }
+      },
+      {
+        "command": "extension.micropythonRUN",
+        "title": "运行当前文件",
+        "icon": "$(play)"
+      },
+      {
+        "command": "extension.micropythonREPL",
+        "title": "打开REPL",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "extension.micropythonSEND",
+        "title": "上传当前文件",
+        "icon": "$(arrow-up)"
+      },
+      {
+        "command": "extension.micropythonSelectPort",
+        "title": "选择串口",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "extension.micropythonDisconnect",
+        "title": "断开连接",
+        "icon": "$(debug-disconnect)"
+      },
+      {
+        "command": "extension.micropythonShowLogs",
+        "title": "显示插件日志",
+        "icon": "$(output)"
+      },
+      {
+        "command": "extension.micropythonClear",
+        "title": "清除程序",
+        "icon": "$(clear-all)"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "micropythonMenu.submenu",
+        "label": "MicroPython菜单",
+        "icon": {
+          "light": "media/light/micropython-menu.svg",
+          "dark": "media/dark/micropython-menu.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "submenu": "micropythonMenu.submenu",
+          "group": "navigation@4",
+          "when": "resourceLangId == python"
+        }
+      ],
+      "micropythonMenu.submenu": [
+        {
+          "command": "extension.micropythonRUN",
+          "group": "1_run",
+          "icon": "$(play)"
+        },
+        {
+          "command": "extension.micropythonSEND",
+          "group": "2_send",
+          "icon": "$(arrow-up)"
+        },
+        {
+          "command": "extension.micropythonREPL",
+          "group": "3_repl",
+          "icon": "$(terminal)"
+        },
+        {
+          "command": "extension.micropythonSelectPort",
+          "group": "4_port",
+          "icon": "$(plug)"
+        },
+        {
+          "command": "extension.micropythonClear",
+          "group": "4_clear",
+          "icon": "$(clear-all)"
+        },
+        {
+          "command": "extension.micropythonDisconnect",
+          "group": "5_disconnect",
+          "icon": "$(debug-disconnect)"
+        },
+        {
+          "command": "extension.micropythonShowLogs",
+          "group": "8_logs",
+          "icon": "$(output)"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "extension.micropythonMenu",
+          "when": "resourceLangId == python"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "MicroPython",
+      "properties": {
+        "micropython.port": {
+          "type": "string",
+          "default": "",
+          "description": "串口设备路径"
+        },
+        "micropython.autoConnect": {
+          "type": "boolean",
+          "default": false,
+          "description": "启动时自动连接设备"
+        },
+        "micropython.autoReconnect": {
+          "type": "boolean",
+          "default": true,
+          "description": "设备断开时自动重连"
+        },
+        "micropython.repl.escapeNonPrintable": {
+          "type": "boolean",
+          "default": false,
+          "description": "将非打印字符显示为十六进制代码"
+        },
+        "micropython.repl.captureFile": {
+          "type": "string",
+          "default": "",
+          "description": "REPL 会话输出捕获文件路径"
+        },
+        "micropython.repl.injectCode": {
+          "type": "string",
+          "default": "",
+          "description": "按下 Ctrl-J 时注入的代码"
+        },
+        "micropython.repl.injectFile": {
+          "type": "string",
+          "default": "",
+          "description": "按下 Ctrl-K 时注入的文件路径"
+        },
+        "micropython.stubPath": {
+          "type": "string",
+          "default": "",
+          "description": "MicroPython stubs 文件路径"
+        },
+        "micropython.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Python 解释器路径"
+        },
+        "micropython.autoDownloadStubs": {
+          "type": "boolean",
+          "default": true,
+          "description": "自动下载并安装 MicroPython stubs"
+        },
+        "micropython.board": {
+          "type": "string",
+          "enum": ["esp32", "esp8266", "pyboard", "rp2040"],
+          "default": "esp32",
+          "description": "MicroPython 开发板类型"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "python",
+        "extensions": [".py", ".pyi"],
+        "aliases": ["Python", "python"]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "clean": "rm -rf out/",
+    "compile": "npm run clean && tsc -p ./ && npm run copy-resources",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test",
+    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && rm -rf out/typings && cp -r typings out/"
+  },
+  "files": [
+    "out/**/*",
+    "media/**/*",
+    "typings/**/*"
+  ],
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^18.19.111",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@serialport/bindings-cpp": "^12.0.1",
+    "serialport": "^12.0.0",
+    "micropy-stubs": "^1.0.0",
+    "vscode-languageclient": "^8.1.0"
+  }
+}
