@@ -1,7 +1,7 @@
 from oled import OLED1106
 from machine import I2C, ADC
 from mpbit.mpin import MPin, PinMode
-from qmi8658 import Accelerometer, Gyroscope
+from qmi8658 import QMI8658
 from mpbit.magnetic import Magnetic
 from neopixel import NeoPixel
 from mpbit.button import Button
@@ -12,9 +12,9 @@ i2c: I2C
 # 板载I2C显示屏
 oled: OLED1106
 # 6轴传感器-加速度计
-accelerometer: Accelerometer
+accelerometer: QMI8658.Accelerometer
 # 6轴传感器-角速度计
-gyroscope: Gyroscope
+gyroscope: QMI8658.Gyroscope
 # 板载I2C磁力计传感器
 magnetic: Magnetic
 # 3个RGB LED灯带 Pin.P7
@@ -34,8 +34,9 @@ touchpad_h: Touch
 touchpad_o: Touch
 touchpad_n: Touch
 
-
-def number_map(value: float, from_low: float, from_high: float, to_low: float, to_high: float) -> float:
+def number_map(
+    value: float, from_low: float, from_high: float, to_low: float, to_high: float
+) -> float:
     """
     数值映射函数，将一个范围内的数值映射到另一个范围
     参数:
@@ -49,8 +50,9 @@ def number_map(value: float, from_low: float, from_high: float, to_low: float, t
     """
     ...
 
-
-def int_map(value: int, from_low: int, from_high: int, to_low: int, to_high: int) -> int:
+def int_map(
+    value: int, from_low: int, from_high: int, to_low: int, to_high: int
+) -> int:
     """
     整数映射函数，将一个整数范围映射到另一个整数范围
     参数:
@@ -64,15 +66,17 @@ def int_map(value: int, from_low: int, from_high: int, to_low: int, to_high: int
     """
     ...
 
-
-def get_i2c_bus() -> I2C:
+def get_i2c_bus(scl: int, sda: int, freq: int) -> I2C:
     """
     获取当前使用的 I2C 总线实例
+    参数:
+        scl: I2C 时钟线引脚编号
+        sda: I2C 数据线引脚编号
+        freq: I2C 总线频率
     返回:
         I2C: I2C 总线对象
     """
     ...
-
 
 def i2c_has_addr(i2c_bus: I2C, addr: int) -> bool:
     """
@@ -85,7 +89,6 @@ def i2c_has_addr(i2c_bus: I2C, addr: int) -> bool:
     """
     ...
 
-
 def uuid() -> str:
     """
     获取设备的唯一标识符（UUID）
@@ -93,7 +96,6 @@ def uuid() -> str:
         str: 设备的唯一标识符
     """
     ...
-
 
 __all__ = [
     "i2c",
@@ -122,10 +124,8 @@ __all__ = [
     "OLED1106",
     "I2C",
     "ADC",
-    "Accelerometer",
-    "Gyroscope",
-    "Magnetic",
     "NeoPixel",
     "Button",
+    "Magnetic",
     "Touch",
 ]

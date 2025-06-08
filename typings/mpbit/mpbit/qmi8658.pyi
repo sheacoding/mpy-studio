@@ -14,6 +14,9 @@ class QMI8658:
 
     IIC_ADDR: int = 107  # 0x6B
 
+    accelerometer: QMI8658.Accelerometer
+    gyroscope: QMI8658.Gyroscope
+
     def __init__(self, i2c: I2C) -> None:
         """
         初始化QMI8658传感器

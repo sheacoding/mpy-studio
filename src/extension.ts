@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     // 2. 配置其他 Python 分析器设置
-    pythonConfig.update('typeCheckingMode', 'off', vscode.ConfigurationTarget.Workspace);
+    pythonConfig.update('typeCheckingMode', 'basic', vscode.ConfigurationTarget.Workspace);
     pythonConfig.update('diagnosticMode', 'workspace', vscode.ConfigurationTarget.Workspace);
     pythonConfig.update('stubPath', path.join(context.extensionPath, 'out', 'typings/esp32'), vscode.ConfigurationTarget.Workspace);
     

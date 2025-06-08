@@ -1,7 +1,3 @@
-from machine import WLAN
-from typing import Optional
-
-
 class WiFi:
     def __init__(self) -> None:
         """
