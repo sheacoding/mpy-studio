@@ -20,8 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
     const currentExtraPaths = pythonConfig.get<string[]>('extraPaths') || [];
     const typingsBasePath = path.join(context.extensionPath, 'out', 'typings');
     const typingsPaths = [
-        path.join(typingsBasePath, 'esp32'),
-        path.join(typingsBasePath, 'mpbin'),
+        path.join(typingsBasePath, 'stdlib'),
         path.join(typingsBasePath, 'mpbit')
     ];
     
