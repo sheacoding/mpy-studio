@@ -31,7 +31,7 @@ class MPin:
         """释放引脚占用的硬件资源"""
         ...
 
-    def irq(self, trigger: int, handler: Callable[[Pin], None]) -> None:
+    def irq(self, trigger: int, handler: Optional[Callable[[Pin], None]]) -> None:
         """
         注册中断回调函数
         参数:
@@ -107,11 +107,11 @@ class MPin:
         """
         ...
 
-    def duty_percent(self, percent: float) -> None:
+    def set_duty_percent(self, percent: float) -> None:
         """
-        设置 PWM 输出的占空比百分比(0 ~ 100)。
+        设置 PWM 输出的占空比百分比(0~100)。
         参数:
-            percent: 占空比百分比,0 表示低电平,100 表示高电平
+            percent: 设置占空比(单位百分比0-100%)
         """
         ...
 

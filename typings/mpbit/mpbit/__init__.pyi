@@ -1,5 +1,5 @@
 from oled import OLED1106
-from machine import I2C, ADC
+from machine import I2C, ADC, Pin
 from mpbit.mpin import MPin, PinMode
 from qmi8658 import QMI8658
 from mpbit.magnetic import Magnetic
@@ -123,6 +123,7 @@ __all__ = [
     "PinMode",
     "OLED1106",
     "I2C",
+    "Pin",
     "ADC",
     "NeoPixel",
     "Button",
