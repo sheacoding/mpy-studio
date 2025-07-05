@@ -1,11 +1,6 @@
-"""
-MicroPython music module for playing melodies.
-This module provides functions for playing musical notes and built-in tunes.
-"""
+from typing import Union, Optional, List, Tuple
 
-from typing import Union, Optional, List
-
-# Built-in tunes (Western)
+# 以下为内置西方曲调
 DADADADUM: bytes
 ENTERTAINER: bytes
 PRELUDE: bytes
@@ -27,75 +22,84 @@ JUMP_UP: bytes
 JUMP_DOWN: bytes
 POWER_UP: bytes
 POWER_DOWN: bytes
-
-# Built-in tunes (Chinese Traditional)
-GE_CHANG_ZU_GUO: bytes  # 歌唱祖国
-DONG_FANG_HONG: bytes  # 东方红
-CAI_YUN_ZHUI_YUE: bytes  # 彩云追月
-ZOU_JIN_XIN_SHI_DAI: bytes  # 走进新时代
-MO_LI_HUA: bytes  # 茉莉花
-YI_MENG_SHAN_XIAO_DIAO: bytes  # 沂蒙山小调
+# 以下为内置中国传统曲调
+GE_CHANG_ZU_GUO: bytes  # 歌唱祖国.
+DONG_FANG_HONG: bytes  # 东方红.
+CAI_YUN_ZHUI_YUE: bytes  # 彩云追月.
+ZOU_JIN_XIN_SHI_DAI: bytes  # 走进新时代.
+MO_LI_HUA: bytes  # 茉莉花.
+YI_MENG_SHAN_XIAO_DIAO: bytes  # 沂蒙山小调.
 
 def __init__() -> None:
     """
-    Initialize the music module.
+    初始化音乐模块.
     """
     ...
 
 def reset() -> None:
     """
-    Reset the music module to its default state.
+    将音乐模块重置为默认状态.
     """
     ...
 
 def set_tempo(ticks: int = 4, bpm: int = 120) -> None:
     """
-    Set the tempo for playback.
+    设置播放速度.
 
-    Args:
-        ticks: Number of ticks per beat (default: 4)
-        bpm: Beats per minute (default: 120)
+    参数:
+        ticks (int): 每拍的节拍数(默认值:4).
+        bpm (int): 每分钟节拍数(默认值:120).
     """
     ...
 
-def get_tempo() -> tuple[int, int]:
+def get_tempo() -> Tuple[int, int]:
     """
-    Get the current tempo settings.
+    获取当前速度设置.
 
-    Returns:
-        A tuple of (ticks, bpm)
-    """
-    ...
-
-def play(music: Union[str, bytes, List[Union[str, int, float]]], pin: Optional[int] = None, wait: bool = True, loop: bool = False) -> None:
-    """
-    Play a melody.
-
-    Args:
-        music: The music to play. Can be a built-in tune, a string of notes, or a list of notes
-        pin: Optional pin number to play on (default: None)
-        wait: Whether to wait for the melody to finish (default: True)
-        loop: Whether to loop the melody (default: False)
+    返回:
+        (Tuple[int, int]): 包含(ticks, bpm)的元组.
     """
     ...
 
-def pitch(frequency: int, duration: Optional[int] = None, pin: Optional[int] = None, wait: bool = True) -> None:
+def play(
+    music: Union[str, bytes, List[Union[str, int, float]]],
+    pin: Optional[int] = None,
+    wait: bool = True,
+    loop: bool = False,
+) -> None:
     """
-    Play a pitch at the specified frequency.
+    播放旋律.
 
-    Args:
-        frequency: Frequency in Hz
-        duration: Optional duration in milliseconds
-        pin: Optional pin number to play on
-        wait: Whether to wait for the pitch to finish playing
+    参数:
+        music (Union[str, bytes, List[Union[str, int, float]]]): 要播放的音乐.可以是内置曲调、音符字符串或音符列表.
+        pin (Optional[int]): 可选的播放引脚编号(默认值:None).
+        wait (bool): 是否等待旋律播放完成(默认值:True).
+        loop (bool): 是否循环播放旋律(默认值:False).
+    """
+    ...
+
+def pitch(
+    frequency: int,
+    duration: Optional[int] = None,
+    pin: Optional[int] = None,
+    wait: bool = True,
+) -> None:
+    """
+    播放指定频率的音高.
+
+    参数:
+        frequency (int): 频率(单位:Hz).
+        duration (Optional[int]): 可选的持续时间(单位:毫秒).
+        pin (Optional[int]): 可选的播放引脚编号.
+        wait (bool): 是否等待音高播放完成.
     """
     ...
 
 def stop(pin: Optional[int] = None) -> None:
     """
-    Stop playing music.
+    停止播放音乐.
 
-    Args:
-        pin: Optional pin number to stop (default: None, stops all pins)
+    参数:
+        pin (Optional[int]): 可选的停止引脚编号(默认值:None,停止所有引脚).
     """
     ...

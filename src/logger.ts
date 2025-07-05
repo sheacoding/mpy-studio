@@ -2,15 +2,23 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-export class ExtensionLogger {
-    private static instance: ExtensionLogger;
+export enum LogLevel {
+    DEBUG = 0,
+    INFO = 1,
+    WARN = 2,
+    ERROR = 3
+}
+
+export class Logger {
+    private static instance: Logger;
     private logFile: string;
     private outputChannel: vscode.OutputChannel;
+    private currentLevel: LogLevel = LogLevel.INFO;
 
     private constructor(context: vscode.ExtensionContext, outputChannel?: vscode.OutputChannel) {
         const logDir = context.globalStorageUri.fsPath;
-        this.logFile = path.join(logDir, 'micropython-extension.log');
-        this.outputChannel = outputChannel || vscode.window.createOutputChannel('MicroPython Extension');
+        this.logFile = path.join(logDir, 'micropython.log');
+        this.outputChannel = outputChannel || vscode.window.createOutputChannel('MPY-REPL');
 
         // 确保日志目录存在
         if (!fs.existsSync(logDir)) {
@@ -21,31 +29,66 @@ export class ExtensionLogger {
         fs.writeFileSync(this.logFile, '');
     }
 
-    public static getInstance(context?: vscode.ExtensionContext, outputChannel?: vscode.OutputChannel): ExtensionLogger {
-        if (!ExtensionLogger.instance && context) {
-            ExtensionLogger.instance = new ExtensionLogger(context, outputChannel);
+    public static getInstance(context?: vscode.ExtensionContext, outputChannel?: vscode.OutputChannel): Logger {
+        if (!Logger.instance && context) {
+            Logger.instance = new Logger(context, outputChannel);
         }
-        return ExtensionLogger.instance;
+        return Logger.instance;
     }
 
-    public log(message: string, showInOutputChannel: boolean = true) {
-        const timestamp = new Date().toISOString();
-        const logMessage = `[${timestamp}] ${message}\n`;
+    public setLevel(level: LogLevel): void {
+        this.currentLevel = level;
+    }
 
+    private shouldLog(level: LogLevel): boolean {
+        return level >= this.currentLevel;
+    }
+
+    private formatMessage(level: LogLevel, message: string): string {
+        const timestamp = new Date().toISOString();
+        const levelName = LogLevel[level];
+        return `[${timestamp}] [${levelName}] ${message}`;
+    }
+
+    public debug(message: string, showInOutputChannel: boolean = false): void {
+        if (this.shouldLog(LogLevel.DEBUG)) {
+            const logMessage = this.formatMessage(LogLevel.DEBUG, message);
+            this.writeLog(logMessage, showInOutputChannel);
+        }
+    }
+
+    public info(message: string, showInOutputChannel: boolean = true): void {
+        if (this.shouldLog(LogLevel.INFO)) {
+            const logMessage = this.formatMessage(LogLevel.INFO, message);
+            this.writeLog(logMessage, showInOutputChannel);
+        }
+    }
+
+    public warn(message: string, showInOutputChannel: boolean = true): void {
+        if (this.shouldLog(LogLevel.WARN)) {
+            const logMessage = this.formatMessage(LogLevel.WARN, message);
+            this.writeLog(logMessage, showInOutputChannel);
+        }
+    }
+
+    public error(message: string, showInOutputChannel: boolean = true): void {
+        if (this.shouldLog(LogLevel.ERROR)) {
+            const logMessage = this.formatMessage(LogLevel.ERROR, message);
+            this.writeLog(logMessage, showInOutputChannel);
+        }
+    }
+
+    private writeLog(logMessage: string, showInOutputChannel: boolean): void {
         // 写入日志文件
-        fs.appendFileSync(this.logFile, logMessage);
+        fs.appendFileSync(this.logFile, logMessage + '\n');
 
         // 可选地显示在输出通道
         if (showInOutputChannel) {
-            this.outputChannel.appendLine(logMessage.trim());
+            this.outputChannel.appendLine(logMessage);
         }
     }
 
-    public showLog() {
+    public showLog(): void {
         this.outputChannel.show();
-    }
-
-    public getLogFilePath(): string {
-        return this.logFile;
     }
 }

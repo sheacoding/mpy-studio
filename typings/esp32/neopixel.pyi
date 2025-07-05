@@ -1,17 +1,11 @@
 """
-Control of WS2812 / NeoPixel LEDs.
+WS2812 NeoPixel LED控制模块
 
-MicroPython module: https://docs.micropython.org/en/v1.25.0/library/neopixel.html
+该模块提供WS2818 NeoPixel LED的驱动
 
-This module provides a driver for WS2818 / NeoPixel LEDs.
-
-``Note:`` This module is only included by default on the ESP8266, ESP32 and RP2
-   ports. On STM32 / Pyboard and others, you can either install the
-   ``neopixel`` package using :term:`mip`, or you can download the module
-   directly from :term:`micropython-lib` and copy it to the filesystem.
-
----
-Module: 'neopixel' on micropython-v1.25.0-esp32-ESP32_GENERIC-SPIRAM
+注意: 该模块仅默认包含在ESP8266 ESP32和RP2端口
+在STM32 Pyboard等其他端口上 您可以使用 `mip` 安装 `neopixel` 包
+或者直接从 `micropython-lib` 下载模块并复制到文件系统
 """
 
 # MCU: {'variant': 'SPIRAM', 'build': '', 'arch': 'xtensawin', 'port': 'esp32', 'board': 'ESP32_GENERIC', 'board_id': 'ESP32_GENERIC-SPIRAM', 'mpy': 'v6.3', 'ver': '1.25.0', 'family': 'micropython', 'cpu': 'ESP32', 'version': '1.25.0'}
@@ -29,46 +23,56 @@ def bitstream(*args, **kwargs) -> Incomplete: ...
 
 class NeoPixel(_NeoPixelBase):
     """
-    This class stores pixel data for a WS2812 LED strip connected to a pin. The
-    application should set pixel data and then call :meth:`NeoPixel.write`
-    when it is ready to update the strip.
+    该类存储连接到引脚的WS2812 LED灯带的像素数据
+    应用程序应设置像素数据 然后在准备好更新灯带时调用 `NeoPixel.write` 方法
 
-    For example::
-
+    使用示例:
         import neopixel
 
-        # 32 LED strip connected to X8.
+        # 32 LED灯带连接到X8
         p = machine.Pin.board.X8
         n = neopixel.NeoPixel(p, 32)
 
-        # Draw a red gradient.
+        # 绘制红色渐变
         for i in range(32):
             n[i] = (i * 8, 0, 0)
 
-        # Update the strip.
+        # 更新灯带
         n.write()
     """
 
     ORDER: tuple = ()
     def write(self) -> None:
         """
-        Writes the current pixel data to the strip.
+        将当前像素数据写入灯带
+
+        返回:
+            (None): 无返回值
         """
         ...
 
     def fill(self, pixel: _Color, /) -> None:
         """
-        Sets the value of all pixels to the specified *pixel* value (i.e. an
-        RGB/RGBW tuple).
+        将所有像素的值设置为指定的像素值 即RGB或RGBW元组
+
+        参数:
+            pixel (_Color): RGB或RGBW元组形式的像素值
+
+        返回:
+            (None): 无返回值
         """
         ...
 
     def __init__(self, pin: Pin, n: int, /, *, bpp: int = 3, timing: int = 1) -> None:
         """
-        Construct an NeoPixel object.  The parameters are:
+        构造一个NeoPixel对象
 
-            - *pin* is a machine.Pin instance.
-            - *n* is the number of LEDs in the strip.
-            - *bpp* is 3 for RGB LEDs, and 4 for RGBW LEDs.
-            - *timing* is 0 for 400KHz, and 1 for 800kHz LEDs (most are 800kHz).
+        参数:
+            pin (Pin): machine.Pin实例
+            n (int): 灯带中的LED数量
+            bpp (int): RGB LED为3 RGBW LED为4 默认为3
+            timing (int): 400KHz LED为0 800kHz LED为1 大多数为800kHz 默认为1
+
+        返回:
+            (None): 无返回值
         """

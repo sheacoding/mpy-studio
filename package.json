@@ -2,7 +2,8 @@
   "name": "mpbit-studio",
   "displayName": "MPBit Studio",
   "description": "MicroPython IDE for ESP32 and MPBit",
-  "version": "0.0.1",
+  "version": "0.0.3",
+  "publisher": "bright",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -10,13 +11,14 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "onView:mpbit-studio.replPanel",
+    "onLanguage:python"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.micropythonMenu",
+        "command": "extension.mpyMenu",
         "title": "MicroPython",
         "icon": {
           "light": "media/light/micropython-menu.svg",
@@ -24,39 +26,63 @@
         }
       },
       {
-        "command": "extension.micropythonRUN",
+        "command": "extension.mpyRUN",
         "title": "运行当前文件",
         "icon": "$(play)"
       },
       {
-        "command": "extension.micropythonREPL",
-        "title": "打开REPL",
+        "command": "extension.mpyStop",
+        "title": "停止当前程序",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "extension.mpyREPL",
+        "title": "REPL终端",
         "icon": "$(terminal)"
       },
       {
-        "command": "extension.micropythonSEND",
-        "title": "上传当前文件",
+        "command": "extension.mpyMAIN",
+        "title": "上传为主程序",
         "icon": "$(arrow-up)"
       },
       {
-        "command": "extension.micropythonSelectPort",
+        "command": "extension.mpyHardReset",
+        "title": "硬重启设备",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "extension.mpySelectPort",
         "title": "选择串口",
         "icon": "$(plug)"
       },
       {
-        "command": "extension.micropythonDisconnect",
+        "command": "extension.mpyDisconnect",
         "title": "断开连接",
         "icon": "$(debug-disconnect)"
       },
       {
-        "command": "extension.micropythonShowLogs",
+        "command": "extension.mpyShowLogs",
         "title": "显示插件日志",
         "icon": "$(output)"
       },
       {
-        "command": "extension.micropythonClear",
-        "title": "清除程序",
+        "command": "extension.mpyClear",
+        "title": "清除主程序",
         "icon": "$(clear-all)"
+      },
+      {
+        "command": "extension.updateTypings",
+        "title": "更新 MicroPython 类型定义",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "extension.selectBoard",
+        "title": "选择开发板",
+        "icon": "$(device-desktop)"
+      },
+      {
+        "command": "extension.switchRunMode",
+        "title": "切换运行模式"
       }
     ],
     "submenus": [
@@ -79,50 +105,59 @@
       ],
       "micropythonMenu.submenu": [
         {
-          "command": "extension.micropythonRUN",
-          "group": "1_run",
+          "command": "extension.mpyRUN",
+          "group": "1_run@1",
           "icon": "$(play)"
         },
         {
-          "command": "extension.micropythonSEND",
+          "command": "extension.mpyStop",
+          "group": "1_run@2",
+          "icon": "$(debug-stop)"
+        },
+        {
+          "command": "extension.mpyMAIN",
           "group": "2_send",
           "icon": "$(arrow-up)"
         },
         {
-          "command": "extension.micropythonREPL",
+          "command": "extension.mpyHardReset",
+          "group": "2_send",
+          "icon": "$(debug-restart)"
+        },
+        {
+          "command": "extension.mpyREPL",
           "group": "3_repl",
           "icon": "$(terminal)"
         },
         {
-          "command": "extension.micropythonSelectPort",
-          "group": "4_port",
-          "icon": "$(plug)"
-        },
-        {
-          "command": "extension.micropythonClear",
+          "command": "extension.mpyClear",
           "group": "4_clear",
           "icon": "$(clear-all)"
         },
         {
-          "command": "extension.micropythonDisconnect",
+          "command": "extension.mpyDisconnect",
           "group": "5_disconnect",
           "icon": "$(debug-disconnect)"
         },
         {
-          "command": "extension.micropythonShowLogs",
+          "command": "extension.mpyShowLogs",
           "group": "8_logs",
           "icon": "$(output)"
         }
       ],
       "commandPalette": [
         {
-          "command": "extension.micropythonMenu",
+          "command": "extension.mpyMenu",
+          "when": "resourceLangId == python"
+        },
+        {
+          "command": "extension.mpyREPL",
           "when": "resourceLangId == python"
         }
       ]
     },
     "configuration": {
-      "title": "MicroPython",
+      "title": "MicroPython Studio",
       "properties": {
         "micropython.port": {
           "type": "string",
@@ -133,11 +168,6 @@
           "type": "boolean",
           "default": false,
           "description": "启动时自动连接设备"
-        },
-        "micropython.autoReconnect": {
-          "type": "boolean",
-          "default": true,
-          "description": "设备断开时自动重连"
         },
         "micropython.repl.escapeNonPrintable": {
           "type": "boolean",
@@ -176,19 +206,78 @@
         },
         "micropython.board": {
           "type": "string",
-          "enum": ["esp32", "esp8266", "pyboard", "rp2040"],
+          "enum": [
+            "esp32",
+            "esp8266",
+            "pyboard",
+            "rp2040"
+          ],
           "default": "esp32",
           "description": "MicroPython 开发板类型"
+        },
+        "mpbit-studio.pureRepl.baudRate": {
+          "type": "number",
+          "default": 115200,
+          "description": "纯REPL模式波特率"
+        },
+        "mpbit-studio.pureRepl.timeout": {
+          "type": "number",
+          "default": 2000,
+          "description": "纯REPL模式超时时间(毫秒)"
+        },
+        "mpbit-studio.pureRepl.retryCount": {
+          "type": "number",
+          "default": 2,
+          "description": "纯REPL模式重试次数"
+        },
+        "mpbit-studio.pureRepl.commandDelay": {
+          "type": "number",
+          "default": 300,
+          "description": "纯REPL模式命令延迟(毫秒)"
+        },
+        "mpbit-studio.showDebugInfo": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否显示调试信息"
+        },
+        "mpbit-studio.selectedBoard": {
+          "type": "string",
+          "default": "",
+          "description": "用户选择的开发板（内部使用，请通过命令选择）"
         }
       }
     },
     "languages": [
       {
         "id": "python",
-        "extensions": [".py", ".pyi"],
-        "aliases": ["Python", "python"]
+        "extensions": [
+          ".py",
+          ".pyi"
+        ],
+        "aliases": [
+          "Python",
+          "python"
+        ]
       }
-    ]
+    ],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "mpbit-studio",
+          "title": "MPY-REPL",
+          "icon": "media/micropython-menu.svg"
+        }
+      ]
+    },
+    "views": {
+      "mpbit-studio": [
+        {
+          "type": "webview",
+          "id": "mpbit-studio.replPanel",
+          "name": "MPY-REPL"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
@@ -198,28 +287,39 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
-    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && rm -rf out/typings && cp -r typings out/"
+    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && rm -rf out/typings && cp -r typings out/ && npx copyfiles -u 1 resources/**/* out/resources",
+    "postbuild": "npx copyfiles -u 1 resources/**/* out/resources"
   },
   "files": [
+    "out",
+    "resources",
+    "package.json",
     "out/**/*",
     "media/**/*",
     "typings/**/*"
   ],
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
     "@types/node": "^18.19.111",
     "@types/vscode": "^1.85.0",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
-    "eslint": "^8.56.0",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@serialport/bindings-cpp": "^12.0.1",
+    "about-window": "^1.15.2",
+    "fs-extra": "^11.3.0",
+    "iconv-lite": "^0.6.3",
+    "micropython.js": "github:arduino/micropython.js#v1.5.1",
     "serialport": "^12.0.0",
-    "micropy-stubs": "^1.0.0",
     "vscode-languageclient": "^8.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/ai_mpy/mpbit-studio.git"
+  },
+  "baseContentUrl": "https://gitee.com/ai_mpy/mpbit-studio/raw/main",
+  "baseImagesUrl": "https://gitee.com/ai_mpy/mpbit-studio/raw/main"
 }

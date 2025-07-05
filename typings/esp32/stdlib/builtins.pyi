@@ -875,7 +875,7 @@ class memoryview(Sequence[_I]):
     count: ClassVar[None]  # type: ignore[assignment]
 
 @final
-class bool(int):
+class bool:
     def __new__(cls, o: object = ..., /) -> Self: ...
     # The following overloads could be represented more elegantly with a TypeVar("_B", bool, int),
     # however mypy has a bug regarding TypeVar constraints (https://github.com/python/mypy/issues/11880).

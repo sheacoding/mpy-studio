@@ -1,0 +1,238 @@
+.terminal-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--vscode-terminal-background);
+    color: var(--vscode-terminal-foreground);
+    font-family: var(--vscode-editor-font-family, 'Consolas, monospace');
+    font-size: var(--vscode-editor-font-size, 14px);
+}
+
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+    background-color: #008184;
+    border-bottom: 1px solid var(--vscode-panel-border);
+    height: 22px;
+    min-height: 22px;
+    max-height: 22px;
+    color: #fff;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-indicator.connected {
+    background-color: #4CAF50;
+    box-shadow: 0 0 4px #4CAF50;
+}
+
+.status-indicator.disconnected {
+    background-color: #f44336;
+    box-shadow: 0 0 4px #f44336;
+}
+
+.status-text {
+    color: #fff;
+    font-size: 12px;
+}
+
+.terminal-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.control-btn, .status-btn {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.control-btn:hover, .status-btn:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.control-btn:disabled, .status-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.status-btn {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-btn:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+    border-radius: 4px;
+}
+
+.status-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.status-btn .icon {
+    width: 16px;
+    height: 16px;
+}
+
+.terminal-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-bottom: 8px;
+}
+
+.output-line {
+    font-family: var(--vscode-editor-font-family, 'Consolas, monospace');
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.output-line.error {
+    color: #f44336;
+}
+
+.output-line.success {
+    color: #4CAF50;
+}
+
+.output-line.info {
+    color: #2196F3;
+}
+
+.output-line.warning {
+    color: #FFC107;
+}
+
+.output-line.input {
+    color: var(--vscode-terminal-foreground);
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    background-color: var(--vscode-terminal-background);
+    padding: 4px 0;
+    border-top: 1px solid var(--vscode-panel-border);
+    margin-top: 6px;
+    height: 22px;
+    min-height: 22px;
+    max-height: 22px;
+}
+
+.prompt {
+    color: var(--vscode-terminal-foreground);
+    margin-right: 8px;
+    user-select: none;
+}
+
+#terminalInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--vscode-terminal-foreground);
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+    outline: none;
+}
+
+#terminalInput::placeholder {
+    color: var(--vscode-input-placeholderForeground);
+}
+
+#terminalInput:disabled {
+    opacity: 0.5;
+}
+
+/* 滚动条样式 */
+.terminal-output::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-output::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background);
+}
+
+.terminal-output::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground);
+    border-radius: 4px;
+}
+
+.terminal-output::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground);
+}
+
+/* 选中文本样式 */
+::selection {
+    background-color: var(--vscode-editor-selectionBackground);
+    color: var(--vscode-editor-selectionForeground);
+}
+
+/* 顶部串口状态按钮样式（参考main.css） */
+.status-btn {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.status-btn:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+.status-btn[disabled] {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.status-btn .icon,
+.status-btn img {
+    width: 14px;
+    height: 14px;
+    max-width: 100%;
+    max-height: 100%;
+}

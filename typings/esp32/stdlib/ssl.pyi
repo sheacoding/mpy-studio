@@ -94,36 +94,36 @@ class SSLCertVerificationError(SSLError, ValueError):
 
 # CertificateError = SSLCertVerificationError
 
-if sys.version_info < (3, 12):
-    def wrap_socket(
-        sock: socket.socket,
-        *,
-        server_side: bool = False,
-        key: Incomplete = None,
-        cert: Incomplete = None,
-        cert_reqs: int = 0,
-        cadata: bytes | None = None,
-        server_hostname: str | None = None,
-        do_handshake: bool = True,
-    ) -> SSLSocket:
-        """
-         Wrap the given *sock* and return a new wrapped-socket object.  The implementation
-         of this function is to first create an `SSLContext` and then call the `SSLContext.wrap_socket`
-         method on that context object.  The arguments *sock*, *server_side* and *server_hostname* are
-         passed through unchanged to the method call.  The argument *do_handshake* is passed through as
-         *do_handshake_on_connect*.  The remaining arguments have the following behaviour:
+# if sys.version_info < (3, 12):
+def wrap_socket(
+    sock: socket.socket | SSLSocket,
+    *,
+    server_side: bool = False,
+    key: Incomplete = None,
+    cert: Incomplete = None,
+    cert_reqs: int = 0,
+    cadata: bytes | None = None,
+    server_hostname: str | None = None,
+    do_handshake: bool = True,
+) -> SSLSocket:
+    """
+        Wrap the given *sock* and return a new wrapped-socket object.  The implementation
+        of this function is to first create an `SSLContext` and then call the `SSLContext.wrap_socket`
+        method on that context object.  The arguments *sock*, *server_side* and *server_hostname* are
+        passed through unchanged to the method call.  The argument *do_handshake* is passed through as
+        *do_handshake_on_connect*.  The remaining arguments have the following behaviour:
 
-        - *cert_reqs* determines whether the peer (server or client) must present a valid certificate.
-          Note that for mbedtls based ports, ``ssl.CERT_NONE`` and ``ssl.CERT_OPTIONAL`` will not
-          validate any certificate, only ``ssl.CERT_REQUIRED`` will.
+    - *cert_reqs* determines whether the peer (server or client) must present a valid certificate.
+        Note that for mbedtls based ports, ``ssl.CERT_NONE`` and ``ssl.CERT_OPTIONAL`` will not
+        validate any certificate, only ``ssl.CERT_REQUIRED`` will.
 
-        - *cadata* is a bytes object containing the CA certificate chain (in DER format) that will
-          validate the peer's certificate.  Currently only a single DER-encoded certificate is supported.
+    - *cadata* is a bytes object containing the CA certificate chain (in DER format) that will
+        validate the peer's certificate.  Currently only a single DER-encoded certificate is supported.
 
-        Depending on the underlying module implementation in a particular
-        :term:`MicroPython port`, some or all keyword arguments above may be not supported.
-        """
-        ...
+    Depending on the underlying module implementation in a particular
+    :term:`MicroPython port`, some or all keyword arguments above may be not supported.
+    """
+    ...
 
 def __mpy_has_no_create_default_context(
     purpose: Purpose = ...,

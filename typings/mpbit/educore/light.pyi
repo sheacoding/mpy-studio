@@ -3,10 +3,10 @@ from typing import Optional
 
 class light:
     """
-    light 类用于读取光线传感器的模拟值。
+    light 类用于读取光线传感器的模拟值.
 
     参数:
-        pin (int, 可选): 指定连接光线传感器的引脚编号，默认为 None.
+        pin (Optional[int]): 指定连接光线传感器的引脚编号,默认为 None.
 
     方法:
         read: 根据传感器类型读取模拟值.
@@ -25,6 +25,6 @@ class light:
         读取光线传感器的模拟值.
 
         返回:
-            int: 光线传感器的模拟数值.
+            (int): 光线传感器的模拟数值.
         """
         ...

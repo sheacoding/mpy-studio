@@ -1,20 +1,11 @@
 """
-Mathematical functions.
+数学函数模块
 
-MicroPython module: https://docs.micropython.org/en/v1.25.0/library/math.html
+该 `math` 模块提供了一些基本的数学函数 用于处理浮点数
 
-CPython module: :mod:`python:math` https://docs.python.org/3/library/math.html .
+注意: 在pyboard上 浮点数具有32位精度
 
-The ``math`` module provides some basic mathematical functions for
-working with floating-point numbers.
-
-*Note:* On the pyboard, floating-point numbers have 32-bit precision.
-
-Availability: not available on WiPy. Floating point support required
-for this module.
-
----
-Module: 'math' on micropython-v1.25.0-esp32-ESP32_GENERIC-SPIRAM
+可用性: 不适用于WiPy 需要浮点支持此模块
 """
 
 # MCU: {'variant': 'SPIRAM', 'build': '', 'arch': 'xtensawin', 'port': 'esp32', 'board': 'ESP32_GENERIC', 'board_id': 'ESP32_GENERIC-SPIRAM', 'mpy': 'v6.3', 'ver': '1.25.0', 'family': 'micropython', 'cpu': 'ESP32', 'version': '1.25.0'}
@@ -32,236 +23,463 @@ tau: float = 6.283185
 
 def ldexp(x: SupportsFloat, exp: int, /) -> float:
     """
-    Return ``x * (2**exp)``.
+    计算 x 乘以 2 的 exp 次幂
+
+    参数:
+        x (SupportsFloat): 基数
+        exp (int): 指数
+
+    返回:
+        (float): 计算结果 x * (2**exp)
     """
     ...
 
 def lgamma(x: SupportsFloat, /) -> float:
     """
-    Return the natural logarithm of the gamma function of ``x``.
+    计算伽马函数的自然对数
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): 伽马函数 x 的自然对数
     """
     ...
 
 def trunc(x: SupportsFloat, /) -> int:
     """
-    Return an integer, being ``x`` rounded towards 0.
+    返回截断后的整数
+
+    参数:
+        x (SupportsFloat): 输入浮点数
+
+    返回:
+        (int): 朝0方向取整后的整数
     """
     ...
 
 def isclose(*args, **kwargs) -> Incomplete: ...
 def gamma(x: SupportsFloat, /) -> float:
     """
-    Return the gamma function of ``x``.
+    计算伽马函数
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): 伽马函数 x 的结果
     """
     ...
 
 def isnan(x: SupportsFloat, /) -> bool:
     """
-    Return ``True`` if ``x`` is not-a-number
+    检查是否为非数字
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (bool): 如果x是非数字 则返回True
     """
     ...
 
 def isfinite(x: SupportsFloat, /) -> bool:
     """
-    Return ``True`` if ``x`` is finite.
+    检查是否为有限数
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (bool): 如果x是有限数 则返回True
     """
     ...
 
 def isinf(x: SupportsFloat, /) -> bool:
     """
-    Return ``True`` if ``x`` is infinite.
+    检查是否为无限数
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (bool): 如果x是无限数 则返回True
     """
     ...
 
 def sqrt(x: SupportsFloat, /) -> float:
     """
-    Return the square root of ``x``.
+    计算平方根
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的平方根
     """
     ...
 
 def sinh(x: SupportsFloat, /) -> float:
     """
-    Return the hyperbolic sine of ``x``.
+    计算双曲正弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的双曲正弦
     """
     ...
 
 def log(x: SupportsFloat, /) -> float:
     """
-    With one argument, return the natural logarithm of *x*.
+    计算对数
 
-    With two arguments, return the logarithm of *x* to the given *base*.
+    参数:
+        x (SupportsFloat): 真数
+
+    返回:
+        (float): x的自然对数
     """
     ...
 
 def tan(x: SupportsFloat, /) -> float:
     """
-    Return the tangent of ``x``.
+    计算正切
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的正切
     """
     ...
 
 def tanh(x: SupportsFloat, /) -> float:
     """
-    Return the hyperbolic tangent of ``x``.
+    计算双曲正切
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的双曲正切
     """
     ...
 
 def log2(x: SupportsFloat, /) -> float:
     """
-    Return the base-2 logarithm of ``x``.
+    计算以2为底的对数
+
+    参数:
+        x (SupportsFloat): 真数
+
+    返回:
+        (float): 以2为底的x的对数
     """
     ...
 
 def log10(x: SupportsFloat, /) -> float:
     """
-    Return the base-10 logarithm of ``x``.
+    计算以10为底的对数
+
+    参数:
+        x (SupportsFloat): 真数
+
+    返回:
+        (float): 以10为底的x的对数
     """
     ...
 
 def sin(x: SupportsFloat, /) -> float:
     """
-    Return the sine of ``x``.
+    计算正弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的正弦
     """
     ...
 
 def modf(x: SupportsFloat, /) -> Tuple:
     """
-    Return a tuple of two floats, being the fractional and integral parts of
-    ``x``.  Both return values have the same sign as ``x``.
+    分解浮点数的整数和小数部分
+
+    参数:
+        x (SupportsFloat): 输入浮点数
+
+    返回:
+        (Tuple): 包含x的小数部分和整数部分的元组 两者与x同符号
     """
     ...
 
 def radians(x: SupportsFloat, /) -> float:
     """
-    Return degrees ``x`` converted to radians.
+    将度数转换为弧度
+
+    参数:
+        x (SupportsFloat): 度数
+
+    返回:
+        (float): x转换为弧度后的值
     """
     ...
 
 def atanh(x: SupportsFloat, /) -> float:
     """
-    Return the inverse hyperbolic tangent of ``x``.
+    计算反双曲正切
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的反双曲正切
     """
     ...
 
 def atan2(y: SupportsFloat, x: SupportsFloat, /) -> float:
     """
-    Return the principal value of the inverse tangent of ``y/x``.
+    计算y/x的反正切主值
+
+    参数:
+        y (SupportsFloat): y坐标
+        x (SupportsFloat): x坐标
+
+    返回:
+        (float): y/x的反正切主值
     """
     ...
 
 def atan(x: SupportsFloat, /) -> float:
     """
-    Return the inverse tangent of ``x``.
+    计算反正切
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的反正切
     """
     ...
 
 def ceil(x: SupportsFloat, /) -> int:
     """
-    Return an integer, being ``x`` rounded towards positive infinity.
+    向上取整
+
+    参数:
+        x (SupportsFloat): 输入浮点数
+
+    返回:
+        (int): 朝正无穷方向取整后的整数
     """
     ...
 
 def copysign(x: SupportsFloat, y: SupportsFloat, /) -> float:
     """
-    Return ``x`` with the sign of ``y``.
+    返回带有y符号的x值
+
+    参数:
+        x (SupportsFloat): 数值
+        y (SupportsFloat): 符号来源
+
+    返回:
+        (float): 带有y符号的x值
     """
     ...
 
 def frexp(x: SupportsFloat, /) -> tuple[float, int]:
     """
-    Decomposes a floating-point number into its mantissa and exponent.
-    The returned value is the tuple ``(m, e)`` such that ``x == m * 2**e``
-    exactly.  If ``x == 0`` then the function returns ``(0.0, 0)``, otherwise
-    the relation ``0.5 <= abs(m) < 1`` holds.
+    将浮点数分解为尾数和指数
+
+    参数:
+        x (SupportsFloat): 输入浮点数
+
+    返回:
+        (tuple[float, int]): 包含尾数m和指数e的元组 满足x = m * 2**e
     """
     ...
 
 def acos(x: SupportsFloat, /) -> float:
     """
-    Return the inverse cosine of ``x``.
+    计算反余弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的反余弦
     """
     ...
 
 def pow(x: SupportsFloat, y: SupportsFloat, /) -> float:
     """
-    Returns ``x`` to the power of ``y``.
+    计算x的y次幂
+
+    参数:
+        x (SupportsFloat): 底数
+        y (SupportsFloat): 指数
+
+    返回:
+        (float): x的y次幂的结果
     """
     ...
 
 def asinh(x: SupportsFloat, /) -> float:
     """
-    Return the inverse hyperbolic sine of ``x``.
+    计算反双曲正弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的反双曲正弦
     """
     ...
 
 def acosh(x: SupportsFloat, /) -> float:
     """
-    Return the inverse hyperbolic cosine of ``x``.
+    计算反双曲余弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的反双曲余弦
     """
     ...
 
 def asin(x: SupportsFloat, /) -> float:
     """
-    Return the inverse sine of ``x``.
+    计算反正弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的反正弦
     """
     ...
 
 def factorial(*args, **kwargs) -> Incomplete: ...
 def fabs(x: SupportsFloat, /) -> float:
     """
-    Return the absolute value of ``x``.
+    计算绝对值
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的绝对值
     """
     ...
 
 def expm1(x: SupportsFloat, /) -> float:
     """
-    Return ``exp(x) - 1``.
+    计算e的x次幂减1
+
+    参数:
+        x (SupportsFloat): 指数
+
+    返回:
+        (float): exp(x) - 1 的结果
     """
     ...
 
 def floor(x: SupportsFloat, /) -> int:
     """
-    Return an integer, being ``x`` rounded towards negative infinity.
+    向下取整
+
+    参数:
+        x (SupportsFloat): 输入浮点数
+
+    返回:
+        (int): 朝负无穷方向取整后的整数
     """
     ...
 
 def fmod(x: SupportsFloat, y: SupportsFloat, /) -> float:
     """
-    Return the remainder of ``x/y``.
+    计算浮点余数
+
+    参数:
+        x (SupportsFloat): 被除数
+        y (SupportsFloat): 除数
+
+    返回:
+        (float): x除以y的余数
     """
     ...
 
 def cos(x: SupportsFloat, /) -> float:
     """
-    Return the cosine of ``x``.
+    计算余弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的余弦
     """
     ...
 
 def degrees(x: SupportsFloat, /) -> float:
     """
-    Return radians ``x`` converted to degrees.
+    将弧度转换为度数
+
+    参数:
+        x (SupportsFloat): 弧度值
+
+    返回:
+        (float): x转换为度数后的值
     """
     ...
 
 def cosh(x: SupportsFloat, /) -> float:
     """
-    Return the hyperbolic cosine of ``x``.
+    计算双曲余弦
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的双曲余弦
     """
     ...
 
 def exp(x: SupportsFloat, /) -> float:
     """
-    Return the exponential of ``x``.
+    计算指数函数
+
+    参数:
+        x (SupportsFloat): 指数
+
+    返回:
+        (float): e的x次幂
     """
     ...
 
 def erf(x: SupportsFloat, /) -> float:
     """
-    Return the error function of ``x``.
+    计算误差函数
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的误差函数值
     """
     ...
 
 def erfc(x: SupportsFloat, /) -> float:
     """
-    Return the complementary error function of ``x``.
+    计算补余误差函数
+
+    参数:
+        x (SupportsFloat): 输入值
+
+    返回:
+        (float): x的补余误差函数值
     """
     ...

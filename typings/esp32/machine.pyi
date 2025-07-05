@@ -1,17 +1,14 @@
 """
-Functions related to the hardware.
+与硬件相关的功能函数.
 
-MicroPython module: https://docs.micropython.org/en/v1.25.0/library/machine.html
+MicroPython模块: https://docs.micropython.org/en/v1.25.0/library/machine.html
 
-The ``machine`` module contains specific functions related to the hardware
-on a particular board. Most functions in this module allow to achieve direct
-and unrestricted access to and control of hardware blocks on a system
-(like CPU, timers, buses, etc.). Used incorrectly, this can lead to
-malfunction, lockups, crashes of your board, and in extreme cases, hardware
-damage.
+``machine``模块包含与特定开发板硬件相关的功能函数.此模块中的大多数函数允许
+直接且不受限制地访问和控制系统上的硬件块(如CPU、定时器、总线等).使用不当可能
+导致开发板故障、锁死、崩溃,在极端情况下甚至可能导致硬件损坏.
 
 ---
-Module: 'machine' on micropython-v1.25.0-esp32-ESP32_GENERIC-SPIRAM
+模块: 'machine' on micropython-v1.25.0-esp32-ESP32_GENERIC-SPIRAM
 """
 
 # MCU: {'variant': 'SPIRAM', 'build': '', 'arch': 'xtensawin', 'port': 'esp32', 'board': 'ESP32_GENERIC', 'board_id': 'ESP32_GENERIC-SPIRAM', 'mpy': 'v6.3', 'ver': '1.25.0', 'family': 'micropython', 'cpu': 'ESP32', 'version': '1.25.0'}
@@ -57,156 +54,137 @@ RTC_WAKE: Incomplete
 @overload
 def deepsleep() -> NoReturn:
     """
-    Stops execution in an attempt to enter a low power state.
-
-    If *time_ms* is specified then this will be the maximum time in milliseconds that
-    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
-    With or without a timeout, execution may resume at any time if there are events
-    that require processing.  Such events, or wake sources, should be configured before
-    sleeping, like `Pin` change or `RTC` timeout.
-
-    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
-    highly dependent on the underlying hardware, but the general properties are:
-
-    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
-      from the point where the sleep was requested, with all subsystems operational.
-
-    * A deepsleep may not retain RAM or any other state of the system (for example
-      peripherals or network interfaces).  Upon wake execution is resumed from the main
-      script, similar to a hard or power-on reset. The `reset_cause()` function will
-      return `machine.DEEPSLEEP` and this can be used to distinguish a deepsleep wake
-      from other resets.
+    停止执行并尝试进入低功耗状态.
+    
+    如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
+    
+    无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
+    应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
+    
+    轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
+    
+    * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
+      所有子系统均可操作.
+    
+    * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
+      唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
+      返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
     """
 
 @overload
 def deepsleep(time_ms: int, /) -> NoReturn:
     """
-    Stops execution in an attempt to enter a low power state.
-
-    If *time_ms* is specified then this will be the maximum time in milliseconds that
-    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
-    With or without a timeout, execution may resume at any time if there are events
-    that require processing.  Such events, or wake sources, should be configured before
-    sleeping, like `Pin` change or `RTC` timeout.
-
-    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
-    highly dependent on the underlying hardware, but the general properties are:
-
-    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
-      from the point where the sleep was requested, with all subsystems operational.
-
-    * A deepsleep may not retain RAM or any other state of the system (for example
-      peripherals or network interfaces).  Upon wake execution is resumed from the main
-      script, similar to a hard or power-on reset. The `reset_cause()` function will
-      return `machine.DEEPSLEEP` and this can be used to distinguish a deepsleep wake
-      from other resets.
+    停止执行并尝试进入低功耗状态.
+    
+    如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
+    
+    无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
+    应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
+    
+    轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
+    
+    * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
+      所有子系统均可操作.
+    
+    * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
+      唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
+      返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
     """
 
 def soft_reset() -> NoReturn:
     """
-    Performs a :ref:`soft reset <soft_reset>` of the interpreter, deleting all
-    Python objects and resetting the Python heap.
+    执行解释器的:ref:`软复位 <soft_reset>`,删除所有Python对象并重置Python堆.
     """
     ...
 
 def dht_readinto(*args, **kwargs) -> Incomplete: ...
 def reset() -> NoReturn:
     """
-    :ref:`Hard resets <hard_reset>` the device in a manner similar to pushing the
-    external RESET button.
+    以类似于按下外部RESET按钮的方式:ref:`硬复位 <hard_reset>`设备.
     """
     ...
 
 def unique_id() -> bytes:
     """
-    Returns a byte string with a unique identifier of a board/SoC. It will vary
-    from a board/SoC instance to another, if underlying hardware allows. Length
-    varies by hardware (so use substring of a full value if you expect a short
-    ID). In some MicroPython ports, ID corresponds to the network MAC address.
+    返回一个包含开发板/SoC唯一标识符的字节字符串.如果底层硬件允许,它会在不同的
+    开发板/SoC实例之间变化.长度因硬件而异(如果需要短ID,请使用完整值的子字符串).
+    在某些MicroPython端口中,ID对应于网络MAC地址.
     """
     ...
 
 def time_pulse_us(pin: Pin, pulse_level: int, timeout_us: int = 1_000_000, /) -> int:
     """
-    Time a pulse on the given *pin*, and return the duration of the pulse in
-    microseconds.  The *pulse_level* argument should be 0 to time a low pulse
-    or 1 to time a high pulse.
-
-    If the current input value of the pin is different to *pulse_level*,
-    the function first (*) waits until the pin input becomes equal to *pulse_level*,
-    then (**) times the duration that the pin is equal to *pulse_level*.
-    If the pin is already equal to *pulse_level* then timing starts straight away.
-
-    The function will return -2 if there was timeout waiting for condition marked
-    (*) above, and -1 if there was timeout during the main measurement, marked (**)
-    above. The timeout is the same for both cases and given by *timeout_us* (which
-    is in microseconds).
+    测量给定引脚上的脉冲持续时间,并以微秒为单位返回结果.
+    
+    参数:
+        pin (Pin): 要测量脉冲的引脚对象.
+        pulse_level (int): 要测量的脉冲电平 (0=低电平脉冲,1=高电平脉冲).
+        timeout_us (int): 超时时间,单位为微秒,默认为1,000,000微秒(1秒).
+    
+    返回值:
+        (int): 脉冲持续时间(微秒),如果发生超时则返回负值.
+             -1: 测量过程中超时.
+             -2: 等待初始电平变化时超时.
+    
+    工作原理:
+    1. 如果引脚当前电平与pulse_level不同,函数会等待直到电平变为pulse_level.
+    2. 然后测量引脚保持在pulse_level电平的持续时间.
+    3. 如果引脚已经处于pulse_level电平,则立即开始计时.
     """
     ...
 
 def bitstream(pin, encoding, timing, data, /) -> Incomplete:
     """
-    Transmits *data* by bit-banging the specified *pin*. The *encoding* argument
-    specifies how the bits are encoded, and *timing* is an encoding-specific timing
-    specification.
-
-    The supported encodings are:
-
-      - ``0`` for "high low" pulse duration modulation. This will transmit 0 and
-        1 bits as timed pulses, starting with the most significant bit.
-        The *timing* must be a four-tuple of nanoseconds in the format
-        ``(high_time_0, low_time_0, high_time_1, low_time_1)``. For example,
-        ``(400, 850, 800, 450)`` is the timing specification for WS2812 RGB LEDs
-        at 800kHz.
-
-    The accuracy of the timing varies between ports. On Cortex M0 at 48MHz, it is
-    at best +/- 120ns, however on faster MCUs (ESP8266, ESP32, STM32, Pyboard), it
-    will be closer to +/-30ns.
-
-    ``Note:`` For controlling WS2812 / NeoPixel strips, see the :mod:`neopixel`
-       module for a higher-level API.
+    通过对指定的*pin*进行位操作传输*data*.*encoding*参数指定如何编码位,
+    *timing*是特定于编码的时序规范.
+    
+    支持的编码有:
+    
+      - ``0``表示"高低"脉冲持续时间调制.这将以定时脉冲传输0和1位,从最高有效位开始.
+        *timing*必须是格式为``(high_time_0, low_time_0, high_time_1, low_time_1)``
+        的四元组纳秒值.例如,``(400, 850, 800, 450)``是WS2812 RGB LED在800kHz下
+        的时序规范.
+    
+    时序精度因端口而异.在48MHz的Cortex M0上,最佳精度为+/- 120ns,但在更快的MCU
+    (ESP8266, ESP32, STM32, Pyboard)上,精度将接近+/-30ns.
+    
+    ``注意:`` 对于控制WS2812/NeoPixel条带,请参阅:mod:`neopixel`模块获取更高级的API.
     """
     ...
 
 def idle() -> None:
     """
-    Gates the clock to the CPU, useful to reduce power consumption at any time
-    during short or long periods. Peripherals continue working and execution
-    resumes as soon as any interrupt is triggered, or at most one millisecond
-    after the CPU was paused.
-
-    It is recommended to call this function inside any tight loop that is
-    continuously checking for an external change (i.e. polling). This will reduce
-    power consumption without significantly impacting performance. To reduce
-    power consumption further then see the :func:`lightsleep`,
-    :func:`time.sleep()` and :func:`time.sleep_ms()` functions.
+    关闭CPU时钟,有助于在短时间或长时间内降低功耗.外设继续工作,执行在任何中断
+    触发时恢复,或最多在CPU暂停一毫秒后恢复.
+    
+    建议在任何持续检查外部变化(即轮询)的紧密循环中调用此函数.这将减少功耗而不
+    显著影响性能.要进一步降低功耗,请参阅:func:`lightsleep`、:func:`time.sleep()`
+    和:func:`time.sleep_ms()`函数.
     """
     ...
 
 @overload
 def freq() -> int:
     """
-    Returns the CPU frequency in hertz.
-
-    On some ports this can also be used to set the CPU frequency by passing in *hz*.
+    返回CPU频率,单位为赫兹.
+    
+    在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
 @overload
 def freq(hz: int, /) -> None:
     """
-    Returns the CPU frequency in hertz.
-
-    On some ports this can also be used to set the CPU frequency by passing in *hz*.
+    返回CPU频率,单位为赫兹.
+    
+    在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
 @overload
 def freq(self) -> int:
     """
-    Returns the CPU frequency in hertz.
-
-    On some ports this can also be used to set the CPU frequency by passing in *hz*.
+    返回CPU频率,单位为赫兹.
+    
+    在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
 @overload
@@ -216,96 +194,84 @@ def freq(
     /,
 ) -> None:
     """
-    Returns the CPU frequency in hertz.
-
-    On some ports this can also be used to set the CPU frequency by passing in *hz*.
+    返回CPU频率,单位为赫兹.
+    
+    在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
 @overload
 def lightsleep() -> None:
     """
-    Stops execution in an attempt to enter a low power state.
-
-    If *time_ms* is specified then this will be the maximum time in milliseconds that
-    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
-    With or without a timeout, execution may resume at any time if there are events
-    that require processing.  Such events, or wake sources, should be configured before
-    sleeping, like `Pin` change or `RTC` timeout.
-
-    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
-    highly dependent on the underlying hardware, but the general properties are:
-
-    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
-      from the point where the sleep was requested, with all subsystems operational.
-
-    * A deepsleep may not retain RAM or any other state of the system (for example
-      peripherals or network interfaces).  Upon wake execution is resumed from the main
-      script, similar to a hard or power-on reset. The `reset_cause()` function will
-      return `machine.DEEPSLEEP` and this can be used to distinguish a deepsleep wake
-      from other resets.
+    停止执行并尝试进入低功耗状态.
+    
+    如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
+    
+    无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
+    应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
+    
+    轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
+    
+    * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
+      所有子系统均可操作.
+    
+    * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
+      唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
+      返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
     """
 
 @overload
 def lightsleep(time_ms: int, /) -> None:
     """
-    Stops execution in an attempt to enter a low power state.
-
-    If *time_ms* is specified then this will be the maximum time in milliseconds that
-    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
-    With or without a timeout, execution may resume at any time if there are events
-    that require processing.  Such events, or wake sources, should be configured before
-    sleeping, like `Pin` change or `RTC` timeout.
-
-    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
-    highly dependent on the underlying hardware, but the general properties are:
-
-    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
-      from the point where the sleep was requested, with all subsystems operational.
-
-    * A deepsleep may not retain RAM or any other state of the system (for example
-      peripherals or network interfaces).  Upon wake execution is resumed from the main
-      script, similar to a hard or power-on reset. The `reset_cause()` function will
-      return `machine.DEEPSLEEP` and this can be used to distinguish a deepsleep wake
-      from other resets.
+    停止执行并尝试进入低功耗状态.
+    
+    如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
+    
+    无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
+    应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
+    
+    轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
+    
+    * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
+      所有子系统均可操作.
+    
+    * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
+      唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
+      返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
     """
 
 def disable_irq() -> bool:
     """
-    Disable interrupt requests.
-    Returns the previous IRQ state which should be considered an opaque value.
-    This return value should be passed to the `enable_irq()` function to restore
-    interrupts to their original state, before `disable_irq()` was called.
+    禁用中断请求.
+    返回先前的IRQ状态,应将其视为不透明值.
+    此返回值应传递给`enable_irq()`函数,以恢复中断到调用`disable_irq()`之前的原始状态.
     """
     ...
 
 def enable_irq(state: bool = True, /) -> None:
     """
-    Re-enable interrupt requests.
-    The *state* parameter should be the value that was returned from the most
-    recent call to the `disable_irq()` function.
+    重新启用中断请求.
+    *state*参数应为从最近一次调用`disable_irq()`函数返回的值.
     """
     ...
 
 def reset_cause() -> int:
     """
-    Get the reset cause. See :ref:`constants <machine_constants>` for the possible return values.
+    获取复位原因.有关可能的返回值,请参阅:ref:`常量 <machine_constants>`.
     """
     ...
 
 @deprecated("use :func:`lightsleep()` instead.")
 def sleep() -> None:
     """
-    ``Note:`` This function is deprecated, use :func:`lightsleep()` instead with no arguments.
+    ``注意:`` 此函数已弃用,请使用不带参数的:func:`lightsleep()`代替.
     """
     ...
 
 def wake_reason() -> int:
     """
-    Get the wake reason. See :ref:`constants <machine_constants>` for the possible return values.
-
-    Availability: ESP32, WiPy.
+    获取唤醒原因.有关可能的返回值,请参阅:ref:`常量 <machine_constants>`.
+    
+    可用性: ESP32, WiPy.
     """
     ...
 
@@ -313,65 +279,58 @@ mem8: Incomplete  ## <class 'mem'> = <8-bit memory>
 
 class PWM:
     """
-    This class provides pulse width modulation output.
-
-    Example usage::
-
+    此类提供脉宽调制输出.
+    
+    使用示例::
+    
         from machine import PWM
-
-        pwm = PWM(pin)          # create a PWM object on a pin
-        pwm.duty_u16(32768)     # set duty to 50%
-
-        # reinitialise with a period of 200us, duty of 5us
+        
+        pwm = PWM(pin)          # 在引脚上创建PWM对象.
+        pwm.duty_u16(32768)     # 设置占空比为50%.
+        
+        # 重新初始化,周期为200us,占空比为5us.
         pwm.init(freq=5000, duty_ns=5000)
-
-        pwm.duty_ns(3000)       # set pulse width to 3us
-
+        
+        pwm.duty_ns(3000)       # 设置脉冲宽度为3us.
+        
         pwm.deinit()
-
-
-    Limitations of PWM
+    
+    
+    PWM的限制
     ------------------
-
-    * Not all frequencies can be generated with absolute accuracy due to
-      the discrete nature of the computing hardware.  Typically the PWM frequency
-      is obtained by dividing some integer base frequency by an integer divider.
-      For example, if the base frequency is 80MHz and the required PWM frequency is
-      300kHz the divider must be a non-integer number 80000000 / 300000 = 266.67.
-      After rounding the divider is set to 267 and the PWM frequency will be
-      80000000 / 267 = 299625.5 Hz, not 300kHz.  If the divider is set to 266 then
-      the PWM frequency will be 80000000 / 266 = 300751.9 Hz, but again not 300kHz.
-
-    * The duty cycle has the same discrete nature and its absolute accuracy is not
-      achievable.  On most hardware platforms the duty will be applied at the next
-      frequency period.  Therefore, you should wait more than "1/frequency" before
-      measuring the duty.
-
-    * The frequency and the duty cycle resolution are usually interdependent.
-      The higher the PWM frequency the lower the duty resolution which is available,
-      and vice versa. For example, a 300kHz PWM frequency can have a duty cycle
-      resolution of 8 bit, not 16-bit as may be expected.  In this case, the lowest
-      8 bits of *duty_u16* are insignificant. So::
-
+    
+    * 由于计算硬件的离散性质,不是所有频率都能以绝对精度生成.通常,PWM频率
+      是通过将某个整数基频除以整数除数获得的.
+      例如,如果基频为80MHz,所需PWM频率为300kHz,则除数必须是非整数
+      80000000 / 300000 = 266.67.
+      四舍五入后,除数设置为267,PWM频率将为80000000 / 267 = 299625.5 Hz,
+      而不是300kHz.如果除数设置为266,则PWM频率将为80000000 / 266 = 300751.9 Hz,
+      但仍然不是300kHz.
+    
+    * 占空比也具有相同的离散性质,无法达到其绝对精度.在大多数硬件平台上,
+      占空比将在下一个频率周期应用.因此,在测量占空比之前,应等待超过"1/频率"的时间.
+    
+    * 频率和占空比分辨率通常是相互依赖的.PWM频率越高,可用的占空比分辨率越低,
+      反之亦然.例如,300kHz的PWM频率可以有8位占空比分辨率,而不是可能预期的16位.
+      在这种情况下,*duty_u16*的最低8位是不重要的.所以::
+    
         pwm=PWM(Pin(13), freq=300_000, duty_u16=2**16//2)
-
-      and::
-
+    
+      和::
+    
         pwm=PWM(Pin(13), freq=300_000, duty_u16=2**16//2 + 255)
-
-      will generate PWM with the same 50% duty cycle.
+    
+      将生成具有相同50%占空比的PWM.
     """
 
     @overload
     def duty_u16(self) -> int:
         """
-        Get or set the current duty cycle of the PWM output, as an unsigned 16-bit
-        value in the range 0 to 65535 inclusive.
-
-        With no arguments the duty cycle is returned.
-
-        With a single *value* argument the duty cycle is set to that value, measured
-        as the ratio ``value / 65535``.
+        获取或设置PWM输出的当前占空比,作为0到65535(含)范围内的无符号16位值.
+        
+        不带参数时返回占空比.
+        
+        带有单个*value*参数时,将占空比设置为该值,以``value / 65535``的比率测量.
         """
 
     @overload
@@ -381,31 +340,28 @@ class PWM:
         /,
     ) -> None:
         """
-        Get or set the current duty cycle of the PWM output, as an unsigned 16-bit
-        value in the range 0 to 65535 inclusive.
-
-        With no arguments the duty cycle is returned.
-
-        With a single *value* argument the duty cycle is set to that value, measured
-        as the ratio ``value / 65535``.
+        获取或设置PWM输出的当前占空比,作为0到65535(含)范围内的无符号16位值.
+        
+        不带参数时返回占空比.
+        
+        带有单个*value*参数时,将占空比设置为该值,以``value / 65535``的比率测量.
         """
 
     def init(self, *, freq: int = ..., duty_u16: int = ..., duty_ns: int = ...) -> None:
         """
-        Modify settings for the PWM object.  See the above constructor for details
-        about the parameters.
+        修改PWM对象的设置.有关参数的详细信息,请参阅上面的构造函数.
         """
         ...
 
     @overload
     def freq(self) -> int:
         """
-        Get or set the current frequency of the PWM output.
-
-        With no arguments the frequency in Hz is returned.
-
-        With a single *value* argument the frequency is set to that value in Hz.  The
-        method may raise a ``ValueError`` if the frequency is outside the valid range.
+        获取或设置PWM输出的当前频率.
+        
+        不带参数时返回以Hz为单位的频率.
+        
+        带有单个*value*参数时,将频率设置为以Hz为单位的该值.如果频率超出有效范围,
+        该方法可能会引发``ValueError``.
         """
 
     @overload
@@ -415,28 +371,28 @@ class PWM:
         /,
     ) -> None:
         """
-        Get or set the current frequency of the PWM output.
-
-        With no arguments the frequency in Hz is returned.
-
-        With a single *value* argument the frequency is set to that value in Hz.  The
-        method may raise a ``ValueError`` if the frequency is outside the valid range.
+        获取或设置PWM输出的当前频率.
+        
+        不带参数时返回以Hz为单位的频率.
+        
+        带有单个*value*参数时,将频率设置为以Hz为单位的该值.如果频率超出有效范围,
+        该方法可能会引发``ValueError``.
         """
 
     def deinit(self) -> None:
         """
-        Disable the PWM output.
+        禁用PWM输出.
         """
         ...
 
     @overload
     def duty_ns(self) -> int:
         """
-        Get or set the current pulse width of the PWM output, as a value in nanoseconds.
-
-        With no arguments the pulse width in nanoseconds is returned.
-
-        With a single *value* argument the pulse width is set to that value.
+        获取或设置PWM输出的当前脉冲宽度,以纳秒为单位.
+        
+        不带参数时返回以纳秒为单位的脉冲宽度.
+        
+        带有单个*value*参数时,将脉冲宽度设置为该值.
         """
 
     @overload
@@ -446,11 +402,11 @@ class PWM:
         /,
     ) -> None:
         """
-        Get or set the current pulse width of the PWM output, as a value in nanoseconds.
-
-        With no arguments the pulse width in nanoseconds is returned.
-
-        With a single *value* argument the pulse width is set to that value.
+        获取或设置PWM输出的当前脉冲宽度,以纳秒为单位.
+        
+        不带参数时返回以纳秒为单位的脉冲宽度.
+        
+        带有单个*value*参数时,将脉冲宽度设置为该值.
         """
 
     def duty(self, *args, **kwargs) -> Incomplete: ...
@@ -464,51 +420,45 @@ class PWM:
         duty_ns: int = ...,
     ) -> None:
         """
-        Construct and return a new PWM object using the following parameters:
+        使用以下参数构造并返回一个新的PWM对象:
 
-           - *dest* is the entity on which the PWM is output, which is usually a
-             :ref:`machine.Pin <machine.Pin>` object, but a port may allow other values,
-             like integers.
-           - *freq* should be an integer which sets the frequency in Hz for the
-             PWM cycle.
-           - *duty_u16* sets the duty cycle as a ratio ``duty_u16 / 65535``.
-           - *duty_ns* sets the pulse width in nanoseconds.
+           - *dest*是输出PWM的实体,通常是一个:ref:`machine.Pin <machine.Pin>`对象,
+             但某些端口可能允许其他值,如整数.
+           - *freq*应为一个整数,设置PWM周期的频率,单位为Hz.
+           - *duty_u16*设置占空比,比率为``duty_u16 / 65535``.
+           - *duty_ns*设置脉冲宽度,单位为纳秒.
 
-        Setting *freq* may affect other PWM objects if the objects share the same
-        underlying PWM generator (this is hardware specific).
-        Only one of *duty_u16* and *duty_ns* should be specified at a time.
+        设置*freq*可能会影响其他PWM对象,如果这些对象共享相同的底层PWM生成器(这取决于硬件).
+        *duty_u16*和*duty_ns*一次只应指定其中一个.
         """
 
 class UART:
     """
-    UART implements the standard UART/USART duplex serial communications protocol.  At
-    the physical level it consists of 2 lines: RX and TX.  The unit of communication
-    is a character (not to be confused with a string character) which can be 8 or 9
-    bits wide.
+    UART实现了标准UART/USART全双工串行通信协议.在物理层面,
+    它由2条线组成:RX和TX.通信单位是一个字符(不要与字符串字符混淆),
+    可以是8位或9位宽.
 
-    UART objects can be created and initialised using::
+    UART对象可以通过以下方式创建和初始化:
 
         from machine import UART
 
-        uart = UART(1, 9600)                         # init with given baudrate
-        uart.init(9600, bits=8, parity=None, stop=1) # init with given parameters
+        uart = UART(1, 9600)                         # 使用给定波特率初始化.
+        uart.init(9600, bits=8, parity=None, stop=1) # 使用给定参数初始化.
 
-    Supported parameters differ on a board:
+    支持的参数因开发板而异:
 
-    Pyboard: Bits can be 7, 8 or 9. Stop can be 1 or 2. With *parity=None*,
-    only 8 and 9 bits are supported.  With parity enabled, only 7 and 8 bits
-    are supported.
+    Pyboard:位数可以是7、8或9.停止位可以是1或2.使用*parity=None*时,
+    只支持8位和9位.启用奇偶校验时,只支持7位和8位.
 
-    WiPy/CC3200: Bits can be 5, 6, 7, 8. Stop can be 1 or 2.
+    WiPy/CC3200:位数可以是5、6、7、8.停止位可以是1或2.
 
-    A UART object acts like a `stream` object and reading and writing is done
-    using the standard stream methods::
+    UART对象的行为类似于`流`对象,读写操作使用标准流方法:
 
-        uart.read(10)       # read 10 characters, returns a bytes object
-        uart.read()         # read all available characters
-        uart.readline()     # read a line
-        uart.readinto(buf)  # read and store into the given buffer
-        uart.write('abc')   # write the 3 characters
+        uart.read(10)       # 读取10个字符,返回一个bytes对象.
+        uart.read()         # 读取所有可用字符.
+        uart.readline()     # 读取一行.
+        uart.readinto(buf)  # 读取并存储到给定缓冲区.
+        uart.write('abc')   # 写入3个字符.
     """
 
     INV_RX: Final[int] = 4
@@ -530,48 +480,43 @@ class UART:
         /,
     ) -> _IRQ:
         """
-        Configure an interrupt handler to be called when a UART event occurs.
+        配置当UART事件发生时要调用的中断处理程序.
 
-        The arguments are:
+        参数如下:
 
-          - *handler* is an optional function to be called when the interrupt event
-            triggers.  The handler must take exactly one argument which is the
-            ``UART`` instance.
+          - *handler*是一个可选函数,在中断事件触发时调用.处理程序必须接受一个参数,
+            即``UART``实例.
 
-          - *trigger* configures the event(s) which can generate an interrupt.
-            Possible values are a mask of one or more of the following:
+          - *trigger*配置可以生成中断的事件.可能的值是以下一个或多个的掩码:
 
-            - ``UART.IRQ_RXIDLE`` interrupt after receiving at least one character
-              and then the RX line goes idle.
-            - ``UART.IRQ_RX`` interrupt after each received character.
-            - ``UART.IRQ_TXIDLE`` interrupt after or while the last character(s) of
-              a message are or have been sent.
-            - ``UART.IRQ_BREAK`` interrupt when a break state is detected at RX
+            - ``UART.IRQ_RXIDLE`` 在接收至少一个字符后,RX线变为空闲状态时触发中断.
+            - ``UART.IRQ_RX`` 在每个接收到的字符后触发中断.
+            - ``UART.IRQ_TXIDLE`` 在消息的最后一个字符已发送或正在发送时触发中断.
+            - ``UART.IRQ_BREAK`` 当在RX检测到中断状态时触发中断.
 
-          - *hard* if true a hardware interrupt is used.  This reduces the delay
-            between the pin change and the handler being called. Hard interrupt
-            handlers may not allocate memory; see :ref:`isr_rules`.
+          - *hard*如果为true,则使用硬件中断.这减少了引脚变化与处理程序被调用之间的延迟.
+            硬件中断处理程序可能不能分配内存;参见:ref:`isr_rules`.
 
-        Returns an irq object.
+        返回:
+            (_IRQ): irq对象.
 
-        Due to limitations of the hardware not all trigger events are available on all ports.
+        由于硬件限制,并非所有触发事件在所有端口上都可用.
         """
         ...
 
     def sendbreak(self) -> None:
         """
-        Send a break condition on the bus. This drives the bus low for a duration
-        longer than required for a normal transmission of a character.
+        在总线上发送中断条件.这会使总线保持低电平状态,持续时间比正常字符传输所需的时间更长.
         """
         ...
 
     def deinit(self) -> None:
         """
-        Turn off the UART bus.
+        关闭UART总线.
 
         .. note::
-          You will not be able to call ``init()`` on the object after ``deinit()``.
-          A new instance needs to be created in that case.
+          在调用``deinit()``后,您将无法在该对象上调用``init()``.
+          在这种情况下,需要创建一个新的实例.
         """
         ...
 
@@ -593,55 +538,45 @@ class UART:
         invert: int | None = None,
     ) -> None:
         """
-        Initialise the UART bus with the given parameters:
+        使用给定参数初始化UART总线:
 
-          - *baudrate* is the clock rate.
-          - *bits* is the number of bits per character, 7, 8 or 9.
-          - *parity* is the parity, ``None``, 0 (even) or 1 (odd).
-          - *stop* is the number of stop bits, 1 or 2.
+          - *baudrate*是时钟速率.
+          - *bits*是每个字符的位数,7、8或9.
+          - *parity*是奇偶校验,``None``、0(偶校验)或1(奇校验).
+          - *stop*是停止位的数量,1或2.
 
-        Additional keyword-only parameters that may be supported by a port are:
+        端口可能支持的其他仅关键字参数有:
 
-          - *tx* specifies the TX pin to use.
-          - *rx* specifies the RX pin to use.
-          - *rts* specifies the RTS (output) pin to use for hardware receive flow control.
-          - *cts* specifies the CTS (input) pin to use for hardware transmit flow control.
-          - *txbuf* specifies the length in characters of the TX buffer.
-          - *rxbuf* specifies the length in characters of the RX buffer.
-          - *timeout* specifies the time to wait for the first character (in ms).
-          - *timeout_char* specifies the time to wait between characters (in ms).
-          - *invert* specifies which lines to invert.
+          - *tx*指定要使用的TX引脚.
+          - *rx*指定要使用的RX引脚.
+          - *rts*指定用于硬件接收流控制的RTS(输出)引脚.
+          - *cts*指定用于硬件发送流控制的CTS(输入)引脚.
+          - *txbuf*指定TX缓冲区的字符长度.
+          - *rxbuf*指定RX缓冲区的字符长度.
+          - *timeout*指定等待第一个字符的时间(以毫秒为单位).
+          - *timeout_char*指定字符之间等待的时间(以毫秒为单位).
+          - *invert*指定要反转的线路.
 
-              - ``0`` will not invert lines (idle state of both lines is logic high).
-              - ``UART.INV_TX`` will invert TX line (idle state of TX line now logic low).
-              - ``UART.INV_RX`` will invert RX line (idle state of RX line now logic low).
-              - ``UART.INV_TX | UART.INV_RX`` will invert both lines (idle state at logic low).
+              - ``0``不会反转线路(两条线路的空闲状态为逻辑高电平).
+              - ``UART.INV_TX``将反转TX线(TX线的空闲状态现在为逻辑低电平).
+              - ``UART.INV_RX``将反转RX线(RX线的空闲状态现在为逻辑低电平).
+              - ``UART.INV_TX | UART.INV_RX``将反转两条线路(空闲状态为逻辑低电平).
 
-          - *flow* specifies which hardware flow control signals to use. The value
-            is a bitmask.
+          - *flow*指定要使用的硬件流控制信号.该值是一个位掩码.
 
-              - ``0`` will ignore hardware flow control signals.
-              - ``UART.RTS`` will enable receive flow control by using the RTS output pin to
-                signal if the receive FIFO has sufficient space to accept more data.
-              - ``UART.CTS`` will enable transmit flow control by pausing transmission when the
-                CTS input pin signals that the receiver is running low on buffer space.
-              - ``UART.RTS | UART.CTS`` will enable both, for full hardware flow control.
+              - ``0``将忽略硬件流控制信号.
+              - ``UART.RTS``将启用接收流控制,通过使用RTS输出引脚来指示接收FIFO是否有足够空间接受更多数据.
+              - ``UART.CTS``将启用发送流控制,当CTS输入引脚指示接收器缓冲区空间不足时暂停传输.
+              - ``UART.RTS | UART.CTS``将同时启用两者,实现完全硬件流控制.
 
-        On the WiPy only the following keyword-only parameter is supported:
+        在WiPy上,仅支持以下仅关键字参数:
 
-          - *pins* is a 4 or 2 item list indicating the TX, RX, RTS and CTS pins (in that order).
-            Any of the pins can be None if one wants the UART to operate with limited functionality.
-            If the RTS pin is given the RX pin must be given as well. The same applies to CTS.
-            When no pins are given, then the default set of TX and RX pins is taken, and hardware
-            flow control will be disabled. If *pins* is ``None``, no pin assignment will be made.
+          - *pins*是一个包含4个或2个项目的列表,指示TX、RX、RTS和CTS引脚(按此顺序).
+            如果希望UART以有限功能运行,任何引脚都可以是None.
 
         .. note::
-          It is possible to call ``init()`` multiple times on the same object in
-          order to reconfigure  UART on the fly. That allows using single UART
-          peripheral to serve different devices attached to different GPIO pins.
-          Only one device can be served at a time in that case.
-          Also do not call ``deinit()`` as it will prevent calling ``init()``
-          again.
+          可以在同一对象上多次调用``init()``,以重新配置UART,从而使用单个UART外设为不同的设备服务.
+          仅在那种情况下不要调用``deinit()``,因为它会阻止再次调用``init()``.
         """
 
     @overload
@@ -656,55 +591,45 @@ class UART:
         pins: tuple[PinLike, PinLike] | None = None,
     ) -> None:
         """
-        Initialise the UART bus with the given parameters:
+        使用给定参数初始化UART总线:
 
-          - *baudrate* is the clock rate.
-          - *bits* is the number of bits per character, 7, 8 or 9.
-          - *parity* is the parity, ``None``, 0 (even) or 1 (odd).
-          - *stop* is the number of stop bits, 1 or 2.
+          - *baudrate*是时钟速率.
+          - *bits*是每个字符的位数,7、8或9.
+          - *parity*是奇偶校验,``None``、0(偶校验)或1(奇校验).
+          - *stop*是停止位的数量,1或2.
 
-        Additional keyword-only parameters that may be supported by a port are:
+        端口可能支持的其他仅关键字参数有:
 
-          - *tx* specifies the TX pin to use.
-          - *rx* specifies the RX pin to use.
-          - *rts* specifies the RTS (output) pin to use for hardware receive flow control.
-          - *cts* specifies the CTS (input) pin to use for hardware transmit flow control.
-          - *txbuf* specifies the length in characters of the TX buffer.
-          - *rxbuf* specifies the length in characters of the RX buffer.
-          - *timeout* specifies the time to wait for the first character (in ms).
-          - *timeout_char* specifies the time to wait between characters (in ms).
-          - *invert* specifies which lines to invert.
+          - *tx*指定要使用的TX引脚.
+          - *rx*指定要使用的RX引脚.
+          - *rts*指定用于硬件接收流控制的RTS(输出)引脚.
+          - *cts*指定用于硬件发送流控制的CTS(输入)引脚.
+          - *txbuf*指定TX缓冲区的字符长度.
+          - *rxbuf*指定RX缓冲区的字符长度.
+          - *timeout*指定等待第一个字符的时间(以毫秒为单位).
+          - *timeout_char*指定字符之间等待的时间(以毫秒为单位).
+          - *invert*指定要反转的线路.
 
-              - ``0`` will not invert lines (idle state of both lines is logic high).
-              - ``UART.INV_TX`` will invert TX line (idle state of TX line now logic low).
-              - ``UART.INV_RX`` will invert RX line (idle state of RX line now logic low).
-              - ``UART.INV_TX | UART.INV_RX`` will invert both lines (idle state at logic low).
+              - ``0``不会反转线路(两条线路的空闲状态为逻辑高电平).
+              - ``UART.INV_TX``将反转TX线(TX线的空闲状态现在为逻辑低电平).
+              - ``UART.INV_RX``将反转RX线(RX线的空闲状态现在为逻辑低电平).
+              - ``UART.INV_TX | UART.INV_RX``将反转两条线路(空闲状态为逻辑低电平).
 
-          - *flow* specifies which hardware flow control signals to use. The value
-            is a bitmask.
+          - *flow*指定要使用的硬件流控制信号.该值是一个位掩码.
 
-              - ``0`` will ignore hardware flow control signals.
-              - ``UART.RTS`` will enable receive flow control by using the RTS output pin to
-                signal if the receive FIFO has sufficient space to accept more data.
-              - ``UART.CTS`` will enable transmit flow control by pausing transmission when the
-                CTS input pin signals that the receiver is running low on buffer space.
-              - ``UART.RTS | UART.CTS`` will enable both, for full hardware flow control.
+              - ``0``将忽略硬件流控制信号.
+              - ``UART.RTS``将启用接收流控制,通过使用RTS输出引脚来指示接收FIFO是否有足够空间接受更多数据.
+              - ``UART.CTS``将启用发送流控制,当CTS输入引脚指示接收器缓冲区空间不足时暂停传输.
+              - ``UART.RTS | UART.CTS``将同时启用两者,实现完全硬件流控制.
 
-        On the WiPy only the following keyword-only parameter is supported:
+        在WiPy上,仅支持以下仅关键字参数:
 
-          - *pins* is a 4 or 2 item list indicating the TX, RX, RTS and CTS pins (in that order).
-            Any of the pins can be None if one wants the UART to operate with limited functionality.
-            If the RTS pin is given the RX pin must be given as well. The same applies to CTS.
-            When no pins are given, then the default set of TX and RX pins is taken, and hardware
-            flow control will be disabled. If *pins* is ``None``, no pin assignment will be made.
+          - *pins*是一个包含4个或2个项目的列表,指示TX、RX、RTS和CTS引脚(按此顺序).
+            如果希望UART以有限功能运行,任何引脚都可以是None.
 
         .. note::
-          It is possible to call ``init()`` multiple times on the same object in
-          order to reconfigure  UART on the fly. That allows using single UART
-          peripheral to serve different devices attached to different GPIO pins.
-          Only one device can be served at a time in that case.
-          Also do not call ``deinit()`` as it will prevent calling ``init()``
-          again.
+          可以在同一对象上多次调用``init()``,以重新配置UART,从而使用单个UART外设为不同的设备服务.
+          仅在那种情况下不要调用``deinit()``,因为它会阻止再次调用``init()``.
         """
 
     @overload
@@ -719,117 +644,101 @@ class UART:
         pins: tuple[PinLike, PinLike, PinLike, PinLike] | None = None,
     ) -> None:
         """
-        Initialise the UART bus with the given parameters:
+        使用给定参数初始化UART总线:
 
-          - *baudrate* is the clock rate.
-          - *bits* is the number of bits per character, 7, 8 or 9.
-          - *parity* is the parity, ``None``, 0 (even) or 1 (odd).
-          - *stop* is the number of stop bits, 1 or 2.
+          - *baudrate*是时钟速率.
+          - *bits*是每个字符的位数,7、8或9.
+          - *parity*是奇偶校验,``None``、0(偶校验)或1(奇校验).
+          - *stop*是停止位的数量,1或2.
 
-        Additional keyword-only parameters that may be supported by a port are:
+        端口可能支持的其他仅关键字参数有:
 
-          - *tx* specifies the TX pin to use.
-          - *rx* specifies the RX pin to use.
-          - *rts* specifies the RTS (output) pin to use for hardware receive flow control.
-          - *cts* specifies the CTS (input) pin to use for hardware transmit flow control.
-          - *txbuf* specifies the length in characters of the TX buffer.
-          - *rxbuf* specifies the length in characters of the RX buffer.
-          - *timeout* specifies the time to wait for the first character (in ms).
-          - *timeout_char* specifies the time to wait between characters (in ms).
-          - *invert* specifies which lines to invert.
+          - *tx*指定要使用的TX引脚.
+          - *rx*指定要使用的RX引脚.
+          - *rts*指定用于硬件接收流控制的RTS(输出)引脚.
+          - *cts*指定用于硬件发送流控制的CTS(输入)引脚.
+          - *txbuf*指定TX缓冲区的字符长度.
+          - *rxbuf*指定RX缓冲区的字符长度.
+          - *timeout*指定等待第一个字符的时间(以毫秒为单位).
+          - *timeout_char*指定字符之间等待的时间(以毫秒为单位).
+          - *invert*指定要反转的线路.
 
-              - ``0`` will not invert lines (idle state of both lines is logic high).
-              - ``UART.INV_TX`` will invert TX line (idle state of TX line now logic low).
-              - ``UART.INV_RX`` will invert RX line (idle state of RX line now logic low).
-              - ``UART.INV_TX | UART.INV_RX`` will invert both lines (idle state at logic low).
+              - ``0``不会反转线路(两条线路的空闲状态为逻辑高电平).
+              - ``UART.INV_TX``将反转TX线(TX线的空闲状态现在为逻辑低电平).
+              - ``UART.INV_RX``将反转RX线(RX线的空闲状态现在为逻辑低电平).
+              - ``UART.INV_TX | UART.INV_RX``将反转两条线路(空闲状态为逻辑低电平).
 
-          - *flow* specifies which hardware flow control signals to use. The value
-            is a bitmask.
+          - *flow*指定要使用的硬件流控制信号.该值是一个位掩码.
 
-              - ``0`` will ignore hardware flow control signals.
-              - ``UART.RTS`` will enable receive flow control by using the RTS output pin to
-                signal if the receive FIFO has sufficient space to accept more data.
-              - ``UART.CTS`` will enable transmit flow control by pausing transmission when the
-                CTS input pin signals that the receiver is running low on buffer space.
-              - ``UART.RTS | UART.CTS`` will enable both, for full hardware flow control.
+              - ``0``将忽略硬件流控制信号.
+              - ``UART.RTS``将启用接收流控制,通过使用RTS输出引脚来指示接收FIFO是否有足够空间接受更多数据.
+              - ``UART.CTS``将启用发送流控制,当CTS输入引脚指示接收器缓冲区空间不足时暂停传输.
+              - ``UART.RTS | UART.CTS``将同时启用两者,实现完全硬件流控制.
 
-        On the WiPy only the following keyword-only parameter is supported:
+        在WiPy上,仅支持以下仅关键字参数:
 
-          - *pins* is a 4 or 2 item list indicating the TX, RX, RTS and CTS pins (in that order).
-            Any of the pins can be None if one wants the UART to operate with limited functionality.
-            If the RTS pin is given the RX pin must be given as well. The same applies to CTS.
-            When no pins are given, then the default set of TX and RX pins is taken, and hardware
-            flow control will be disabled. If *pins* is ``None``, no pin assignment will be made.
+          - *pins*是一个包含4个或2个项目的列表,指示TX、RX、RTS和CTS引脚(按此顺序).
+            如果希望UART以有限功能运行,任何引脚都可以是None.
 
         .. note::
-          It is possible to call ``init()`` multiple times on the same object in
-          order to reconfigure  UART on the fly. That allows using single UART
-          peripheral to serve different devices attached to different GPIO pins.
-          Only one device can be served at a time in that case.
-          Also do not call ``deinit()`` as it will prevent calling ``init()``
-          again.
+          可以在同一对象上多次调用``init()``,以重新配置UART,从而使用单个UART外设为不同的设备服务.
+          仅在那种情况下不要调用``deinit()``,因为它会阻止再次调用``init()``.
         """
 
     def flush(self) -> Incomplete:
         """
-        Waits until all data has been sent. In case of a timeout, an exception is raised. The timeout
-        duration depends on the tx buffer size and the baud rate. Unless flow control is enabled, a timeout
-        should not occur.
+        等待所有数据发送完成.如果发生超时,将引发异常.超时时间取决于tx缓冲区大小和波特率.
+        除非启用了流控制,否则不应该发生超时.
 
         .. note::
 
-            For the esp8266 and nrf ports the call returns while the last byte is sent.
-            If required, a one character wait time has to be added in the calling script.
+            对于esp8266和nrf端口,在最后一个字节发送时函数就会返回.
+            如有需要,必须在调用脚本中添加一个字符的等待时间.
 
-        Availability: rp2, esp32, esp8266, mimxrt, cc3200, stm32, nrf ports, renesas-ra
+        可用性: rp2, esp32, esp8266, mimxrt, cc3200, stm32, nrf端口, renesas-ra
         """
         ...
 
     def txdone(self) -> bool:
         """
-        Tells whether all data has been sent or no data transfer is happening. In this case,
-        it returns ``True``. If a data transmission is ongoing it returns ``False``.
+        判断所有数据是否已发送或没有数据传输正在进行.如果是这种情况,
+        则返回``True``.如果数据传输正在进行中,则返回``False``.
 
         .. note::
 
-            For the esp8266 and nrf ports the call may return ``True`` even if the last byte
-            of a transfer is still being sent. If required, a one character wait time has to be
-            added in the calling script.
+            对于esp8266和nrf端口,即使传输的最后一个字节仍在发送,调用也可能返回``True``.
+            如有需要,必须在调用脚本中添加一个字符的等待时间.
 
-        Availability: rp2, esp32, esp8266, mimxrt, cc3200, stm32, nrf ports, renesas-ra
+        可用性: rp2, esp32, esp8266, mimxrt, cc3200, stm32, nrf端口, renesas-ra
         """
         ...
 
     @overload
     def read(self) -> bytes | None:
         """
-        Read characters.  If ``nbytes`` is specified then read at most that many bytes,
-        otherwise read as much data as possible. It may return sooner if a timeout
-        is reached. The timeout is configurable in the constructor.
+        读取字符.如果指定了``nbytes``,则最多读取那么多字节,
+        否则读取尽可能多的数据.如果达到超时,可能会提前返回.
+        超时在构造函数中可配置.
 
-        Return value: a bytes object containing the bytes read in.  Returns ``None``
-        on timeout.
+        返回值: 包含读取字节的bytes对象.超时时返回``None``.
         """
 
     @overload
     def read(self, nbytes: int, /) -> bytes | None:
         """
-        Read characters.  If ``nbytes`` is specified then read at most that many bytes,
-        otherwise read as much data as possible. It may return sooner if a timeout
-        is reached. The timeout is configurable in the constructor.
+        读取字符.如果指定了``nbytes``,则最多读取那么多字节,
+        否则读取尽可能多的数据.如果达到超时,可能会提前返回.
+        超时在构造函数中可配置.
 
-        Return value: a bytes object containing the bytes read in.  Returns ``None``
-        on timeout.
+        返回值: 包含读取字节的bytes对象.超时时返回``None``.
         """
 
     def any(self) -> int:
         """
-        Returns an integer counting the number of characters that can be read without
-        blocking.  It will return 0 if there are no characters available and a positive
-        number if there are characters.  The method may return 1 even if there is more
-        than one character available for reading.
+        返回一个整数,表示可以无阻塞读取的字符数.如果没有可用字符,将返回0;
+        如果有字符可用,则返回正数.即使有多个字符可供读取,该方法也可能返回1.
 
-        For more sophisticated querying of available characters use select.poll::
+        要更复杂地查询可用字符,请使用select.poll::
 
          poll = select.poll()
          poll.register(uart, select.POLLIN)
@@ -839,40 +748,38 @@ class UART:
 
     def write(self, buf: AnyReadableBuf, /) -> Union[int, None]:
         """
-        Write the buffer of bytes to the bus.
+        将字节缓冲区写入总线.
 
-        Return value: number of bytes written or ``None`` on timeout.
+        返回值: 写入的字节数或超时时返回``None``.
         """
         ...
 
     @overload
     def readinto(self, buf: AnyWritableBuf, /) -> int | None:
         """
-        Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
-        that many bytes.  Otherwise, read at most ``len(buf)`` bytes. It may return sooner if a timeout
-        is reached. The timeout is configurable in the constructor.
+        将字节读入``buf``.如果指定了``nbytes``,则最多读取那么多字节.
+        否则,最多读取``len(buf)``字节.如果达到超时,可能会提前返回.
+        超时在构造函数中可配置.
 
-        Return value: number of bytes read and stored into ``buf`` or ``None`` on
-        timeout.
+        返回值: 读取并存储到``buf``中的字节数,或超时时返回``None``.
         """
 
     @overload
     def readinto(self, buf: AnyWritableBuf, nbytes: int, /) -> int | None:
         """
-        Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
-        that many bytes.  Otherwise, read at most ``len(buf)`` bytes. It may return sooner if a timeout
-        is reached. The timeout is configurable in the constructor.
+        将字节读入``buf``.如果指定了``nbytes``,则最多读取那么多字节.
+        否则,最多读取``len(buf)``字节.如果达到超时,可能会提前返回.
+        超时在构造函数中可配置.
 
-        Return value: number of bytes read and stored into ``buf`` or ``None`` on
-        timeout.
+        返回值: 读取并存储到``buf``中的字节数,或超时时返回``None``.
         """
 
     def readline(self) -> Union[str, None]:
         """
-        Read a line, ending in a newline character. It may return sooner if a timeout
-        is reached. The timeout is configurable in the constructor.
+        读取一行,以换行符结束.如果达到超时,可能会提前返回.
+        超时在构造函数中可配置.
 
-        Return value: the line read or ``None`` on timeout.
+        返回值: 读取的行,或超时时返回``None``.
         """
         ...
 
@@ -895,7 +802,7 @@ class UART:
         invert: int | None = None,
     ):
         """
-        Construct a UART object of the given id.
+        构造给定id的UART对象.
         """
 
     @overload
@@ -911,7 +818,7 @@ class UART:
         pins: tuple[PinLike, PinLike] | None = None,
     ):
         """
-        Construct a UART object of the given id from a tuple of two pins.
+        从两个引脚的元组构造给定id的UART对象.
         """
 
     @overload
@@ -927,7 +834,7 @@ class UART:
         pins: tuple[PinLike, PinLike, PinLike, PinLike] | None = None,
     ):
         """
-        Construct a UART object of the given id from a tuple of four pins.
+        从四个引脚的元组构造给定id的UART对象.
         """
 
 mem32: Incomplete  ## <class 'mem'> = <32-bit memory>
@@ -935,39 +842,35 @@ mem16: Incomplete  ## <class 'mem'> = <16-bit memory>
 
 class ADCBlock:
     """
-    Access the ADC peripheral identified by *id*, which may be an integer
-    or string.
+    访问由*id*标识的ADC外设,*id*可以是整数或字符串.
 
-    The *bits* argument, if given, sets the resolution in bits of the
-    conversion process.  If not specified then the previous or default
-    resolution is used.
+    如果提供了*bits*参数,则设置转换过程的分辨率(以位为单位).
+    如果未指定,则使用先前或默认分辨率.
     """
 
     def init(self, *, bits) -> None:
         """
-        Configure the ADC peripheral.  *bits* will set the resolution of the
-        conversion process.
+        配置ADC外设.*bits*将设置转换过程的分辨率.
         """
         ...
 
     def connect(self, channel, source, *args, **kwargs) -> Incomplete:
         """
-        Connect up a channel on the ADC peripheral so it is ready for sampling,
-        and return an :ref:`ADC <machine.ADC>` object that represents that connection.
+        连接ADC外设上的通道,使其准备好进行采样,
+        并返回表示该连接的:ref:`ADC <machine.ADC>`对象.
 
-        The *channel* argument must be an integer, and *source* must be an object
-        (for example a :ref:`Pin <machine.Pin>`) which can be connected up for sampling.
+        *channel*参数必须是整数,*source*必须是可以连接用于采样的对象
+        (例如:ref:`Pin <machine.Pin>`)。
 
-        If only *channel* is given then it is configured for sampling.
+        如果只给定*channel*,则将其配置为采样.
 
-        If only *source* is given then that object is connected to a default
-        channel ready for sampling.
+        如果只给定*source*,则将该对象连接到默认通道,准备采样.
 
-        If both *channel* and *source* are given then they are connected together
-        and made ready for sampling.
+        如果同时给定*channel*和*source*,则将它们连接在一起,
+        并准备好进行采样.
 
-        Any additional keyword arguments are used to configure the returned ADC object,
-        via its :meth:`init <machine.ADC.init>` method.
+        任何额外的关键字参数都用于通过其:meth:`init <machine.ADC.init>`方法
+        配置返回的ADC对象.
         """
         ...
 
@@ -975,16 +878,15 @@ class ADCBlock:
 
 class ADC:
     """
-    The ADC class provides an interface to analog-to-digital convertors, and
-    represents a single endpoint that can sample a continuous voltage and
-    convert it to a discretised value.
+    ADC类提供了模数转换器的接口,代表一个可以对连续电压进行采样并
+    将其转换为离散值的单一端点.
 
-    Example usage::
+    使用示例::
 
        import machine
 
-       adc = machine.ADC(pin)   # create an ADC object acting on a pin
-       val = adc.read_u16()     # read a raw analog value in the range 0-65535
+       adc = machine.ADC(pin)   # 创建一个作用于引脚的ADC对象.
+       val = adc.read_u16()     # 读取0-65535范围内的原始模拟值.
     """
 
     ATTN_6DB: Final[int] = 2
@@ -1001,25 +903,23 @@ class ADC:
     CORE_TEMP: int = ...
     def read_u16(self) -> int:
         """
-        Take an analog reading and return an integer in the range 0-65535.
-        The return value represents the raw reading taken by the ADC, scaled
-        such that the minimum value is 0 and the maximum value is 65535.
+        进行模拟读取并返回0-65535范围内的整数.
+        返回值表示ADC获取的原始读数,经过缩放使得
+        最小值为0,最大值为65535.
         """
         ...
 
     def init(self, *, sample_ns, atten) -> Incomplete:
         """
-        Apply the given settings to the ADC.  Only those arguments that are
-        specified will be changed.  See the ADC constructor above for what the
-        arguments are.
+        将给定设置应用于ADC.只有指定的参数会被更改.
+        有关参数的详细信息,请参阅上面的ADC构造函数.
         """
         ...
 
     def read_uv(self) -> int:
         """
-        Take an analog reading and return an integer value with units of
-        microvolts.  It is up to the particular port whether or not this value
-        is calibrated, and how calibration is done.
+        进行模拟读取并返回以微伏为单位的整数值.
+        具体端口决定此值是否经过校准,以及如何进行校准.
         """
         ...
 
@@ -1027,51 +927,48 @@ class ADC:
     def read(self, *args, **kwargs) -> Incomplete: ...
     def block(self) -> Incomplete:
         """
-        Return the :ref:`ADCBlock <machine.ADCBlock>` instance associated with
-        this ADC object.
+        返回与此ADC对象关联的:ref:`ADCBlock <machine.ADCBlock>`实例.
 
-        This method only exists if the port supports the
-        :ref:`ADCBlock <machine.ADCBlock>` class.
+        此方法仅在端口支持:ref:`ADCBlock <machine.ADCBlock>`类时存在.
         """
         ...
 
     def atten(self, *args, **kwargs) -> Incomplete: ...
     def __init__(self, pin: PinLike, /) -> None:
         """
-        Access the ADC associated with a source identified by *id*.  This
-        *id* may be an integer (usually specifying a channel number), a
-        :ref:`Pin <machine.Pin>` object, or other value supported by the
-        underlying machine.
+        访问与由*id*标识的源关联的ADC.这个
+        *id*可以是整数(通常指定通道号)、
+        :ref:`Pin <machine.Pin>`对象,或底层机器支持的其他值.
         .. note::
 
-        WiPy has a custom implementation of ADC, see ADCWiPy for details.
+        WiPy有ADC的自定义实现,详情请参阅ADCWiPy.
         """
 
 class I2S:
     """
-    I2S is a synchronous serial protocol used to connect digital audio devices.
-    At the physical level, a bus consists of 3 lines: SCK, WS, SD.
-    The I2S class supports controller operation.  Peripheral operation is not supported.
+    I2S是一种用于连接数字音频设备的同步串行协议.
+    在物理层面,总线由3条线组成：SCK、WS、SD.
+    I2S类支持控制器操作.不支持外设操作.
 
-    The I2S class is currently available as a Technical Preview.  During the preview period, feedback from
-    users is encouraged.  Based on this feedback, the I2S class API and implementation may be changed.
+    I2S类目前作为技术预览版提供.在预览期间,鼓励用户提供反馈.
+    基于这些反馈,I2S类API和实现可能会发生变化.
 
-    I2S objects can be created and initialized using::
+    I2S对象可以通过以下方式创建和初始化::
 
         from machine import I2S
         from machine import Pin
 
         # ESP32
-        sck_pin = Pin(14)   # Serial clock output
-        ws_pin = Pin(13)    # Word clock output
-        sd_pin = Pin(12)    # Serial data output
+        sck_pin = Pin(14)   # 串行时钟输出.
+        ws_pin = Pin(13)    # 字时钟输出.
+        sd_pin = Pin(12)    # 串行数据输出.
 
-        or
+        或者
 
         # PyBoards
-        sck_pin = Pin("Y6")   # Serial clock output
-        ws_pin = Pin("Y5")    # Word clock output
-        sd_pin = Pin("Y8")    # Serial data output
+        sck_pin = Pin("Y6")   # 串行时钟输出.
+        ws_pin = Pin("Y5")    # 字时钟输出.
+        sd_pin = Pin("Y8")    # 串行数据输出.
 
         audio_out = I2S(2,
                         sck=sck_pin, ws=ws_pin, sd=sd_pin,
@@ -1089,24 +986,24 @@ class I2S:
                        rate=22050,
                        ibuf=20000)
 
-    3 modes of operation are supported:
-     - blocking
-     - non-blocking
-     - uasyncio
+    支持3种操作模式:
+     - 阻塞式.
+     - 非阻塞式.
+     - uasyncio.
 
-    blocking::
+    阻塞式::
 
-       num_written = audio_out.write(buf) # blocks until buf emptied
+       num_written = audio_out.write(buf) # 阻塞直到缓冲区清空.
 
-       num_read = audio_in.readinto(buf) # blocks until buf filled
+       num_read = audio_in.readinto(buf) # 阻塞直到缓冲区填满.
 
-    non-blocking::
+    非阻塞式::
 
-       audio_out.irq(i2s_callback)         # i2s_callback is called when buf is emptied
-       num_written = audio_out.write(buf)  # returns immediately
+       audio_out.irq(i2s_callback)         # 当缓冲区清空时调用i2s_callback.
+       num_written = audio_out.write(buf)  # 立即返回.
 
-       audio_in.irq(i2s_callback)          # i2s_callback is called when buf is filled
-       num_read = audio_in.readinto(buf)   # returns immediately
+       audio_in.irq(i2s_callback)          # 当缓冲区填满时调用i2s_callback.
+       num_read = audio_in.readinto(buf)   # 立即返回.
 
     uasyncio::
 
@@ -1130,9 +1027,9 @@ class I2S:
         /,
     ) -> None:
         """
-        bitwise shift of all samples contained in ``buf``. ``bits`` specifies sample size in bits. ``shift`` specifies the number of bits to shift each sample.
-        Positive for left shift, negative for right shift.
-        Typically used for volume control.  Each bit shift changes sample volume by 6dB.
+        对``buf``中包含的所有样本进行按位移位.``bits``指定样本大小(以位为单位).``shift``指定每个样本移位的位数.
+        正值表示左移,负值表示右移.
+        通常用于音量控制.每位移位改变样本音量6dB.
         """
         ...
 
@@ -1149,7 +1046,7 @@ class I2S:
         ibuf: int,
     ) -> None:
         """
-        see Constructor for argument descriptions
+        参见构造函数的参数描述.
         """
         ...
 
@@ -1159,9 +1056,9 @@ class I2S:
         /,
     ) -> None:
         """
-        Set a callback. ``handler`` is called when ``buf`` is emptied (``write`` method) or becomes full (``readinto`` method).
-        Setting a callback changes the ``write`` and ``readinto`` methods to non-blocking operation.
-        ``handler`` is called in the context of the MicroPython scheduler.
+        设置回调函数.当``buf``被清空(``write``方法)或填满(``readinto``方法)时,调用``handler``.
+        设置回调函数会将``write``和``readinto``方法更改为非阻塞操作.
+        ``handler``在MicroPython调度程序的上下文中被调用.
         """
         ...
 
@@ -1171,16 +1068,17 @@ class I2S:
         /,
     ) -> int:
         """
-        Read audio samples into the buffer specified by ``buf``.  ``buf`` must support the buffer protocol, such as bytearray or array.
-        "buf" byte ordering is little-endian.  For Stereo format, left channel sample precedes right channel sample. For Mono format,
-        the left channel sample data is used.
-        Returns number of bytes read
+        将音频样本读入由``buf``指定的缓冲区.``buf``必须支持缓冲协议,如bytearray或array.
+        "buf"字节顺序为小端序.对于立体声格式,左声道样本在右声道样本之前.对于单声道格式,
+        使用左声道样本数据.
+        返回:
+            (int): 读取的字节数.
         """
         ...
 
     def deinit(self) -> None:
         """
-        Deinitialize the I2S bus
+        Deinitialize the I2S bus.
         """
         ...
 
@@ -1190,10 +1088,11 @@ class I2S:
         /,
     ) -> int:
         """
-        Write audio samples contained in ``buf``. ``buf`` must support the buffer protocol, such as bytearray or array.
-        "buf" byte ordering is little-endian.  For Stereo format, left channel sample precedes right channel sample. For Mono format,
-        the sample data is written to both the right and left channels.
-        Returns number of bytes written
+        写入包含在 ``buf`` 中的音频样本.``buf``必须支持缓冲协议,如bytearray或array.
+        "buf"字节顺序为小端序.对于立体声格式,左声道样本在右声道样本之前.对于单声道格式,
+        样本数据会同时写入右声道和左声道.
+        返回:
+            (int): 写入的字节数.
         """
         ...
 
@@ -1212,31 +1111,30 @@ class I2S:
         ibuf: int,
     ) -> None:
         """
-        Construct an I2S object of the given id:
+        构造给定id的I2S对象:
 
-        - ``id`` identifies a particular I2S bus.
+        - ``id``标识特定的I2S总线.
 
-        ``id`` is board and port specific:
+        ``id``取决于开发板和端口:
 
-          - PYBv1.0/v1.1: has one I2S bus with id=2.
-          - PYBD-SFxW: has two I2S buses with id=1 and id=2.
-          - ESP32: has two I2S buses with id=0 and id=1.
+          - PYBv1.0/v1.1: 有一个I2S总线,id=2.
+          - PYBD-SFxW: 有两个I2S总线,id=1和id=2.
+          - ESP32: 有两个I2S总线,id=0和id=1.
 
-        Keyword-only parameters that are supported on all ports:
+        所有端口都支持的仅关键字参数:
 
-          - ``sck`` is a pin object for the serial clock line
-          - ``ws`` is a pin object for the word select line
-          - ``sd`` is a pin object for the serial data line
-          - ``mode`` specifies receive or transmit
-          - ``bits`` specifies sample size (bits), 16 or 32
-          - ``format`` specifies channel format, STEREO or MONO
-          - ``rate`` specifies audio sampling rate (samples/s)
-          - ``ibuf`` specifies internal buffer length (bytes)
+          - ``sck``是串行时钟线的引脚对象.
+          - ``ws``是字选择线的引脚对象.
+          - ``sd``是串行数据线的引脚对象.
+          - ``mode``指定接收或发送.
+          - ``bits``指定样本大小(位),16或32.
+          - ``format``指定通道格式,STEREO或MONO.
+          - ``rate``指定音频采样率(样本/秒).
+          - ``ibuf``指定内部缓冲区长度(字节).
 
-        For all ports, DMA runs continuously in the background and allows user applications to perform other operations while
-        sample data is transfered between the internal buffer and the I2S peripheral unit.
-        Increasing the size of the internal buffer has the potential to increase the time that user applications can perform non-I2S operations
-        before underflow (e.g. ``write`` method) or overflow (e.g. ``readinto`` method).
+        对于所有端口,DMA在后台持续运行,允许用户应用程序在内部缓冲区和I2S外设单元之间传输样本数据的同时执行其他操作.
+        增加内部缓冲区的大小可能会增加用户应用程序在下溢(例如``write``方法)或溢出(例如``readinto``方法)之前
+        可以执行非I2S操作的时间.
         """
 
 class DAC:
@@ -1245,52 +1143,51 @@ class DAC:
 
 class I2C:
     """
-    I2C is a two-wire protocol for communicating between devices.  At the physical
-    level it consists of 2 wires: SCL and SDA, the clock and data lines respectively.
+    I2C是一种用于设备间通信的双线协议
 
-    I2C objects are created attached to a specific bus.  They can be initialised
-    when created, or initialised later on.
+    它由2根线组成: SCL和SDA, 分别是时钟线和数据线
 
-    Printing the I2C object gives you information about its configuration.
+    I2C对象创建时会附加到特定的总线, 它们可以在创建时初始化, 也可以稍后初始化
 
-    Both hardware and software I2C implementations exist via the
-    :ref:`machine.I2C <machine.I2C>` and `machine.SoftI2C` classes.  Hardware I2C uses
-    underlying hardware support of the system to perform the reads/writes and is
-    usually efficient and fast but may have restrictions on which pins can be used.
-    Software I2C is implemented by bit-banging and can be used on any pin but is not
-    as efficient.  These classes have the same methods available and differ primarily
-    in the way they are constructed.
+    打印I2C对象会给出关于其配置的信息
 
-    Example usage::
+    硬件和软件I2C实现都存在, 分别通过 `machine.I2C` 和 `machine.SoftI2C` 类提供
+    硬件I2C使用系统的底层硬件支持来执行读/写操作, 通常高效快速, 但可能对可用引脚有限制
+    软件I2C通过位操作实现, 可以在任何引脚上使用, 但效率较低
+    这些类具有相同的可用方法, 主要区别在于它们的构造方式
 
+    使用示例:
         from machine import I2C
 
-        i2c = I2C(freq=400000)          # create I2C peripheral at frequency of 400kHz
-                                        # depending on the port, extra parameters may be required
-                                        # to select the peripheral and/or pins to use
+        i2c = I2C(freq=400000)          # 以400kHz的频率创建I2C外设
+                                        # 根据端口, 可能需要额外参数
+                                        # 来选择要使用的外设和/或引脚
 
-        i2c.scan()                      # scan for peripherals, returning a list of 7-bit addresses
+        i2c.scan()                      # 扫描外设, 返回7位地址列表
 
-        i2c.writeto(42, b'123')         # write 3 bytes to peripheral with 7-bit address 42
-        i2c.readfrom(42, 4)             # read 4 bytes from peripheral with 7-bit address 42
+        i2c.writeto(42, b'123')         # 向7位地址为42的外设写入3个字节
+        i2c.readfrom(42, 4)             # 从7位地址为42的外设读取4个字节
 
-        i2c.readfrom_mem(42, 8, 3)      # read 3 bytes from memory of peripheral 42,
-                                        #   starting at memory-address 8 in the peripheral
-        i2c.writeto_mem(42, 2, b'\x10') # write 1 byte to memory of peripheral 42
-                                        #   starting at address 2 in the peripheral
+        i2c.readfrom_mem(42, 8, 3)      # 从外设42的内存中读取3个字节,
+                                        # 从外设中的内存地址8开始
+        i2c.writeto_mem(42, 2, b'\x10') # 向外设42的内存写入1个字节,
+                                        # 从外设中的地址2开始
     """
 
     def readfrom_mem_into(
         self, addr: int, memaddr: int, buf: AnyWritableBuf, /, *, addrsize: int = 8
     ) -> None:
         """
-        Read into *buf* from the peripheral specified by *addr* starting from the
-        memory address specified by *memaddr*.  The number of bytes read is the
-        length of *buf*.
-        The argument *addrsize* specifies the address size in bits (on ESP8266
-        this argument is not recognised and the address size is always 8 bits).
+        从指定地址的外设读取数据到缓冲区中
 
-        The method returns ``None``.
+        参数:
+            addr (int): 外设的7位地址
+            memaddr (int): 内存地址
+            buf (AnyWritableBuf): 用于接收读取数据的缓冲区
+            addrsize (int): 地址大小 默认为8位
+
+        返回:
+            (None): 无返回值
         """
         ...
 
@@ -1298,11 +1195,15 @@ class I2C:
         self, addr: int, buf: AnyWritableBuf, stop: bool = True, /
     ) -> None:
         """
-        Read into *buf* from the peripheral specified by *addr*.
-        The number of bytes read will be the length of *buf*.
-        If *stop* is true then a STOP condition is generated at the end of the transfer.
+        从指定地址的外设读取数据到缓冲区中
 
-        The method returns ``None``.
+        参数:
+            addr (int): 外设的7位地址
+            buf (AnyWritableBuf): 用于接收读取数据的缓冲区
+            stop (bool): 传输结束时是否生成STOP条件 默认为True
+
+        返回:
+            (None): 无返回值
         """
         ...
 
@@ -1310,10 +1211,16 @@ class I2C:
         self, addr: int, memaddr: int, nbytes: int, /, *, addrsize: int = 8
     ) -> bytes:
         """
-        Read *nbytes* from the peripheral specified by *addr* starting from the memory
-        address specified by *memaddr*.
-        The argument *addrsize* specifies the address size in bits.
-        Returns a `bytes` object with the data read.
+        从指定地址的外设内存中读取字节
+
+        参数:
+            addr (int): 外设的7位地址
+            memaddr (int): 内存地址
+            nbytes (int): 要读取的字节数
+            addrsize (int): 地址大小 默认为8位
+
+        返回:
+            (bytes): 包含读取数据的bytes对象
         """
         ...
 
@@ -1321,30 +1228,39 @@ class I2C:
         self, addr: int, memaddr: int, buf: AnyReadableBuf, /, *, addrsize: int = 8
     ) -> None:
         """
-        Write *buf* to the peripheral specified by *addr* starting from the
-        memory address specified by *memaddr*.
-        The argument *addrsize* specifies the address size in bits (on ESP8266
-        this argument is not recognised and the address size is always 8 bits).
+        将缓冲区中的数据写入指定地址的外设内存中
 
-        The method returns ``None``.
+        参数:
+            addr (int): 外设的7位地址
+            memaddr (int): 内存地址
+            buf (AnyReadableBuf): 包含要写入数据的缓冲区
+            addrsize (int): 地址大小 默认为8位
+
+        返回:
+            (None): 无返回值
         """
         ...
 
-    def scan(self) -> List:
+    def scan(self, ) -> List:
         """
-        Scan all I2C addresses between 0x08 and 0x77 inclusive and return a list of
-        those that respond.  A device responds if it pulls the SDA line low after
-        its address (including a write bit) is sent on the bus.
+        扫描I2C总线上所有响应的设备地址
+
+        返回:
+            (List): 响应的7位地址列表
         """
         ...
 
     def writeto(self, addr: int, buf: AnyReadableBuf, stop: bool = True, /) -> int:
         """
-        Write the bytes from *buf* to the peripheral specified by *addr*.  If a
-        NACK is received following the write of a byte from *buf* then the
-        remaining bytes are not sent.  If *stop* is true then a STOP condition is
-        generated at the end of the transfer, even if a NACK is received.
-        The function returns the number of ACKs that were received.
+        将缓冲区中的字节写入指定地址的外设
+
+        参数:
+            addr (int): 外设的7位地址
+            buf (AnyReadableBuf): 包含要写入字节的缓冲区
+            stop (bool): 传输结束时是否生成STOP条件 默认为True
+
+        返回:
+            (int): 收到ACK的数量
         """
         ...
 
@@ -1352,41 +1268,39 @@ class I2C:
         self, addr: int, vector: Sequence[AnyReadableBuf], stop: bool = True, /
     ) -> int:
         """
-        Write the bytes contained in *vector* to the peripheral specified by *addr*.
-        *vector* should be a tuple or list of objects with the buffer protocol.
-        The *addr* is sent once and then the bytes from each object in *vector*
-        are written out sequentially.  The objects in *vector* may be zero bytes
-        in length in which case they don't contribute to the output.
+        将向量中包含的字节写入指定地址的外设
 
-        If a NACK is received following the write of a byte from one of the
-        objects in *vector* then the remaining bytes, and any remaining objects,
-        are not sent.  If *stop* is true then a STOP condition is generated at
-        the end of the transfer, even if a NACK is received.  The function
-        returns the number of ACKs that were received.
+        参数:
+            addr (int): 外设的7位地址
+            vector (Sequence[AnyReadableBuf]): 包含缓冲协议对象的元组或列表
+            stop (bool): 传输结束时是否生成STOP条件 默认为True
+
+        返回:
+            (int): 收到ACK的数量
         """
         ...
 
     def start(self) -> None:
         """
-        Generate a START condition on the bus (SDA transitions to low while SCL is high).
+        在总线上生成START条件(当SCL为高电平时,SDA转换为低电平).
         """
         ...
 
     def readfrom(self, addr: int, nbytes: int, stop: bool = True, /) -> bytes:
         """
-        Read *nbytes* from the peripheral specified by *addr*.
-        If *stop* is true then a STOP condition is generated at the end of the transfer.
-        Returns a `bytes` object with the data read.
+        从指定的*addr*外设读取*nbytes*字节.
+        如果*stop*为true,则在传输结束时生成STOP条件.
+        返回:
+            (bytes): 包含读取数据的`bytes`对象.
         """
         ...
 
     def readinto(self, buf: AnyWritableBuf, nack: bool = True, /) -> None:
         """
-        Reads bytes from the bus and stores them into *buf*.  The number of bytes
-        read is the length of *buf*.  An ACK will be sent on the bus after
-        receiving all but the last byte.  After the last byte is received, if *nack*
-        is true then a NACK will be sent, otherwise an ACK will be sent (and in this
-        case the peripheral assumes more bytes are going to be read in a later call).
+        从总线读取字节并将它们存储到*buf*中.读取的字节数是*buf*的长度.
+        在接收除最后一个字节外的所有字节后,将在总线上发送ACK.
+        接收到最后一个字节后,如果*nack*为true,则发送NACK,否则发送ACK
+        (在这种情况下,外设假定在稍后的调用中将读取更多字节).
         """
         ...
 
@@ -1407,107 +1321,142 @@ class I2C:
     @overload
     def init(self, *, scl: PinLike, sda: PinLike, freq: int = 400_000) -> None:
         """
-        Initialise the I2C bus with the given arguments:
+        使用给定参数初始化I2C总线:
 
-           - *scl* is a pin object for the SCL line
-           - *sda* is a pin object for the SDA line
-           - *freq* is the SCL clock rate
+           - *scl*是SCL线的引脚对象.
+           - *sda*是SDA线的引脚对象.
+           - *freq*是SCL时钟频率.
 
-         In the case of hardware I2C the actual clock frequency may be lower than the
-         requested frequency. This is dependent on the platform hardware. The actual
-         rate may be determined by printing the I2C object.
+         在硬件I2C的情况下,实际时钟频率可能低于请求的频率.这取决于平台硬件.
+         可以通过打印I2C对象来确定实际速率.
         """
 
     def stop(self) -> None:
         """
-        Generate a STOP condition on the bus (SDA transitions to high while SCL is high).
+        在总线上生成STOP条件(当SCL为高电平时,SDA转换为高电平).
         """
         ...
 
     def write(self, buf: AnyReadableBuf, /) -> int:
         """
-        Write the bytes from *buf* to the bus.  Checks that an ACK is received
-        after each byte and stops transmitting the remaining bytes if a NACK is
-        received.  The function returns the number of ACKs that were received.
+        将*buf*中的字节写入总线.在每个字节后检查是否收到ACK,
+        如果收到NACK则停止发送剩余字节.
+        返回:
+            (int): 收到的ACK数量.
         """
         ...
 
     @overload
     def __init__(self, id: ID_T, /, *, freq: int = 400_000):
         """
-        Construct and return a new I2C object using the following parameters:
+        使用以下参数构造并返回新的I2C对象:
 
-           - *id* identifies a particular I2C peripheral.  Allowed values for
-             depend on the particular port/board
-           - *scl* should be a pin object specifying the pin to use for SCL.
-           - *sda* should be a pin object specifying the pin to use for SDA.
-           - *freq* should be an integer which sets the maximum frequency
-             for SCL.
+           - *id*标识特定的I2C外设.允许的值取决于特定的端口/开发板.
+           - *scl*应该是指定用于SCL的引脚对象.
+           - *sda*应该是指定用于SDA的引脚对象.
+           - *freq*应该是一个整数,设置SCL的最大频率.
 
-        Note that some ports/boards will have default values of *scl* and *sda*
-        that can be changed in this constructor.  Others will have fixed values
-        of *scl* and *sda* that cannot be changed.
+        注意,某些端口/开发板将有*scl*和*sda*的默认值,
+        可以在此构造函数中更改.其他端口/开发板将有固定的
+        *scl*和*sda*值,不能更改.
         """
 
     @overload
     def __init__(self, id: ID_T, /, *, scl: PinLike, sda: PinLike, freq: int = 400_000):
         """
-        Construct and return a new I2C object using the following parameters:
+        使用以下参数构造并返回新的I2C对象:
 
-           - *id* identifies a particular I2C peripheral.  Allowed values for
-             depend on the particular port/board
-           - *scl* should be a pin object specifying the pin to use for SCL.
-           - *sda* should be a pin object specifying the pin to use for SDA.
-           - *freq* should be an integer which sets the maximum frequency
-             for SCL.
+           - *id*标识特定的I2C外设.允许的值取决于特定的端口/开发板.
+           - *scl*应该是指定用于SCL的引脚对象.
+           - *sda*应该是指定用于SDA的引脚对象.
+           - *freq*应该是一个整数,设置SCL的最大频率.
 
-        Note that some ports/boards will have default values of *scl* and *sda*
-        that can be changed in this constructor.  Others will have fixed values
-        of *scl* and *sda* that cannot be changed.
+        注意,某些端口/开发板将有*scl*和*sda*的默认值,
+        可以在此构造函数中更改.其他端口/开发板将有固定的
+        *scl*和*sda*值,不能更改.
         """
 
     @overload
     def __init__(self, *, scl: PinLike, sda: PinLike, freq: int = 400_000) -> None:
         """
-        Initialise the I2C bus with the given arguments:
+        使用给定参数初始化I2C总线:
 
-           - *scl* is a pin object for the SCL line
-           - *sda* is a pin object for the SDA line
-           - *freq* is the SCL clock rate
+           - *scl*是SCL线的引脚对象.
+           - *sda*是SDA线的引脚对象.
+           - *freq*是SCL时钟频率.
 
-         In the case of hardware I2C the actual clock frequency may be lower than the
-         requested frequency. This is dependent on the platform hardware. The actual
-         rate may be determined by printing the I2C object.
+         在硬件I2C的情况下,实际时钟频率可能低于请求的频率.这取决于平台硬件.
+         可以通过打印I2C对象来确定实际速率.
+        """
+
+    @overload
+    def __init__(self, id: ID_T, /, *, freq: int = 400_000):
+        """
+        使用以下参数构造并返回新的I2C对象:
+
+           - *id*标识特定的I2C外设.允许的值取决于特定的端口/开发板.
+           - *scl*应该是指定用于SCL的引脚对象.
+           - *sda*应该是指定用于SDA的引脚对象.
+           - *freq*应该是一个整数,设置SCL的最大频率.
+
+        注意,某些端口/开发板将有*scl*和*sda*的默认值,
+        可以在此构造函数中更改.其他端口/开发板将有固定的
+        *scl*和*sda*值,不能更改.
+        """
+
+    @overload
+    def __init__(self, id: ID_T, /, *, scl: PinLike, sda: PinLike, freq: int = 400_000):
+        """
+        使用以下参数构造并返回新的I2C对象:
+
+           - *id*标识特定的I2C外设.允许的值取决于特定的端口/开发板.
+           - *scl*应该是指定用于SCL的引脚对象.
+           - *sda*应该是指定用于SDA的引脚对象.
+           - *freq*应该是一个整数,设置SCL的最大频率.
+
+        注意,某些端口/开发板将有*scl*和*sda*的默认值,
+        可以在此构造函数中更改.其他端口/开发板将有固定的
+        *scl*和*sda*值,不能更改.
+        """
+
+    @overload
+    def __init__(self, *, scl: PinLike, sda: PinLike, freq: int = 400_000) -> None:
+        """
+        使用给定参数初始化I2C总线:
+
+           - *scl*是SCL线的引脚对象.
+           - *sda*是SDA线的引脚对象.
+           - *freq*是SCL时钟频率.
+
+         在硬件I2C的情况下,实际时钟频率可能低于请求的频率.这取决于平台硬件.
+         可以通过打印I2C对象来确定实际速率.
         """
 
 class Timer:
     """
-    Hardware timers deal with timing of periods and events. Timers are perhaps
-    the most flexible and heterogeneous kind of hardware in MCUs and SoCs,
-    differently greatly from a model to a model. MicroPython's Timer class
-    defines a baseline operation of executing a callback with a given period
-    (or once after some delay), and allow specific boards to define more
-    non-standard behaviour (which thus won't be portable to other boards).
+    硬件定时器处理周期和事件的计时.定时器可能是MCU和SoC中
+    最灵活和最多样化的硬件类型,不同型号之间差异很大.MicroPython的Timer类
+    定义了一个基本操作,即以给定周期执行回调(或在某个延迟后执行一次),
+    并允许特定开发板定义更多非标准行为(因此不可移植到其他开发板).
 
-    See discussion of :ref:`important constraints <machine_callbacks>` on
-    Timer callbacks.
+    请参阅关于Timer回调的:ref:`重要限制 <machine_callbacks>`的讨论.
 
     .. note::
 
-        Memory can't be allocated inside irq handlers (an interrupt) and so
-        exceptions raised within a handler don't give much information.  See
-        :func:`micropython.alloc_emergency_exception_buf` for how to get around this
-        limitation.
+        内存不能在irq处理程序(中断)内分配,因此
+        在处理程序中引发的异常不会提供太多信息.请参阅
+        :func:`micropython.alloc_emergency_exception_buf`了解如何解决这个
+        限制.
 
-    If you are using a WiPy board please refer to :ref:`machine.TimerWiPy <machine.TimerWiPy>`
-    instead of this class.
+    如果您使用的是WiPy开发板,请参考:ref:`machine.TimerWiPy <machine.TimerWiPy>`
+    而不是此类.
     """
 
     ONE_SHOT: Final[int] = 0
     PERIODIC: Final[int] = 1
     def deinit(self) -> None:
         """
-        Deinitialises the timer. Stops the timer, and disables the timer peripheral.
+        反初始化定时器.停止定时器,并禁用定时器外设.
         """
         ...
 
@@ -1536,40 +1485,39 @@ class Timer:
         callback: Callable[[Timer], None] | None = None,
     ) -> None:
         """
-        Initialise the timer. Example::
+        初始化定时器.示例::
 
             def mycallback(t):
                 pass
 
-            # periodic at 1kHz
+            # 以1kHz周期运行.
             tim.init(mode=Timer.PERIODIC, freq=1000, callback=mycallback)
 
-            # periodic with 100ms period
+            # 周期为100ms.
             tim.init(period=100, callback=mycallback)
 
-            # one shot firing after 1000ms
+            # 1000ms后触发一次.
             tim.init(mode=Timer.ONE_SHOT, period=1000, callback=mycallback)
 
-        Keyword arguments:
+        关键字参数:
 
-          - ``mode`` can be one of:
+          - ``mode``可以是以下之一:
 
-            - ``Timer.ONE_SHOT`` - The timer runs once until the configured
-              period of the channel expires.
-            - ``Timer.PERIODIC`` - The timer runs periodically at the configured
-              frequency of the channel.
+            - ``Timer.ONE_SHOT`` - 定时器运行一次,直到配置的
+              通道周期到期.
+            - ``Timer.PERIODIC`` - 定时器以配置的频率
+              周期性运行.
 
-          - ``freq`` - The timer frequency, in units of Hz.  The upper bound of
-            the frequency is dependent on the port.  When both the ``freq`` and
-            ``period`` arguments are given, ``freq`` has a higher priority and
-            ``period`` is ignored.
+          - ``freq`` - 定时器频率,单位为Hz.频率的上限
+            取决于端口.当同时给出``freq``和``period``
+            参数时,``freq``具有更高的优先级,``period``将被忽略.
 
-          - ``period`` - The timer period, in milliseconds.
+          - ``period`` - 定时器周期,单位为毫秒.
 
-          - ``callback`` - The callable to call upon expiration of the timer period.
-            The callback must take one argument, which is passed the Timer object.
-            The ``callback`` argument shall be specified. Otherwise an exception
-            will occur upon timer expiration:
+          - ``callback`` - 定时器周期到期时要调用的可调用对象.
+            回调必须接受一个参数,即传递的Timer对象.
+            必须指定``callback``参数.否则在定时器到期时
+            会发生异常:
             ``TypeError: 'NoneType' object isn't callable``
         """
         ...
@@ -1578,11 +1526,11 @@ class Timer:
     @overload
     def __init__(self, id: int, /):
         """
-        Construct a new timer object of the given ``id``. ``id`` of -1 constructs a
-        virtual timer (if supported by a board).
-        ``id`` shall not be passed as a keyword argument.
+        构造给定``id``的新定时器对象.``id``为-1构造
+        虚拟定时器(如果开发板支持).
+        ``id``不应作为关键字参数传递.
 
-        See ``init`` for parameters of initialisation.
+        有关初始化参数,请参见``init``.
         """
 
     @overload
@@ -1596,11 +1544,11 @@ class Timer:
         callback: Callable[[Timer], None] | None = None,
     ):
         """
-        Construct a new timer object of the given ``id``. ``id`` of -1 constructs a
-        virtual timer (if supported by a board).
-        ``id`` shall not be passed as a keyword argument.
+        构造给定``id``的新定时器对象.``id``为-1构造
+        虚拟定时器(如果开发板支持).
+        ``id``不应作为关键字参数传递.
 
-        See ``init`` for parameters of initialisation.
+        有关初始化参数,请参见``init``.
         """
 
     @overload
@@ -1614,11 +1562,11 @@ class Timer:
         callback: Callable[[Timer], None] | None = None,
     ):
         """
-        Construct a new timer object of the given ``id``. ``id`` of -1 constructs a
-        virtual timer (if supported by a board).
-        ``id`` shall not be passed as a keyword argument.
+        构造给定``id``的新定时器对象.``id``为-1构造
+        虚拟定时器(如果开发板支持).
+        ``id``不应作为关键字参数传递.
 
-        See ``init`` for parameters of initialisation.
+        有关初始化参数,请参见``init``.
         """
 
     @overload
@@ -1632,18 +1580,18 @@ class Timer:
         callback: Callable[[Timer], None] | None = None,
     ):
         """
-        Construct a new timer object of the given ``id``. ``id`` of -1 constructs a
-        virtual timer (if supported by a board).
-        ``id`` shall not be passed as a keyword argument.
+        构造给定``id``的新定时器对象.``id``为-1构造
+        虚拟定时器(如果开发板支持).
+        ``id``不应作为关键字参数传递.
 
-        See ``init`` for parameters of initialisation.
+        有关初始化参数,请参见``init``.
         """
 
 class SoftSPI(SPI):
     """
-    Construct a new software SPI object.  Additional parameters must be
-    given, usually at least *sck*, *mosi* and *miso*, and these are used
-    to initialise the bus.  See `SPI.init` for a description of the parameters.
+    构造一个新的软件SPI对象.必须提供额外的参数,
+    通常至少包括*sck*、*mosi*和*miso*,这些参数用于
+    初始化总线.有关参数的描述,请参见`SPI.init`.
     """
 
     # LSB: Final[int] = 1
@@ -1669,39 +1617,37 @@ class SoftSPI(SPI):
 
 class Pin:
     """
-    A pin object is used to control I/O pins (also known as GPIO - general-purpose
-    input/output).  Pin objects are commonly associated with a physical pin that can
-    drive an output voltage and read input voltages.  The pin class has methods to set the mode of
-    the pin (IN, OUT, etc) and methods to get and set the digital logic level.
-    For analog control of a pin, see the :class:`ADC` class.
+    引脚对象用于控制I/O引脚(也称为GPIO - 通用输入/输出).
+    引脚对象通常与物理引脚相关联,该物理引脚可以驱动输出电压
+    并读取输入电压.引脚类有设置引脚模式(IN、OUT等)的方法,
+    以及获取和设置数字逻辑电平的方法.
+    对于引脚的模拟控制,请参见:class:`ADC`类.
 
-    A pin object is constructed by using an identifier which unambiguously
-    specifies a certain I/O pin.  The allowed forms of the identifier and the
-    physical pin that the identifier maps to are port-specific.  Possibilities
-    for the identifier are an integer, a string or a tuple with port and pin
-    number.
+    引脚对象通过使用明确指定某个I/O引脚的标识符来构造.
+    标识符的允许形式和标识符映射到的物理引脚是特定于端口的.
+    标识符的可能形式有整数、字符串或带有端口和引脚号的元组.
 
-    Usage Model::
+    使用模型::
 
         from machine import Pin
 
-        # create an output pin on pin #0
+        # 在引脚#0上创建一个输出引脚.
         p0 = Pin(0, Pin.OUT)
 
-        # set the value low then high
+        # 将值设置为低电平然后高电平.
         p0.value(0)
         p0.value(1)
 
-        # create an input pin on pin #2, with a pull up resistor
+        # 在引脚#2上创建一个带上拉电阻的输入引脚.
         p2 = Pin(2, Pin.IN, Pin.PULL_UP)
 
-        # read and print the pin value
+        # 读取并打印引脚值.
         print(p2.value())
 
-        # reconfigure pin #0 in input mode with a pull down resistor
+        # 重新配置引脚#0为带下拉电阻的输入模式.
         p0.init(p0.IN, p0.PULL_DOWN)
 
-        # configure an irq callback
+        # 配置中断回调.
         p0.irq(lambda p:print(p))
     """
 
@@ -1751,7 +1697,7 @@ class Pin:
     IRQ_HIGH_LEVEL: Incomplete
     def off(self) -> None:
         """
-        Set pin to "0" output level.
+        将引脚设置为"0"输出电平.
         """
         ...
 
@@ -1766,129 +1712,117 @@ class Pin:
         hard: bool = False,
     ) -> Callable[..., Incomplete]:
         """
-           Configure an interrupt handler to be called when the trigger source of the
-           pin is active.  If the pin mode is ``Pin.IN`` then the trigger source is
-           the external value on the pin.  If the pin mode is ``Pin.OUT`` then the
-           trigger source is the output buffer of the pin.  Otherwise, if the pin mode
-           is ``Pin.OPEN_DRAIN`` then the trigger source is the output buffer for
-           state '0' and the external pin value for state '1'.
+           配置在引脚的触发源处于活动状态时要调用的中断处理程序.如果引脚模式是``Pin.IN``,
+           则触发源是引脚上的外部值.如果引脚模式是``Pin.OUT``,则触发源是引脚的输出缓冲区.
+           否则,如果引脚模式是``Pin.OPEN_DRAIN``,则触发源在状态'0'时是输出缓冲区,
+           在状态'1'时是外部引脚值.
 
-           The arguments are:
+           参数如下:
 
-             - ``handler`` is an optional function to be called when the interrupt
-               triggers. The handler must take exactly one argument which is the
-               ``Pin`` instance.
+             - ``handler`` (Callable[[Pin], None] | None): 是一个可选函数,在中断触发时调用.处理程序必须接受一个参数,
+               即``Pin``实例.
 
-             - ``trigger`` configures the event which can generate an interrupt.
-               Possible values are:
+             - ``trigger`` (int): 配置可以生成中断的事件.可能的值有:
 
-               - ``Pin.IRQ_FALLING`` interrupt on falling edge.
-               - ``Pin.IRQ_RISING`` interrupt on rising edge.
-               - ``Pin.IRQ_LOW_LEVEL`` interrupt on low level.
-               - ``Pin.IRQ_HIGH_LEVEL`` interrupt on high level.
+               - ``Pin.IRQ_FALLING``下降沿触发中断.
+               - ``Pin.IRQ_RISING``上升沿触发中断.
+               - ``Pin.IRQ_LOW_LEVEL``低电平触发中断.
+               - ``Pin.IRQ_HIGH_LEVEL``高电平触发中断.
 
-               These values can be OR'ed together to trigger on multiple events.
+               这些值可以通过OR操作组合,以在多个事件上触发.
 
-             - ``priority`` sets the priority level of the interrupt.  The values it
-               can take are port-specific, but higher values always represent higher
-               priorities.
+             - ``priority`` (int): 设置中断的优先级.它可以采取的值是特定于端口的,
+               但更高的值总是代表更高的优先级.
 
-             - ``wake`` selects the power mode in which this interrupt can wake up the
-               system.  It can be ``machine.IDLE``, ``machine.SLEEP`` or ``machine.DEEPSLEEP``.
-               These values can also be OR'ed together to make a pin generate interrupts in
-               more than one power mode.
+             - ``wake`` (int | None): 选择此中断可以唤醒系统的电源模式.它可以是``machine.IDLE``、
+               ``machine.SLEEP``或``machine.DEEPSLEEP``.这些值也可以通过OR操作组合,
+               使引脚在多个电源模式下生成中断.
 
-             - ``hard`` if true a hardware interrupt is used. This reduces the delay
-               between the pin change and the handler being called. Hard interrupt
-               handlers may not allocate memory; see :ref:`isr_rules`.
-               Not all ports support this argument.
+             - ``hard`` (bool): 如果为true,则使用硬件中断.这减少了引脚变化与处理程序被调用之间的延迟.
+               硬中断处理程序可能不会分配内存;请参阅:ref:`isr_rules`.
+               并非所有端口都支持此参数.
 
-           This method returns a callback object.
+           返回:
+            (Callable[..., Incomplete]): 回调对象.
 
-        The following methods are not part of the core Pin API and only implemented on certain ports.
+        以下方法不是核心Pin API的一部分,仅在某些端口上实现.
         """
         ...
 
     def on(self) -> None:
         """
-        Set pin to "1" output level.
+        将引脚设置为"1"输出电平.
         """
         ...
 
     def toggle(self) -> Incomplete:
         """
-        Toggle output pin from "0" to "1" or vice-versa.
+        将输出引脚从"0"切换到"1"或反之亦然.
 
-        Availability: cc3200, esp32, esp8266, mimxrt, rp2, samd ports.
+        可用性: cc3200, esp32, esp8266, mimxrt, rp2, samd端口.
         """
         ...
 
     @overload
     def value(self) -> int:
         """
-        This method allows to set and get the value of the pin, depending on whether
-        the argument ``x`` is supplied or not.
+        此方法允许设置和获取引脚的值,取决于是否提供参数``x``.
 
-        If the argument is omitted then this method gets the digital logic level of
-        the pin, returning 0 or 1 corresponding to low and high voltage signals
-        respectively.  The behaviour of this method depends on the mode of the pin:
+        如果省略参数,则此方法获取引脚的数字逻辑电平,
+        返回0或1,分别对应低电压和高电压信号.
+        此方法的行为取决于引脚的模式:
 
-          - ``Pin.IN`` - The method returns the actual input value currently present
-            on the pin.
-          - ``Pin.OUT`` - The behaviour and return value of the method is undefined.
-          - ``Pin.OPEN_DRAIN`` - If the pin is in state '0' then the behaviour and
-            return value of the method is undefined.  Otherwise, if the pin is in
-            state '1', the method returns the actual input value currently present
-            on the pin.
+          - ``Pin.IN`` - 该方法返回当前在引脚上存在的实际输入值.
+          - ``Pin.OUT`` - 该方法的行为和返回值是未定义的.
+          - ``Pin.OPEN_DRAIN`` - 如果引脚处于状态'0',则该方法的行为和
+            返回值是未定义的.否则,如果引脚处于状态'1',该方法返回
+            当前在引脚上存在的实际输入值.
 
-        If the argument is supplied then this method sets the digital logic level of
-        the pin.  The argument ``x`` can be anything that converts to a boolean.
-        If it converts to ``True``, the pin is set to state '1', otherwise it is set
-        to state '0'.  The behaviour of this method depends on the mode of the pin:
+        如果提供了参数,则此方法设置引脚的数字逻辑电平.
+        参数``x``可以是任何能转换为布尔值的对象.
+        如果它转换为``True``,则引脚设置为状态'1',否则设置为状态'0'.
+        此方法的行为取决于引脚的模式:
 
-          - ``Pin.IN`` - The value is stored in the output buffer for the pin.  The
-            pin state does not change, it remains in the high-impedance state.  The
-            stored value will become active on the pin as soon as it is changed to
-            ``Pin.OUT`` or ``Pin.OPEN_DRAIN`` mode.
-          - ``Pin.OUT`` - The output buffer is set to the given value immediately.
-          - ``Pin.OPEN_DRAIN`` - If the value is '0' the pin is set to a low voltage
-            state.  Otherwise the pin is set to high-impedance state.
+          - ``Pin.IN`` - 该值存储在引脚的输出缓冲区中.引脚状态不变,
+            它保持在高阻抗状态.一旦引脚模式更改为``Pin.OUT``或
+            ``Pin.OPEN_DRAIN``,存储的值将在引脚上生效.
+          - ``Pin.OUT`` - 输出缓冲区立即设置为给定值.
+          - ``Pin.OPEN_DRAIN`` - 如果值为'0',则引脚设置为低电压状态.
+            否则,引脚设置为高阻抗状态.
 
-        When setting the value this method returns ``None``.
+        返回:
+            (int | None): 设置值时,此方法返回``None``.获取值时返回``int``.
         """
 
     @overload
     def value(self, x: Any, /) -> None:
         """
-        This method allows to set and get the value of the pin, depending on whether
-        the argument ``x`` is supplied or not.
+        此方法允许设置和获取引脚的值,取决于是否提供参数``x``.
 
-        If the argument is omitted then this method gets the digital logic level of
-        the pin, returning 0 or 1 corresponding to low and high voltage signals
-        respectively.  The behaviour of this method depends on the mode of the pin:
+        如果省略参数,则此方法获取引脚的数字逻辑电平,
+        返回0或1,分别对应低电压和高电压信号.
+        此方法的行为取决于引脚的模式:
 
-          - ``Pin.IN`` - The method returns the actual input value currently present
-            on the pin.
-          - ``Pin.OUT`` - The behaviour and return value of the method is undefined.
-          - ``Pin.OPEN_DRAIN`` - If the pin is in state '0' then the behaviour and
-            return value of the method is undefined.  Otherwise, if the pin is in
-            state '1', the method returns the actual input value currently present
-            on the pin.
+          - ``Pin.IN`` - 该方法返回当前在引脚上存在的实际输入值.
+          - ``Pin.OUT`` - 该方法的行为和返回值是未定义的.
+          - ``Pin.OPEN_DRAIN`` - 如果引脚处于状态'0',则该方法的行为和
+            返回值是未定义的.否则,如果引脚处于状态'1',该方法返回
+            当前在引脚上存在的实际输入值.
 
-        If the argument is supplied then this method sets the digital logic level of
-        the pin.  The argument ``x`` can be anything that converts to a boolean.
-        If it converts to ``True``, the pin is set to state '1', otherwise it is set
-        to state '0'.  The behaviour of this method depends on the mode of the pin:
+        如果提供了参数,则此方法设置引脚的数字逻辑电平.
+        参数``x``可以是任何能转换为布尔值的对象.
+        如果它转换为``True``,则引脚设置为状态'1',否则设置为状态'0'.
+        此方法的行为取决于引脚的模式:
 
-          - ``Pin.IN`` - The value is stored in the output buffer for the pin.  The
-            pin state does not change, it remains in the high-impedance state.  The
-            stored value will become active on the pin as soon as it is changed to
-            ``Pin.OUT`` or ``Pin.OPEN_DRAIN`` mode.
-          - ``Pin.OUT`` - The output buffer is set to the given value immediately.
-          - ``Pin.OPEN_DRAIN`` - If the value is '0' the pin is set to a low voltage
-            state.  Otherwise the pin is set to high-impedance state.
+          - ``Pin.IN`` - 该值存储在引脚的输出缓冲区中.引脚状态不变,
+            它保持在高阻抗状态.一旦引脚模式更改为``Pin.OUT``或
+            ``Pin.OPEN_DRAIN``,存储的值将在引脚上生效.
+          - ``Pin.OUT`` - 输出缓冲区立即设置为给定值.
+          - ``Pin.OPEN_DRAIN`` - 如果值为'0',则引脚设置为低电压状态.
+            否则,引脚设置为高阻抗状态.
 
-        When setting the value this method returns ``None``.
+        返回:
+            (None): 设置值时,此方法返回``None``.
         """
 
     def init(
@@ -1901,11 +1835,8 @@ class Pin:
         alt: int | None = None,
     ) -> None:
         """
-        Re-initialise the pin using the given parameters.  Only those arguments that
-        are specified will be set.  The rest of the pin peripheral state will remain
-        unchanged.  See the constructor documentation for details of the arguments.
-
-        Returns ``None``.
+        使用给定参数重新初始化引脚.只有指定的参数会被设置.引脚外设的其余状态将保持不变.
+        有关参数的详细信息,请参阅构造函数文档.
         """
         ...
 
@@ -1924,137 +1855,123 @@ class Pin:
         alt: int | None = None,
     ) -> None:
         """
-        Access the pin peripheral (GPIO pin) associated with the given ``id``.  If
-        additional arguments are given in the constructor then they are used to initialise
-        the pin.  Any settings that are not specified will remain in their previous state.
+        访问与给定 ``id`` 关联的引脚外设(GPIO引脚).如果在构造函数中提供了额外的参数,
+        则这些参数用于初始化引脚.未指定的任何设置将保持其先前的状态.
 
-        The arguments are:
+        参数如下:
 
-          - ``id`` is mandatory and can be an arbitrary object.  Among possible value
-            types are: int (an internal Pin identifier), str (a Pin name), and tuple
-            (pair of [port, pin]).
+          - ``id`` (Any): 是必需的,可以是任意对象.可能的值类型包括: int (内部Pin标识符)、
+            str (Pin名称)和tuple (由[port, pin]组成的对).
 
-          - ``mode`` specifies the pin mode, which can be one of:
+          - ``mode`` (int): 指定引脚模式,可以是以下之一:
 
-            - ``Pin.IN`` - Pin is configured for input.  If viewed as an output the pin
-              is in high-impedance state.
+            - ``Pin.IN`` - 引脚配置为输入.如果作为输出查看,引脚处于高阻态.
 
-            - ``Pin.OUT`` - Pin is configured for (normal) output.
+            - ``Pin.OUT`` - 引脚配置为(正常)输出.
 
-            - ``Pin.OPEN_DRAIN`` - Pin is configured for open-drain output. Open-drain
-              output works in the following way: if the output value is set to 0 the pin
-              is active at a low level; if the output value is 1 the pin is in a high-impedance
-              state.  Not all ports implement this mode, or some might only on certain pins.
+            - ``Pin.OPEN_DRAIN`` - 引脚配置为开漏输出.开漏输出的工作方式如下: 
+              如果输出值设置为0,则引脚在低电平下有效; 如果输出值为1,则引脚处于高阻态.
+              并非所有端口都实现此模式,或者某些端口可能仅在特定引脚上实现.
 
-            - ``Pin.ALT`` - Pin is configured to perform an alternative function, which is
-              port specific.  For a pin configured in such a way any other Pin methods
-              (except :meth:`Pin.init`) are not applicable (calling them will lead to undefined,
-              or a hardware-specific, result).  Not all ports implement this mode.
+            - ``Pin.ALT`` - 引脚配置为执行特定于端口的替代功能.对于以这种方式配置的引脚,
+              任何其他Pin方法(除了 :meth:`Pin.init`)都不适用(调用它们将导致未定义的
+              或特定于硬件的结果).并非所有端口都实现此模式.
 
-            - ``Pin.ALT_OPEN_DRAIN`` - The Same as ``Pin.ALT``, but the pin is configured as
-              open-drain.  Not all ports implement this mode.
+            - ``Pin.ALT_OPEN_DRAIN`` - 与 ``Pin.ALT`` 相同,但引脚配置为开漏.
+              并非所有端口都实现此模式.
 
-            - ``Pin.ANALOG`` - Pin is configured for analog input, see the :class:`ADC` class.
+            - ``Pin.ANALOG`` - 引脚配置为模拟输入,请参阅 :class:`ADC` 类.
 
-          - ``pull`` specifies if the pin has a (weak) pull resistor attached, and can be
-            one of:
+          - ``pull`` (int): 指定引脚是否连接了(弱)上拉/下拉电阻,可以是以下之一:
 
-            - ``None`` - No pull up or down resistor.
-            - ``Pin.PULL_UP`` - Pull up resistor enabled.
-            - ``Pin.PULL_DOWN`` - Pull down resistor enabled.
+            - ``None`` - 无上拉或下拉电阻.
+            - ``Pin.PULL_UP`` - 启用上拉电阻.
+            - ``Pin.PULL_DOWN`` - 启用下拉电阻.
 
-          - ``value`` is valid only for Pin.OUT and Pin.OPEN_DRAIN modes and specifies initial
-            output pin value if given, otherwise the state of the pin peripheral remains
-            unchanged.
+          - ``value`` (Any): 仅对Pin.OUT和Pin.OPEN_DRAIN模式有效,如果给定,则指定初始输出引脚值,
+            否则引脚外设的状态保持不变.
 
-          - ``drive`` specifies the output power of the pin and can be one of: ``Pin.LOW_POWER``,
-            ``Pin.MED_POWER`` or ``Pin.HIGH_POWER``.  The actual current driving capabilities
-            are port dependent.  Not all ports implement this argument.
+          - ``drive`` (int | None): 指定引脚的输出功率,可以是: ``Pin.LOW_POWER``、``Pin.MED_POWER`` 
+            或 ``Pin.HIGH_POWER``.实际的电流驱动能力取决于端口.并非所有端口都实现此参数.
 
-          - ``alt`` specifies an alternate function for the pin and the values it can take are
-            port dependent.  This argument is valid only for ``Pin.ALT`` and ``Pin.ALT_OPEN_DRAIN``
-            modes.  It may be used when a pin supports more than one alternate function.  If only
-            one pin alternate function is supported the this argument is not required.  Not all
-            ports implement this argument.
+          - ``alt`` (int | None): 指定引脚的替代功能,其可取的值取决于端口.此参数仅对 ``Pin.ALT`` 和
+            ``Pin.ALT_OPEN_DRAIN`` 模式有效.当引脚支持多个替代功能时,可以使用它.如果
+            仅支持一个引脚替代功能,则不需要此参数.并非所有端口都实现此参数.
 
-        As specified above, the Pin class allows to set an alternate function for a particular
-        pin, but it does not specify any further operations on such a pin.  Pins configured in
-        alternate-function mode are usually not used as GPIO but are instead driven by other
-        hardware peripherals.  The only operation supported on such a pin is re-initialising,
-        by calling the constructor or :meth:`Pin.init` method.  If a pin that is configured in
-        alternate-function mode is re-initialised with ``Pin.IN``, ``Pin.OUT``, or
-        ``Pin.OPEN_DRAIN``, the alternate function will be removed from the pin.
+        如上所述,Pin类允许为特定引脚设置替代功能,但不指定对该引脚的任何进一步操作.
+        配置为替代功能模式的引脚通常不用作GPIO,而是由其他硬件外设驱动.此类引脚支持的
+        唯一操作是重新初始化,通过调用构造函数或 :meth:`Pin.init` 方法.如果配置为
+        替代功能模式的引脚使用 ``Pin.IN``、``Pin.OUT`` 或 ``Pin.OPEN_DRAIN`` 重新初始化,
+        则替代功能将从引脚中移除.
         """
 
     @overload
     def __call__(self) -> int:
         """
-        Pin objects are callable.  The call method provides a (fast) shortcut to set
-        and get the value of the pin.  It is equivalent to Pin.value([x]).
-        See :meth:`Pin.value` for more details.
+        Pin对象是可调用的.call方法提供了一个(快速)设置和获取引脚值的快捷方式.
+        它等同于Pin.value([x]).有关更多详细信息,请参阅 :meth:`Pin.value`.
         """
 
     @overload
     def __call__(self, x: Any, /) -> None:
         """
-        Pin objects are callable.  The call method provides a (fast) shortcut to set
-        and get the value of the pin.  It is equivalent to Pin.value([x]).
-        See :meth:`Pin.value` for more details.
+        Pin对象是可调用的.call方法提供了一个(快速)设置和获取引脚值的快捷方式.
+        它等同于Pin.value([x]).有关更多详细信息,请参阅 :meth:`Pin.value`.
         """
 
     @overload
     def mode(self) -> int:
         """
-        Get or set the pin mode.
-        See the constructor documentation for details of the ``mode`` argument.
+        获取或设置引脚模式.
+        有关 ``mode`` 参数的详细信息,请参阅构造函数文档.
 
-        Availability: cc3200, stm32 ports.
+        可用性: cc3200, stm32端口.
         """
 
     @overload
     def mode(self, mode: int, /) -> None:
         """
-        Get or set the pin mode.
-        See the constructor documentation for details of the ``mode`` argument.
+        获取或设置引脚模式.
+        有关 ``mode`` 参数的详细信息,请参阅构造函数文档.
 
-        Availability: cc3200, stm32 ports.
+        可用性: cc3200, stm32端口.
         """
 
     @overload
     def pull(self) -> int:
         """
-        Get or set the pin pull state.
-        See the constructor documentation for details of the ``pull`` argument.
+        获取或设置引脚上拉/下拉状态.
+        有关 ``pull`` 参数的详细信息,请参阅构造函数文档.
 
-        Availability: cc3200, stm32 ports.
+        可用性: cc3200, stm32端口.
         """
 
     @overload
     def pull(self, pull: int, /) -> None:
         """
-        Get or set the pin pull state.
-        See the constructor documentation for details of the ``pull`` argument.
+        获取或设置引脚上拉/下拉状态.
+        有关 ``pull`` 参数的详细信息,请参阅构造函数文档.
 
-        Availability: cc3200, stm32 ports.
+        可用性: cc3200, stm32端口.
         """
 
     @overload
     def drive(self, drive: int, /) -> None:
         """
-        Get or set the pin drive strength.
-        See the constructor documentation for details of the ``drive`` argument.
+        获取或设置引脚驱动强度.
+        有关 ``drive`` 参数的详细信息,请参阅构造函数文档.
 
-        Availability: cc3200 port.
+        可用性: cc3200端口.
         """
         ...
 
     @overload
     def drive(self, /) -> int:
         """
-        Get or set the pin drive strength.
-        See the constructor documentation for details of the ``drive`` argument.
+        获取或设置引脚驱动强度.
+        有关 ``drive`` 参数的详细信息,请参阅构造函数文档.
 
-        Availability: cc3200 port.
+        可用性: cc3200端口.
         """
 
 class TouchPad:
@@ -2064,160 +1981,90 @@ class TouchPad:
 
 class WDT:
     """
-    The WDT is used to restart the system when the application crashes and ends
-    up into a non recoverable state. Once started it cannot be stopped or
-    reconfigured in any way. After enabling, the application must "feed" the
-    watchdog periodically to prevent it from expiring and resetting the system.
+    WDT用于在应用程序崩溃并进入不可恢复状态时重启系统.一旦启动,它不能以任何方式
+    停止或重新配置.启用后,应用程序必须定期"喂养"看门狗,以防止其过期并重置系统.
 
-    Example usage::
+    使用示例::
 
         from machine import WDT
-        wdt = WDT(timeout=2000)  # enable it with a timeout of 2s
+        wdt = WDT(timeout=2000)  # 启用它,超时为2秒.
         wdt.feed()
 
-    Availability of this class: pyboard, WiPy, esp8266, esp32.
+    此类的可用性: pyboard, WiPy, esp8266, esp32.
     """
 
     def feed(self) -> None:
         """
-        Feed the WDT to prevent it from resetting the system. The application
-        should place this call in a sensible place ensuring that the WDT is
-        only fed after verifying that everything is functioning correctly.
+        喂养WDT以防止其重置系统.应用程序应该在合理的位置放置此调用,
+        确保只有在验证一切正常运行后才喂养WDT.
         """
         ...
 
     def __init__(self, *, id: int = 0, timeout: int = 5000) -> None:
         """
-        Create a WDT object and start it. The timeout must be given in milliseconds.
-        Once it is running the timeout cannot be changed and the WDT cannot be stopped either.
+        创建WDT对象并启动它.超时必须以毫秒为单位给出.
+        一旦运行,超时就不能更改,WDT也不能停止.
 
-        Notes: On the esp32 the minimum timeout is 1 second. On the esp8266 a timeout
-        cannot be specified, it is determined by the underlying system.
+        注意: 在esp32上,最小超时为1秒.在esp8266上,不能指定超时,
+        它由底层系统决定.
         """
 
 class SDCard(AbstractBlockDev):
     """
-    SD cards are one of the most common small form factor removable storage media.
-    SD cards come in a variety of sizes and physical form factors. MMC cards are
-    similar removable storage devices while eMMC devices are electrically similar
-    storage devices designed to be embedded into other systems. All three form
-    share a common protocol for communication with their host system and high-level
-    support looks the same for them all. As such in MicroPython they are implemented
-    in a single class called :class:`machine.SDCard` .
+    SD卡是最常见的小型可移动存储媒体之一
 
-    Both SD and MMC interfaces support being accessed with a variety of bus widths.
-    When being accessed with a 1-bit wide interface they can be accessed using the
-    SPI protocol. Different MicroPython hardware platforms support different widths
-    and pin configurations but for most platforms there is a standard configuration
-    for any given hardware. In general constructing an ``SDCard`` object with without
-    passing any parameters will initialise the interface to the default card slot
-    for the current hardware. The arguments listed below represent the common
-    arguments that might need to be set in order to use either a non-standard slot
-    or a non-standard pin assignment. The exact subset of arguments supported will
-    vary from platform to platform.
+    SD卡有各种尺寸和物理形式. MMC卡是类似的可移动存储设备, 而eMMC设备是电气上类似的存储设备, 设计用于嵌入到其他系统中
+    这三种形式共享一个用于与其主机系统通信的通用协议, 高级支持对它们都是相同的
+    因此, 在MicroPython中, 它们在一个名为 `machine.SDCard` 的类中实现
 
+    SD和MMC接口都支持通过多种总线宽度访问. 当使用1位宽接口访问时, 可以使用SPI协议
+    不同的MicroPython硬件平台支持不同的宽度和引脚配置, 但对于大多数平台, 任何给定硬件都有标准配置
+    通常, 构造一个不传递任何参数的 `SDCard` 对象将为当前硬件初始化到默认卡槽的接口
+    下面列出的参数代表了可能需要设置的常见参数, 以便使用非标准插槽或非标准引脚分配
+    支持的确切参数子集会因平台而异
 
-    Implementation-specific details
-    -------------------------------
-
-    Different implementations of the ``SDCard`` class on different hardware support
-    varying subsets of the options above.
-
-    PyBoard
-    ```````
-
-    The standard PyBoard has just one slot. No arguments are necessary or supported.
-
-    ESP32
-    `````
-
-    The ESP32 provides two channels of SD/MMC hardware and also supports
-    access to SD Cards through either of the two SPI ports that are
-    generally available to the user. As a result the *slot* argument can
-    take a value between 0 and 3, inclusive. Slots 0 and 1 use the
-    built-in SD/MMC hardware while slots 2 and 3 use the SPI ports. Slot 0
-    supports 1, 4 or 8-bit wide access while slot 1 supports 1 or 4-bit
-    access; the SPI slots only support 1-bit access.
-
-      .. note:: Slot 0 is used to communicate with on-board flash memory
-                on most ESP32 modules and so will be unavailable to the
-                user.
-
-      .. note:: Most ESP32 modules that provide an SD card slot using the
-                dedicated hardware only wire up 1 data pin, so the default
-                value for *width* is 1.
-
-    The pins used by the dedicated SD/MMC hardware are fixed. The pins
-    used by the SPI hardware can be reassigned.
-
-      .. note:: If any of the SPI signals are remapped then all of the SPI
-                signals will pass through a GPIO multiplexer unit which
-                can limit the performance of high frequency signals. Since
-                the normal operating speed for SD cards is 40MHz this can
-                cause problems on some cards.
-
-    The default (and preferred) pin assignment are as follows:
-
-        ====== ====== ====== ====== ======
-        Slot   0      1      2      3
-        ------ ------ ------ ------ ------
-        Signal   Pin    Pin    Pin    Pin
-        ====== ====== ====== ====== ======
-        sck       6     14     18     14
-        cmd      11     15
-        cs                      5     15
-        miso                   19     12
-        mosi                   23     13
-        D0        7      2
-        D1        8      4
-        D2        9     12
-        D3       10     13
-        D4       16
-        D5       17
-        D6        5
-        D7       18
-        ====== ====== ====== ====== ======
-
-    cc3200
-    ``````
-
-    You can set the pins used for SPI access by passing a tuple as the
-    *pins* argument.
-
-    *Note:* The current cc3200 SD card implementation names the this class
-    :class:`machine.SD` rather than :class:`machine.SDCard` .
+    特定实现的详细信息请参考相关文档
     """
 
     def ioctl(self, *args, **kwargs) -> Incomplete: ...
     @overload
     def readblocks(self, block_num: int, buf: bytearray) -> bool:
         """
-        The first form reads aligned, multiples of blocks.
-        Starting at the block given by the index *block_num*, read blocks from
-        the device into *buf* (an array of bytes).
-        The number of blocks to read is given by the length of *buf*,
-        which will be a multiple of the block size.
+        读取对齐的多个块
+
+        参数:
+            block_num (int): 起始块索引
+            buf (bytearray): 用于接收读取数据的字节数组
+
+        返回:
+            (bool): 是否成功读取
         """
 
     @overload
     def readblocks(self, block_num: int, buf: bytearray, offset: int) -> bool:
         """
-        The second form allows reading at arbitrary locations within a block,
-        and arbitrary lengths.
-        Starting at block index *block_num*, and byte offset within that block
-        of *offset*, read bytes from the device into *buf* (an array of bytes).
-        The number of bytes to read is given by the length of *buf*.
+        读取块内任意位置的数据
+
+        参数:
+            block_num (int): 起始块索引
+            buf (bytearray): 用于接收读取数据的字节数组
+            offset (int): 块内的字节偏移量
+
+        返回:
+            (bool): 是否成功读取
         """
 
     @overload
     def writeblocks(self, block_num: int, buf: bytes | bytearray, /) -> None:
         """
-        The first form writes aligned, multiples of blocks, and requires that the
-        blocks that are written to be first erased (if necessary) by this method.
-        Starting at the block given by the index *block_num*, write blocks from
-        *buf* (an array of bytes) to the device.
-        The number of blocks to write is given by the length of *buf*,
-        which will be a multiple of the block size.
+        写入对齐的多个块
+
+        参数:
+            block_num (int): 起始块索引
+            buf (bytes | bytearray): 包含要写入数据的字节对象或字节数组
+
+        返回:
+            (None): 无返回值
         """
 
     @overload
@@ -2225,36 +2072,30 @@ class SDCard(AbstractBlockDev):
         self, block_num: int, buf: bytes | bytearray, offset: int, /
     ) -> None:
         """
-        The second form allows writing at arbitrary locations within a block,
-        and arbitrary lengths.  Only the bytes being written should be changed,
-        and the caller of this method must ensure that the relevant blocks are
-        erased via a prior ``ioctl`` call.
-        Starting at block index *block_num*, and byte offset within that block
-        of *offset*, write bytes from *buf* (an array of bytes) to the device.
-        The number of bytes to write is given by the length of *buf*.
+        写入块内任意位置的数据
 
-        Note that implementations must never implicitly erase blocks if the offset
-        argument is specified, even if it is zero.
+        参数:
+            block_num (int): 起始块索引
+            buf (bytes | bytearray): 包含要写入数据的字节对象或字节数组
+            offset (int): 块内的字节偏移量
+
+        返回:
+            (None): 无返回值
         """
-
     def info(self, *args, **kwargs) -> Incomplete: ...
     def deinit(self, *args, **kwargs) -> Incomplete: ...
     def __init__(self, *argv, **kwargs) -> None: ...
 
 class RTC:
     """
-    The RTC is an independent clock that keeps track of the date
-    and time.
+    RTC是一个独立的实时时钟 用于跟踪日期和时间
 
-    Example usage::
-
+    使用示例:
         rtc = machine.RTC()
         rtc.datetime((2020, 1, 21, 2, 10, 32, 36, 0))
         print(rtc.datetime())
 
-
-
-    The documentation for RTC is in a poor state;1
+    RTC的文档状态较差 建议进行实验并使用 `dir` 方法查看可用属性
     """
 
     ALARM0: Incomplete
@@ -2262,270 +2103,382 @@ class RTC:
     @overload
     def init(self) -> None:
         """
-        Initialise the RTC. Datetime is a tuple of the form:
+        初始化RTC
 
-           ``(year, month, day, hour, minute, second, microsecond, tzinfo)``
+        日期时间是以下形式的元组:
+        (year, month, day, hour, minute, second, microsecond, tzinfo)
 
-        All eight arguments must be present. The ``microsecond`` and ``tzinfo``
-        values are currently ignored but might be used in the future.
+        必须提供所有八个参数. microsecond 和 tzinfo 值当前被忽略, 但将来可能会使用
 
-        Availability: CC3200, ESP32, MIMXRT, SAMD. The rtc.init() method on
-        the stm32 and renesas-ra ports just (re-)starts the RTC and does not
-        accept arguments.
+        可用性: CC3200, ESP32, MIMXRT, SAMD. stm32和renesas-ra端口上的rtc.init()方法只是重新启动RTC, 不接受参数
         """
 
     @overload
     def init(self, datetime: tuple[int, int, int], /) -> None:
         """
-        Initialise the RTC. Datetime is a tuple of the form:
+        初始化RTC
 
-           ``(year, month, day, hour, minute, second, microsecond, tzinfo)``
+        日期时间是以下形式的元组:
+        (year, month, day, hour, minute, second, microsecond, tzinfo)
 
-        All eight arguments must be present. The ``microsecond`` and ``tzinfo``
-        values are currently ignored but might be used in the future.
+        必须提供所有八个参数. microsecond 和 tzinfo 值当前被忽略, 但将来可能会使用
 
-        Availability: CC3200, ESP32, MIMXRT, SAMD. The rtc.init() method on
-        the stm32 and renesas-ra ports just (re-)starts the RTC and does not
-        accept arguments.
+        可用性: CC3200, ESP32, MIMXRT, SAMD. stm32和renesas-ra端口上的rtc.init()方法只是重新启动RTC, 不接受参数
         """
 
     @overload
     def init(self, datetime: tuple[int, int, int, int], /) -> None:
         """
-        Initialise the RTC. Datetime is a tuple of the form:
+        初始化RTC
 
-           ``(year, month, day, hour, minute, second, microsecond, tzinfo)``
+        日期时间是以下形式的元组:
+        (year, month, day, hour, minute, second, microsecond, tzinfo)
 
-        All eight arguments must be present. The ``microsecond`` and ``tzinfo``
-        values are currently ignored but might be used in the future.
+        必须提供所有八个参数. microsecond 和 tzinfo 值当前被忽略, 但将来可能会使用
 
-        Availability: CC3200, ESP32, MIMXRT, SAMD. The rtc.init() method on
-        the stm32 and renesas-ra ports just (re-)starts the RTC and does not
-        accept arguments.
+        可用性: CC3200, ESP32, MIMXRT, SAMD. stm32和renesas-ra端口上的rtc.init()方法只是重新启动RTC, 不接受参数
         """
 
     @overload
     def init(self, datetime: tuple[int, int, int, int, int], /) -> None:
         """
-        Initialise the RTC. Datetime is a tuple of the form:
+        初始化RTC
 
-           ``(year, month, day, hour, minute, second, microsecond, tzinfo)``
+        日期时间是以下形式的元组:
+        (year, month, day, hour, minute, second, microsecond, tzinfo)
 
-        All eight arguments must be present. The ``microsecond`` and ``tzinfo``
-        values are currently ignored but might be used in the future.
+        必须提供所有八个参数. microsecond 和 tzinfo 值当前被忽略, 但将来可能会使用
 
-        Availability: CC3200, ESP32, MIMXRT, SAMD. The rtc.init() method on
-        the stm32 and renesas-ra ports just (re-)starts the RTC and does not
-        accept arguments.
+        可用性: CC3200, ESP32, MIMXRT, SAMD. stm32和renesas-ra端口上的rtc.init()方法只是重新启动RTC, 不接受参数
         """
 
     @overload
     def init(self, datetime: tuple[int, int, int, int, int, int], /) -> None:
         """
-        Initialise the RTC. Datetime is a tuple of the form:
+        初始化RTC
 
-           ``(year, month, day, hour, minute, second, microsecond, tzinfo)``
+        日期时间是以下形式的元组:
+        (year, month, day, hour, minute, second, microsecond, tzinfo)
 
-        All eight arguments must be present. The ``microsecond`` and ``tzinfo``
-        values are currently ignored but might be used in the future.
+        必须提供所有八个参数. microsecond 和 tzinfo 值当前被忽略, 但将来可能会使用
 
-        Availability: CC3200, ESP32, MIMXRT, SAMD. The rtc.init() method on
-        the stm32 and renesas-ra ports just (re-)starts the RTC and does not
-        accept arguments.
+        可用性: CC3200, ESP32, MIMXRT, SAMD. stm32和renesas-ra端口上的rtc.init()方法只是重新启动RTC, 不接受参数
         """
 
     @overload
     def init(self, datetime: tuple[int, int, int, int, int, int, int], /) -> None:
         """
-        Initialise the RTC. Datetime is a tuple of the form:
+        初始化RTC
 
-           ``(year, month, day, hour, minute, second, microsecond, tzinfo)``
+        日期时间是以下形式的元组:
+        (year, month, day, hour, minute, second, microsecond, tzinfo)
 
-        All eight arguments must be present. The ``microsecond`` and ``tzinfo``
-        values are currently ignored but might be used in the future.
+        必须提供所有八个参数. microsecond 和 tzinfo 值当前被忽略, 但将来可能会使用
 
-        Availability: CC3200, ESP32, MIMXRT, SAMD. The rtc.init() method on
-        the stm32 and renesas-ra ports just (re-)starts the RTC and does not
-        accept arguments.
+        可用性: CC3200, ESP32, MIMXRT, SAMD. stm32和renesas-ra端口上的rtc.init()方法只是重新启动RTC, 不接受参数
         """
 
     @overload
     def init(self, datetime: tuple[int, int, int, int, int, int, int, int], /) -> None:
         """
-        Initialise the RTC. Datetime is a tuple of the form:
+        初始化RTC
 
-           ``(year, month, day, hour, minute, second, microsecond, tzinfo)``
+        日期时间是以下形式的元组:
+        (year, month, day, hour, minute, second, microsecond, tzinfo)
 
-        All eight arguments must be present. The ``microsecond`` and ``tzinfo``
-        values are currently ignored but might be used in the future.
+        必须提供所有八个参数. microsecond 和 tzinfo 值当前被忽略, 但将来可能会使用
 
-        Availability: CC3200, ESP32, MIMXRT, SAMD. The rtc.init() method on
-        the stm32 and renesas-ra ports just (re-)starts the RTC and does not
-        accept arguments.
+        可用性: CC3200, ESP32, MIMXRT, SAMD. stm32和renesas-ra端口上的rtc.init()方法只是重新启动RTC, 不接受参数
         """
 
     def memory(self, data: Any | None = None) -> bytes:
         """
-        ``RTC.memory(data)`` will write *data* to the RTC memory, where *data* is any
-        object which supports the buffer protocol (including `bytes`, `bytearray`,
-        `memoryview` and `array.array`). ``RTC.memory()`` reads RTC memory and returns
-        a `bytes` object.
+        将数据写入RTC内存
 
-        Data written to RTC user memory is persistent across restarts, including
-        :ref:`soft_reset` and `machine.deepsleep()`.
+        参数:
+            data (Any | None): 任何支持缓冲协议的对象 bytes bytearray memoryview array.array
 
-        The maximum length of RTC user memory is 2048 bytes by default on esp32,
-        and 492 bytes on esp8266.
-
-        Availability: esp32, esp8266 ports.
+        返回:
+            (bytes): 写入的数据
         """
         ...
 
     def datetime(self, datetimetuple: Any | None = None) -> Tuple:
         """
-        Get or set the date and time of the RTC.
+        获取或设置RTC的日期和时间.
 
-        With no arguments, this method returns an 8-tuple with the current
-        date and time.  With 1 argument (being an 8-tuple) it sets the date
-        and time.
+        不带参数时,此方法返回一个包含当前日期和时间的8元组.
+        带1个参数(一个8元组)时,它设置日期和时间.
 
-        The 8-tuple has the following format:
+        8元组具有以下格式:
 
             (year, month, day, weekday, hours, minutes, seconds, subseconds)
 
-        The meaning of the ``subseconds`` field is hardware dependent.
+        ``subseconds`` 字段的含义取决于硬件.
         """
         ...
 
     @overload
     def __init__(self, id: int = 0):
         """
-        Create an RTC object. See init for parameters of initialization.
+        创建RTC对象
+
+        参数:
+            id (int): RTC实例ID 默认为0
+
+        有关初始化参数 请参阅init方法
         """
 
     @overload
     def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int]):
         """
-        Create an RTC object. See init for parameters of initialization.
+        创建RTC对象
 
-        The documentation for RTC is in a poor state; better to experiment and use `dir`!
+        参数:
+            id (int): RTC实例ID 默认为0
+            datetime (tuple[int, int, int]): 日期时间元组 (年 月 日)
+
+        有关初始化参数 请参阅init方法
         """
 
     @overload
     def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int]):
         """
-        Create an RTC object. See init for parameters of initialization.
+        创建RTC对象
 
-        The documentation for RTC is in a poor state; better to experiment and use `dir`!
+        参数:
+            id (int): RTC实例ID 默认为0
+            datetime (tuple[int, int, int, int]): 日期时间元组 (年 月 日 星期)
+
+        有关初始化参数 请参阅init方法
         """
 
     @overload
     def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int]):
         """
-        Create an RTC object. See init for parameters of initialization.
+        创建RTC对象
 
-        The documentation for RTC is in a poor state; better to experiment and use `dir`!
+        参数:
+            id (int): RTC实例ID 默认为0
+            datetime (tuple[int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时)
+
+        有关初始化参数 请参阅init方法
+        """
+
+    @overload
+    def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int]):
+        """
+        创建RTC对象
+
+        参数:
+            id (int): RTC实例ID 默认为0
+            datetime (tuple[int, int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时 分钟)
+
+        有关初始化参数 请参阅init方法
+        """
+
+    @overload
+    def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int]):
+        """
+        创建RTC对象
+
+        参数:
+            id (int): RTC实例ID 默认为0
+            datetime (tuple[int, int, int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时 分钟 秒)
+
+        有关初始化参数 请参阅init方法
+        """
+
+    @overload
+    def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int, int]):
+        """
+        创建RTC对象
+
+        参数:
+            id (int): RTC实例ID 默认为0
+            datetime (tuple[int, int, int, int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时 分钟 秒 微秒)
+
+        有关初始化参数 请参阅init方法
+        """
+
+    @overload
+    def value(self) -> int:
+        """
+        此方法允许设置和获取信号的值,取决于是否提供参数 ``x``.
+
+        如果省略参数,则此方法获取信号电平,1表示信号被断言(激活),0表示信号未激活.
+
+        如果提供参数,则此方法设置信号电平.参数 ``x`` 可以是任何能转换为布尔值的对象.
+        如果它转换为 ``True``,则信号被激活,否则未激活.
+
+        信号激活状态与底层引脚上实际逻辑电平之间的对应关系取决于信号是否反相(低电平有效).
+        对于非反相信号,激活状态对应逻辑1,未激活状态对应逻辑0.对于反相/低电平有效信号,
+        激活状态对应逻辑0,而未激活状态对应逻辑1.
+        """
+
+    @overload
+    def value(self, x: Any, /) -> None:
+        """
+        此方法允许设置和获取信号的值,取决于是否提供参数 ``x``.
+
+        如果省略参数,则此方法获取信号电平,1表示信号被断言(激活),0表示信号未激活.
+
+        如果提供参数,则此方法设置信号电平.参数 ``x`` 可以是任何能转换为布尔值的对象.
+        如果它转换为 ``True``,则信号被激活,否则未激活.
+
+        信号激活状态与底层引脚上实际逻辑电平之间的对应关系取决于信号是否反相(低电平有效).
+        对于非反相信号,激活状态对应逻辑1,未激活状态对应逻辑0.对于反相/低电平有效信号,
+        激活状态对应逻辑0,而未激活状态对应逻辑1.
+        """
+
+    @overload
+    def __init__(self, pin_obj: PinLike, invert: bool = False, /):
+        """
+        创建一个Signal对象.有两种创建方式:
+
+        * 通过包装现有的Pin对象 - 适用于任何开发板的通用方法.
+        * 通过直接将所需的Pin参数传递给Signal构造函数,
+          跳过创建中间Pin对象的需要.在许多(但不是所有)开发板上可用.
+
+        参数如下:
+
+          - ``pin_obj`` (PinLike): 是现有的Pin对象.
+
+          - ``pin_arguments`` (Any): 与可传递给Pin构造函数的参数相同.
+
+          - ``invert`` (bool): 如果为True,信号将被反相(低电平有效).
         """
 
     @overload
     def __init__(
-        self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int]
+        self,
+        id: PinLike,
+        /,
+        mode: int = -1,
+        pull: int = -1,
+        *,
+        value: Any = None,
+        drive: int | None = None,
+        alt: int | None = None,
+        invert: bool = False,
     ):
         """
-        Create an RTC object. See init for parameters of initialization.
+        创建一个Signal对象.有两种创建方式:
 
-        The documentation for RTC is in a poor state; better to experiment and use `dir`!
-        """
+        * 通过包装现有的Pin对象 - 适用于任何开发板的通用方法.
+        * 通过直接将所需的Pin参数传递给Signal构造函数,
+          跳过创建中间Pin对象的需要.在许多(但不是所有)开发板上可用.
 
-    @overload
-    def __init__(
-        self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int]
-    ):
-        """
-        Create an RTC object. See init for parameters of initialization.
+        参数如下:
 
-        The documentation for RTC is in a poor state; better to experiment and use `dir`!
-        """
+          - ``pin_obj`` (PinLike): 是现有的Pin对象.
 
-    @overload
-    def __init__(
-        self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int, int]
-    ):
-        """
-        Create an RTC object. See init for parameters of initialization.
+          - ``pin_arguments`` (Any): 与可传递给Pin构造函数的参数相同.
 
-        The documentation for RTC is in a poor state; better to experiment and use `dir`!
+          - ``invert`` (bool): 如果为True,信号将被反相(低电平有效).
         """
 
     @overload
     def alarm(self, id: int, time: int, /, *, repeat: bool = False) -> None:
         """
-        Set the RTC alarm. Time might be either a millisecond value to program the alarm to
-        current time + time_in_ms in the future, or a datetimetuple. If the time passed is in
-        milliseconds, repeat can be set to ``True`` to make the alarm periodic.
+        设置RTC闹钟
+
+        参数:
+            id (int): 闹钟ID
+            time (int): 毫秒值 用于将闹钟设置为当前时间 + time_in_ms
+            repeat (bool): 是否周期性重复 默认为False
+
+        返回:
+            (None): 无返回值
         """
 
     @overload
     def alarm(self, id: int, time: tuple[int, int, int], /) -> None:
         """
-        Set the RTC alarm. Time might be either a millisecond value to program the alarm to
-        current time + time_in_ms in the future, or a datetimetuple. If the time passed is in
-        milliseconds, repeat can be set to ``True`` to make the alarm periodic.
+        设置RTC闹钟
+
+        参数:
+            id (int): 闹钟ID
+            time (tuple[int, int, int]): 日期时间元组 (年 月 日)
+
+        返回:
+            (None): 无返回值
         """
 
     @overload
     def alarm(self, id: int, time: tuple[int, int, int, int], /) -> None:
         """
-        Set the RTC alarm. Time might be either a millisecond value to program the alarm to
-        current time + time_in_ms in the future, or a datetimetuple. If the time passed is in
-        milliseconds, repeat can be set to ``True`` to make the alarm periodic.
+        设置RTC闹钟
+
+        参数:
+            id (int): 闹钟ID
+            time (tuple[int, int, int, int]): 日期时间元组 (年 月 日 星期)
+
+        返回:
+            (None): 无返回值
         """
 
     @overload
     def alarm(self, id: int, time: tuple[int, int, int, int, int], /) -> None:
         """
-        Set the RTC alarm. Time might be either a millisecond value to program the alarm to
-        current time + time_in_ms in the future, or a datetimetuple. If the time passed is in
-        milliseconds, repeat can be set to ``True`` to make the alarm periodic.
+        设置RTC闹钟
+
+        参数:
+            id (int): 闹钟ID
+            time (tuple[int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时)
+
+        返回:
+            (None): 无返回值
         """
 
     @overload
     def alarm(self, id: int, time: tuple[int, int, int, int, int, int], /) -> None:
         """
-        Set the RTC alarm. Time might be either a millisecond value to program the alarm to
-        current time + time_in_ms in the future, or a datetimetuple. If the time passed is in
-        milliseconds, repeat can be set to ``True`` to make the alarm periodic.
+        设置RTC闹钟
+
+        参数:
+            id (int): 闹钟ID
+            time (tuple[int, int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时 分钟)
+
+        返回:
+            (None): 无返回值
         """
 
     @overload
     def alarm(self, id: int, time: tuple[int, int, int, int, int, int, int], /) -> None:
         """
-        Set the RTC alarm. Time might be either a millisecond value to program the alarm to
-        current time + time_in_ms in the future, or a datetimetuple. If the time passed is in
-        milliseconds, repeat can be set to ``True`` to make the alarm periodic.
+        设置RTC闹钟
+
+        参数:
+            id (int): 闹钟ID
+            time (tuple[int, int, int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时 分钟 秒)
+
+        返回:
+            (None): 无返回值
         """
 
     @overload
-    def alarm(
-        self, id: int, time: tuple[int, int, int, int, int, int, int, int], /
-    ) -> None:
+    def alarm(self, id: int, time: tuple[int, int, int, int, int, int, int, int], /) -> None:
         """
-        Set the RTC alarm. Time might be either a millisecond value to program the alarm to
-        current time + time_in_ms in the future, or a datetimetuple. If the time passed is in
-        milliseconds, repeat can be set to ``True`` to make the alarm periodic.
+        设置RTC闹钟
+
+        参数:
+            id (int): 闹钟ID
+            time (tuple[int, int, int, int, int, int, int, int]): 日期时间元组 (年 月 日 星期 小时 分钟 秒 微秒)
+
+        返回:
+            (None): 无返回值
         """
 
 class SoftI2C(I2C):
     """
-    Construct a new software I2C object.  The parameters are:
+    构造一个新的软件I2C对象
 
-       - *scl* should be a pin object specifying the pin to use for SCL.
-       - *sda* should be a pin object specifying the pin to use for SDA.
-       - *freq* should be an integer which sets the maximum frequency
-         for SCL.
-       - *timeout* is the maximum time in microseconds to wait for clock
-         stretching (SCL held low by another device on the bus), after
-         which an ``OSError(ETIMEDOUT)`` exception is raised.
+    参数:
+        scl (PinLike): SCL线的引脚对象
+        sda (PinLike): SDA线的引脚对象
+        freq (int): SCL的最大频率 默认为400000Hz
+        timeout (int): 等待时钟延展的最大时间 微秒 默认为50000微秒
     """
 
     def readfrom_mem_into(self, *args, **kwargs) -> Incomplete: ...
@@ -2545,56 +2498,52 @@ class SoftI2C(I2C):
 
 class SPI:
     """
-    SPI is a synchronous serial protocol that is driven by a controller. At the
-    physical level, a bus consists of 3 lines: SCK, MOSI, MISO. Multiple devices
-    can share the same bus. Each device should have a separate, 4th signal,
-    CS (Chip Select), to select a particular device on a bus with which
-    communication takes place. Management of a CS signal should happen in
-    user code (via machine.Pin class).
+    SPI是由控制器驱动的同步串行协议
 
-    Both hardware and software SPI implementations exist via the
-    :ref:`machine.SPI <machine.SPI>` and `machine.SoftSPI` classes.  Hardware SPI uses underlying
-    hardware support of the system to perform the reads/writes and is usually
-    efficient and fast but may have restrictions on which pins can be used.
-    Software SPI is implemented by bit-banging and can be used on any pin but
-    is not as efficient.  These classes have the same methods available and
-    differ primarily in the way they are constructed.
+    它由3条线组成: SCK MOSI MISO
+    多个设备可以共享同一条总线
+    每个设备应该有一个单独的第4个信号CS 片选 用于选择总线上进行通信的特定设备
+    CS信号的管理应该在用户代码中进行 通过machine.Pin类
 
-    Example usage::
+    硬件和软件SPI实现都通过 `machine.SPI` 和 `machine.SoftSPI` 类提供
+    硬件SPI使用系统的底层硬件支持来执行读/写操作, 通常高效快速, 但可能对可用的引脚有限制
+    软件SPI通过位操作实现, 可以在任何引脚上使用, 但效率不如硬件SPI高
+    这些类具有相同的可用方法, 主要区别在于它们的构造方式
 
+    使用示例:
         from machine import SPI, Pin
 
-        spi = SPI(0, baudrate=400000)           # Create SPI peripheral 0 at frequency of 400kHz.
-                                                # Depending on the use case, extra parameters may be required
-                                                # to select the bus characteristics and/or pins to use.
-        cs = Pin(4, mode=Pin.OUT, value=1)      # Create chip-select on pin 4.
+        spi = SPI(0, baudrate=400000)           # 创建频率为400kHz的SPI外设0
+                                                # 根据用例, 可能需要额外参数
+                                                # 来选择总线特性和/或要使用的引脚
+        cs = Pin(4, mode=Pin.OUT, value=1)      # 在引脚4上创建片选
 
         try:
-            cs(0)                               # Select peripheral.
-            spi.write(b"12345678")              # Write 8 bytes, and don't care about received data.
+            cs(0)                               # 选择外设
+            spi.write(b"12345678")              # 写入8个字节, 不关心接收到的数据
         finally:
-            cs(1)                               # Deselect peripheral.
+            cs(1)                               # 取消选择外设
 
         try:
-            cs(0)                               # Select peripheral.
-            rxdata = spi.read(8, 0x42)          # Read 8 bytes while writing 0x42 for each byte.
+            cs(0)                               # 选择外设
+            rxdata = spi.read(8, 0x42)          # 读取8个字节, 同时为每个字节写入0x42
         finally:
-            cs(1)                               # Deselect peripheral.
+            cs(1)                               # 取消选择外设
 
         rxdata = bytearray(8)
         try:
-            cs(0)                               # Select peripheral.
-            spi.readinto(rxdata, 0x42)          # Read 8 bytes inplace while writing 0x42 for each byte.
+            cs(0)                               # 选择外设
+            spi.readinto(rxdata, 0x42)          # 原地读取8个字节, 同时为每个字节写入0x42
         finally:
-            cs(1)                               # Deselect peripheral.
+            cs(1)                               # 取消选择外设
 
         txdata = b"12345678"
         rxdata = bytearray(len(txdata))
         try:
-            cs(0)                               # Select peripheral.
-            spi.write_readinto(txdata, rxdata)  # Simultaneously write and read bytes.
+            cs(0)                               # 选择外设
+            spi.write_readinto(txdata, rxdata)  # 同时写入和读取字节
         finally:
-            cs(1)                               # Deselect peripheral.
+            cs(1)                               # 取消选择外设
     """
 
     LSB: Final[int] = 1
@@ -2602,7 +2551,7 @@ class SPI:
     CONTROLLER: Incomplete
     def deinit(self) -> None:
         """
-        Turn off the SPI bus.
+        关闭SPI总线
         """
         ...
 
@@ -2620,25 +2569,21 @@ class SPI:
         miso: PinLike | None = None,
     ) -> None:
         """
-        Initialise the SPI bus with the given parameters:
+        使用给定参数初始化SPI总线
 
-          - ``baudrate`` is the SCK clock rate.
-          - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
-          - ``phase`` can be 0 or 1 to sample data on the first or second clock edge
-            respectively.
-          - ``bits`` is the width in bits of each transfer. Only 8 is guaranteed to be supported by all hardware.
-          - ``firstbit`` can be ``SPI.MSB`` or ``SPI.LSB``.
-          - ``sck``, ``mosi``, ``miso`` are pins (machine.Pin) objects to use for bus signals. For most
-            hardware SPI blocks (as selected by ``id`` parameter to the constructor), pins are fixed
-            and cannot be changed. In some cases, hardware blocks allow 2-3 alternative pin sets for
-            a hardware SPI block. Arbitrary pin assignments are possible only for a bitbanging SPI driver
-            (``id`` = -1).
-          - ``pins`` - WiPy port doesn't ``sck``, ``mosi``, ``miso`` arguments, and instead allows to
-            specify them as a tuple of ``pins`` parameter.
+        参数:
+            baudrate (int): SCK时钟速率
+            polarity (int): 空闲时钟线所处的电平 0或1
+            phase (int): 在第一个或第二个时钟边沿采样数据 0或1
+            bits (int): 每次传输的位宽
+            firstbit (int): MSB或LSB
+            sck (PinLike | None): SCK引脚对象
+            mosi (PinLike | None): MOSI引脚对象
+            miso (PinLike | None): MISO引脚对象
+            pins (tuple[PinLike, PinLike, PinLike] | None): WiPy端口的引脚元组 (sck, mosi, miso)
 
-        In the case of hardware SPI the actual clock frequency may be lower than the
-        requested baudrate. This is dependent on the platform hardware. The actual
-        rate may be determined by printing the SPI object.
+        返回:
+            (None): 无返回值
         """
 
     @overload
@@ -2653,78 +2598,85 @@ class SPI:
         pins: tuple[PinLike, PinLike, PinLike] | None = None,
     ) -> None:
         """
-        Initialise the SPI bus with the given parameters:
+        使用给定参数初始化SPI总线
 
-          - ``baudrate`` is the SCK clock rate.
-          - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
-          - ``phase`` can be 0 or 1 to sample data on the first or second clock edge
-            respectively.
-          - ``bits`` is the width in bits of each transfer. Only 8 is guaranteed to be supported by all hardware.
-          - ``firstbit`` can be ``SPI.MSB`` or ``SPI.LSB``.
-          - ``sck``, ``mosi``, ``miso`` are pins (machine.Pin) objects to use for bus signals. For most
-            hardware SPI blocks (as selected by ``id`` parameter to the constructor), pins are fixed
-            and cannot be changed. In some cases, hardware blocks allow 2-3 alternative pin sets for
-            a hardware SPI block. Arbitrary pin assignments are possible only for a bitbanging SPI driver
-            (``id`` = -1).
-          - ``pins`` - WiPy port doesn't ``sck``, ``mosi``, ``miso`` arguments, and instead allows to
-            specify them as a tuple of ``pins`` parameter.
+        参数:
+            baudrate (int): SCK时钟速率
+            polarity (int): 空闲时钟线所处的电平 0或1
+            phase (int): 在第一个或第二个时钟边沿采样数据 0或1
+            bits (int): 每次传输的位宽
+            firstbit (int): MSB或LSB
+            sck (PinLike | None): SCK引脚对象
+            mosi (PinLike | None): MOSI引脚对象
+            miso (PinLike | None): MISO引脚对象
+            pins (tuple[PinLike, PinLike, PinLike] | None): WiPy端口的引脚元组 (sck, mosi, miso)
 
-        In the case of hardware SPI the actual clock frequency may be lower than the
-        requested baudrate. This is dependent on the platform hardware. The actual
-        rate may be determined by printing the SPI object.
+        返回:
+            (None): 无返回值
         """
 
     def write_readinto(
         self, write_buf: AnyReadableBuf, read_buf: AnyWritableBuf, /
     ) -> int:
         """
-        Write the bytes from ``write_buf`` while reading into ``read_buf``.  The
-        buffers can be the same or different, but both buffers must have the
-        same length.
-        Returns ``None``.
+        从write_buf写入字节 同时读取到read_buf中
 
-        Note: on WiPy this function returns the number of bytes written.
+        参数:
+            write_buf (AnyReadableBuf): 包含要写入数据的缓冲区
+            read_buf (AnyWritableBuf): 用于接收读取数据的缓冲区
+
+        返回:
+            (int): 写入的字节数
         """
         ...
 
     def read(self, nbytes: int, write: int = 0x00, /) -> bytes:
         """
-        Read a number of bytes specified by ``nbytes`` while continuously writing
-        the single byte given by ``write``.
-        Returns a ``bytes`` object with the data that was read.
+        读取指定字节数 同时连续写入单个字节
+
+        参数:
+            nbytes (int): 要读取的字节数
+            write (int): 每次读取时要写入的单个字节 默认为0x00
+
+        返回:
+            (bytes): 包含所读取数据的bytes对象
         """
         ...
 
     def write(self, buf: AnyReadableBuf, /) -> int:
         """
-        Write the bytes contained in ``buf``.
-        Returns ``None``.
+        写入缓冲区中的字节
 
-        Note: on WiPy this function returns the number of bytes written.
+        参数:
+            buf (AnyReadableBuf): 包含要写入字节的缓冲区
+
+        返回:
+            (int): 写入的字节数
         """
         ...
 
     def readinto(self, buf: AnyWritableBuf, write: int = 0x00, /) -> int:
         """
-        Read into the buffer specified by ``buf`` while continuously writing the
-        single byte given by ``write``.
-        Returns ``None``.
+        读取数据到指定缓冲区中 同时连续写入单个字节
 
-        Note: on WiPy this function returns the number of bytes read.
+        参数:
+            buf (AnyWritableBuf): 用于接收读取数据的缓冲区
+            write (int): 每次读取时要写入的单个字节 默认为0x00
+
+        返回:
+            (int): 读取的字节数
         """
         ...
 
     @overload
     def __init__(self, id: int, /):
         """
-        Construct an SPI object on the given bus, *id*. Values of *id* depend
-        on a particular port and its hardware. Values 0, 1, etc. are commonly used
-        to select hardware SPI block #0, #1, etc.
+        在给定总线上构造SPI对象,*id*。*id*的值取决于特定的端口及其硬件。
+        通常使用0、1等值来选择硬件SPI块#0、#1等。
 
-        With no additional parameters, the SPI object is created but not
-        initialised (it has the settings from the last initialisation of
-        the bus, if any).  If extra arguments are given, the bus is initialised.
-        See ``init`` for parameters of initialisation.
+        如果没有额外参数,则创建SPI对象但不进行初始化(它具有来自总线最后一次
+        初始化的设置,如果有的话)。如果给出额外参数,则总线被初始化。
+        有关初始化参数,请参见 ``init``。
         """
 
     @overload
@@ -2743,14 +2695,12 @@ class SPI:
         miso: PinLike | None = None,
     ):
         """
-        Construct an SPI object on the given bus, *id*. Values of *id* depend
-        on a particular port and its hardware. Values 0, 1, etc. are commonly used
-        to select hardware SPI block #0, #1, etc.
+        在给定总线上构造SPI对象,*id*。*id*的值取决于特定的端口及其硬件。
+        通常使用0、1等值来选择硬件SPI块#0、#1等。
 
-        With no additional parameters, the SPI object is created but not
-        initialised (it has the settings from the last initialisation of
-        the bus, if any).  If extra arguments are given, the bus is initialised.
-        See ``init`` for parameters of initialisation.
+        如果没有额外参数,则创建SPI对象但不进行初始化(它具有来自总线最后一次
+        初始化的设置,如果有的话)。如果给出额外参数,则总线被初始化。
+        有关初始化参数,请参见 ``init``。
         """
 
     @overload
@@ -2767,185 +2717,78 @@ class SPI:
         pins: tuple[PinLike, PinLike, PinLike] | None = None,
     ):
         """
-        Construct an SPI object on the given bus, *id*. Values of *id* depend
-        on a particular port and its hardware. Values 0, 1, etc. are commonly used
-        to select hardware SPI block #0, #1, etc.
+        在给定总线上构造SPI对象,*id*。*id*的值取决于特定的端口及其硬件。
+        通常使用0、1等值来选择硬件SPI块#0、#1等。
 
-        With no additional parameters, the SPI object is created but not
-        initialised (it has the settings from the last initialisation of
-        the bus, if any).  If extra arguments are given, the bus is initialised.
-        See ``init`` for parameters of initialisation.
+        如果没有额外参数,则创建SPI对象但不进行初始化(它具有来自总线最后一次
+        初始化的设置,如果有的话)。如果给出额外参数,则总线被初始化。
+        有关初始化参数,请参见 ``init``。
         """
 
-class Signal(Pin):
+class Signal:
     """
-    The Signal class is a simple extension of the `Pin` class. Unlike Pin, which
-    can be only in "absolute" 0 and 1 states, a Signal can be in "asserted"
-    (on) or "deasserted" (off) states, while being inverted (active-low) or
-    not. In other words, it adds logical inversion support to Pin functionality.
-    While this may seem a simple addition, it is exactly what is needed to
-    support wide array of simple digital devices in a way portable across
-    different boards, which is one of the major MicroPython goals. Regardless
-    of whether different users have an active-high or active-low LED, a normally
-    open or normally closed relay - you can develop a single, nicely looking
-    application which works with each of them, and capture hardware
-    configuration differences in few lines in the config file of your app.
+    控制一个数字信号 例如通过 `Pin` 对象
 
-    Example::
-
-        from machine import Pin, Signal
-
-        # Suppose you have an active-high LED on pin 0
-        led1_pin = Pin(0, Pin.OUT)
-        # ... and active-low LED on pin 1
-        led2_pin = Pin(1, Pin.OUT)
-
-        # Now to light up both of them using Pin class, you'll need to set
-        # them to different values
-        led1_pin.value(1)
-        led2_pin.value(0)
-
-        # Signal class allows to abstract away active-high/active-low
-        # difference
-        led1 = Signal(led1_pin, invert=False)
-        led2 = Signal(led2_pin, invert=True)
-
-        # Now lighting up them looks the same
-        led1.value(1)
-        led2.value(1)
-
-        # Even better:
-        led1.on()
-        led2.on()
-
-    Following is the guide when Signal vs Pin should be used:
-
-    * Use Signal: If you want to control a simple on/off (including software
-      PWM!) devices like LEDs, multi-segment indicators, relays, buzzers, or
-      read simple binary sensors, like normally open or normally closed buttons,
-      pulled high or low, Reed switches, moisture/flame detectors, etc. etc.
-      Summing up, if you have a real physical device/sensor requiring GPIO
-      access, you likely should use a Signal.
-
-    * Use Pin: If you implement a higher-level protocol or bus to communicate
-      with more complex devices.
-
-    The split between Pin and Signal come from the use cases above and the
-    architecture of MicroPython: Pin offers the lowest overhead, which may
-    be important when bit-banging protocols. But Signal adds additional
-    flexibility on top of Pin, at the cost of minor overhead (much smaller
-    than if you implemented active-high vs active-low device differences in
-    Python manually!). Also, Pin is a low-level object which needs to be
-    implemented for each support board, while Signal is a high-level object
-    which comes for free once Pin is implemented.
-
-    If in doubt, give the Signal a try! Once again, it is offered to save
-    developers from the need to handle unexciting differences like active-low
-    vs active-high signals, and allow other users to share and enjoy your
-    application, instead of being frustrated by the fact that it doesn't
-    work for them simply because their LEDs or relays are wired in a slightly
-    different way.
+    可以像创建 `Pin` 对象一样传递 `Pin` 对象或引脚号
+    一个 `Signal` 对象可以像函数一样被调用以快速获取或设置它所表示的信号值
     """
 
     def off(self) -> None:
         """
-        Deactivate signal.
-        """
-        ...
+        将信号设置为其非活动状态
 
-    def on(self) -> None:
-        """
-        Activate signal.
+        如果 `value` 为0 则设置为0 否则设置为1
         """
         ...
 
     @overload
     def value(self) -> int:
         """
-        This method allows to set and get the value of the signal, depending on whether
-        the argument ``x`` is supplied or not.
+        获取或设置信号的当前数字值
 
-        If the argument is omitted then this method gets the signal level, 1 meaning
-        signal is asserted (active) and 0 - signal inactive.
-
-        If the argument is supplied then this method sets the signal level. The
-        argument ``x`` can be anything that converts to a boolean. If it converts
-        to ``True``, the signal is active, otherwise it is inactive.
-
-        Correspondence between signal being active and actual logic level on the
-        underlying pin depends on whether signal is inverted (active-low) or not.
-        For non-inverted signal, active status corresponds to logical 1, inactive -
-        to logical 0. For inverted/active-low signal, active status corresponds
-        to logical 0, while inactive - to logical 1.
+        不带参数时 返回信号的值 0或1
+        带参数时 设置信号的值
         """
 
     @overload
     def value(self, x: Any, /) -> None:
         """
-        This method allows to set and get the value of the signal, depending on whether
-        the argument ``x`` is supplied or not.
+        获取或设置信号的当前数字值
 
-        If the argument is omitted then this method gets the signal level, 1 meaning
-        signal is asserted (active) and 0 - signal inactive.
+        不带参数时 返回信号的值 0或1
+        带参数时 设置信号的值
+        """
 
-        If the argument is supplied then this method sets the signal level. The
-        argument ``x`` can be anything that converts to a boolean. If it converts
-        to ``True``, the signal is active, otherwise it is inactive.
+    def on(self) -> None:
+        """
+        将信号设置为其活动状态
 
-        Correspondence between signal being active and actual logic level on the
-        underlying pin depends on whether signal is inverted (active-low) or not.
-        For non-inverted signal, active status corresponds to logical 1, inactive -
-        to logical 0. For inverted/active-low signal, active status corresponds
-        to logical 0, while inactive - to logical 1.
+        如果 `value` 为1 则设置为1 否则设置为0
+        """
+        ...
+
+    def __init__(self, pin: PinLike, /, *, value: bool = False, invert: bool = False):
+        """
+        构造并返回一个新的 `Signal` 对象
+
+        参数:
+            pin (PinLike): 引脚对象或整数引脚号
+            value (bool): 信号的初始值 False表示非活动状态 默认为False
+            invert (bool): 是否反转信号的逻辑 默认为False
         """
 
     @overload
-    def __init__(self, pin_obj: PinLike, invert: bool = False, /):
+    def __call__(self) -> int:
         """
-        Create a Signal object. There're two ways to create it:
+        Signal对象是可调用的 调用方法提供了一个 快速 设置和获取信号值的快捷方式
 
-        * By wrapping existing Pin object - universal method which works for
-          any board.
-        * By passing required Pin parameters directly to Signal constructor,
-          skipping the need to create intermediate Pin object. Available on
-          many, but not all boards.
-
-        The arguments are:
-
-          - ``pin_obj`` is existing Pin object.
-
-          - ``pin_arguments`` are the same arguments as can be passed to Pin constructor.
-
-          - ``invert`` - if True, the signal will be inverted (active low).
+        它等同于 `Signal.value([x])`
         """
 
     @overload
-    def __init__(
-        self,
-        id: PinLike,
-        /,
-        mode: int = -1,
-        pull: int = -1,
-        *,
-        value: Any = None,
-        drive: int | None = None,
-        alt: int | None = None,
-        invert: bool = False,
-    ):
+    def __call__(self, x: Any, /) -> None:
         """
-        Create a Signal object. There're two ways to create it:
+        Signal对象是可调用的 调用方法提供了一个 快速 设置和获取信号值的快捷方式
 
-        * By wrapping existing Pin object - universal method which works for
-          any board.
-        * By passing required Pin parameters directly to Signal constructor,
-          skipping the need to create intermediate Pin object. Available on
-          many, but not all boards.
-
-        The arguments are:
-
-          - ``pin_obj`` is existing Pin object.
-
-          - ``pin_arguments`` are the same arguments as can be passed to Pin constructor.
-
-          - ``invert`` - if True, the signal will be inverted (active low).
+        它等同于 `Signal.value([x])`
         """

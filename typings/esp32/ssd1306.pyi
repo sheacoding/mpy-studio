@@ -36,10 +36,10 @@ class SSD1306(framebuf.FrameBuffer):
         """
         初始化SSD1306显示驱动
         
-        Args:
-            width: 显示屏宽度（像素）
-            height: 显示屏高度（像素）
-            external_vcc: 是否使用外部VCC
+        参数:
+            width: int 显示屏宽度（像素）
+            height: int 显示屏高度（像素）
+            external_vcc: bool 是否使用外部VCC
         """
         ...
 
@@ -59,8 +59,8 @@ class SSD1306(framebuf.FrameBuffer):
         """
         设置显示对比度
         
-        Args:
-            contrast: 对比度值(0-255)
+        参数:
+            contrast: int 对比度值(0-255)
         """
         ...
 
@@ -68,8 +68,8 @@ class SSD1306(framebuf.FrameBuffer):
         """
         设置显示反转
         
-        Args:
-            invert: True为反转显示，False为正常显示
+        参数:
+            invert: bool True为反转显示,False为正常显示
         """
         ...
 
@@ -77,8 +77,8 @@ class SSD1306(framebuf.FrameBuffer):
         """
         设置显示旋转
         
-        Args:
-            rotate: True为旋转显示，False为正常显示
+        参数:
+            rotate: bool True为旋转显示,False为正常显示
         """
         ...
 
@@ -90,8 +90,8 @@ class SSD1306(framebuf.FrameBuffer):
         """
         写入命令（抽象方法，需要在子类中实现）
         
-        Args:
-            cmd: 命令字节
+        参数:
+            cmd: int 命令字节
         """
         ...
         
@@ -99,8 +99,8 @@ class SSD1306(framebuf.FrameBuffer):
         """
         写入显示数据（抽象方法，需要在子类中实现）
         
-        Args:
-            buf: 数据缓冲区
+        参数:
+            buf: bytes|bytearray 数据缓冲区
         """
         ...
 
@@ -116,12 +116,12 @@ class SSD1306_I2C(SSD1306):
         """
         初始化SSD1306 I2C显示驱动
         
-        Args:
-            width: 显示屏宽度（像素）
-            height: 显示屏高度（像素）
-            i2c: I2C总线对象
-            addr: I2C设备地址
-            external_vcc: 是否使用外部VCC
+        参数:
+            width: int 显示屏宽度（像素）
+            height: int  显示屏高度（像素）
+            i2c: I2C I2C总线对象
+            addr: int I2C设备地址
+            external_vcc: bool是否使用外部VCC
         """
         ...
 
@@ -129,8 +129,8 @@ class SSD1306_I2C(SSD1306):
         """
         写入命令
         
-        Args:
-            cmd: 命令字节
+        参数:
+            cmd: int 命令字节
         """
         ...
 
@@ -138,8 +138,8 @@ class SSD1306_I2C(SSD1306):
         """
         写入显示数据
         
-        Args:
-            buf: 数据缓冲区
+        参数:
+            buf: bytes|bytearray 数据缓冲区
         """
         ...
 
@@ -157,14 +157,14 @@ class SSD1306_SPI(SSD1306):
         """
         初始化SSD1306 SPI显示驱动
         
-        Args:
-            width: 显示屏宽度（像素）
-            height: 显示屏高度（像素）
-            spi: SPI总线对象
-            dc: 数据/命令控制引脚
-            res: 复位引脚
-            cs: 片选引脚
-            external_vcc: 是否使用外部VCC
+        参数:
+            width: int显示屏宽度(像素）
+            height: int 显示屏高度(像素）
+            spi: SPI SPI总线对象
+            dc: Pin 数据/命令控制引脚
+            res: Pin复位引脚
+            cs: PIn 片选引脚
+            external_vcc: bool是否使用外部VCC
         """
         ...
 
@@ -172,8 +172,8 @@ class SSD1306_SPI(SSD1306):
         """
         写入命令
         
-        Args:
-            cmd: 命令字节
+        参数:
+            cmd: int 命令字节
         """
         ...
 
@@ -181,7 +181,7 @@ class SSD1306_SPI(SSD1306):
         """
         写入显示数据
         
-        Args:
-            buf: 数据缓冲区
+        参数:
+            buf: bytes|bytearray 数据缓冲区
         """
         ...
