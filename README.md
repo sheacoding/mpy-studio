@@ -1,4 +1,4 @@
-# MPBit Studio - MicroPython IDE
+# mpy-studio - MicroPython IDE
 
 专为 ESP32 和 ESP32-S3 开发板设计的 VSCode MicroPython 扩展。
 
@@ -11,7 +11,7 @@
 
 ## 🚀 快速开始
 
-1. **安装扩展**: 在 VSCode 扩展市场搜索 "MPBit Studio"
+1. **安装扩展**: 在 VSCode 扩展市场搜索 "mpy-studio"
 2. **连接设备**: 将 ESP32/ESP32-S3 通过 USB 连接到电脑
 3. **运行代码**: 打开 Python 文件，点击运行按钮或使用命令面板
 
@@ -40,4 +40,4 @@
 
 ---
 
-**MPBit Studio** - 让 MicroPython 开发更简单！
+**mpy-studio** - 让 MicroPython 开发更简单！

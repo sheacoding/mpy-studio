@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { DeviceManager } from './board';
 
 export class ReplPanel implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'mpbit-studio.replPanel';
+    public static readonly viewType = 'mpy-studio.replPanel';
     private static readonly MAX_HISTORY_LINES = 200;
 
     private _view?: vscode.WebviewView;

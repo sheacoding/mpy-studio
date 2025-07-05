@@ -333,6 +333,6 @@
     "embedded",
     "iot"
   ],
-  "baseContentUrl": "https://gitee.com/ai_mpy/mpbit-studio/raw/main",
-  "baseImagesUrl": "https://gitee.com/ai_mpy/mpbit-studio/raw/main"
+  "baseContentUrl": "https://gitee.com/ai_mpy/mpy-studio/raw/main",
+  "baseImagesUrl": "https://gitee.com/ai_mpy/mpy-studio/raw/main"
 }

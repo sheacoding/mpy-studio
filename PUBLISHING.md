@@ -1,4 +1,4 @@
-# MPBit Studio 发布指南
+# mpy-studio 发布指南
 
 ## 📋 发布前检查清单
 
@@ -44,7 +44,7 @@ npm run package
 ### 4. 测试本地安装
 ```bash
 # 安装到本地VSCode测试
-code --install-extension mpbit-studio-0.0.3.vsix
+code --install-extension mpy-studio-0.0.6.vsix
 ```
 
 ### 5. 发布到商店

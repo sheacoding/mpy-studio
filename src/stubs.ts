@@ -134,7 +134,7 @@ export class StubsManager {
             }
             
             // 保存用户选择的开发板到配置中
-            const mpConfig = vscode.workspace.getConfiguration('mpbit-studio');
+            const mpConfig = vscode.workspace.getConfiguration('mpy-studio');
             await mpConfig.update('selectedBoard', boardKey, vscode.ConfigurationTarget.Workspace);
             
             this._logger.info(`已更新 Python 分析配置并保存用户选择`);
@@ -152,7 +152,7 @@ export class StubsManager {
     async getSelectedBoard(): Promise<string> {
         try {
             // 从配置中读取用户选择
-            const mpConfig = vscode.workspace.getConfiguration('mpbit-studio');
+            const mpConfig = vscode.workspace.getConfiguration('mpy-studio');
             const userSelectedBoard = mpConfig.get<string>('selectedBoard');
             
             if (userSelectedBoard) {
