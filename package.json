@@ -12,10 +12,6 @@
     "Debuggers",
     "Other"
   ],
-  "activationEvents": [
-    "onView:mpy-studio.replPanel",
-    "onLanguage:python"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [

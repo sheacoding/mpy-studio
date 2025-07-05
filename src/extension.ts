@@ -42,6 +42,8 @@ async function updateTypings(context: vscode.ExtensionContext) {
 }
 
 export async function activate(context: vscode.ExtensionContext) {
+    console.log('MPY Studio: Extension activating...');
+    
     outputChannel = vscode.window.createOutputChannel('MPY-REPL');
     const logger = Logger.getInstance(context, outputChannel);
 
@@ -53,6 +55,8 @@ export async function activate(context: vscode.ExtensionContext) {
     (deviceManager as any)._replPanel = replPanel;
     runner = new Runner(logger, deviceManager, replPanel);
     await deviceManager.loadConfig(context);
+
+    console.log('MPY Studio: Managers initialized, registering commands...');
 
     // 注册命令
     const commands = [
@@ -274,6 +278,8 @@ export async function activate(context: vscode.ExtensionContext) {
             replPanel
         )
     );
+    
+    console.log('MPY Studio: Extension activated successfully. Registered commands:', commands.length);
 }
 
 export function deactivate() {
