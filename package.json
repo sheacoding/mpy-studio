@@ -1,17 +1,19 @@
 {
-  "name": "mpbit-studio",
-  "displayName": "MPBit Studio",
-  "description": "MicroPython IDE for ESP32 and MPBit",
-  "version": "0.0.3",
+  "name": "mpy-studio",
+  "displayName": "MPY Studio",
+  "description": "A comprehensive MicroPython IDE for ESP32 and ESP32-S3 development boards. Features device management, code execution, REPL terminal, and more.",
+  "version": "0.0.6",
   "publisher": "bright",
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Programming Languages",
+    "Debuggers",
     "Other"
   ],
   "activationEvents": [
-    "onView:mpbit-studio.replPanel",
+    "onView:mpy-studio.replPanel",
     "onLanguage:python"
   ],
   "main": "./out/extension.js",
@@ -215,32 +217,32 @@
           "default": "esp32",
           "description": "MicroPython 开发板类型"
         },
-        "mpbit-studio.pureRepl.baudRate": {
+        "mpy-studio.pureRepl.baudRate": {
           "type": "number",
           "default": 115200,
           "description": "纯REPL模式波特率"
         },
-        "mpbit-studio.pureRepl.timeout": {
+        "mpy-studio.pureRepl.timeout": {
           "type": "number",
           "default": 2000,
           "description": "纯REPL模式超时时间(毫秒)"
         },
-        "mpbit-studio.pureRepl.retryCount": {
+        "mpy-studio.pureRepl.retryCount": {
           "type": "number",
           "default": 2,
           "description": "纯REPL模式重试次数"
         },
-        "mpbit-studio.pureRepl.commandDelay": {
+        "mpy-studio.pureRepl.commandDelay": {
           "type": "number",
           "default": 300,
           "description": "纯REPL模式命令延迟(毫秒)"
         },
-        "mpbit-studio.showDebugInfo": {
+        "mpy-studio.showDebugInfo": {
           "type": "boolean",
           "default": false,
           "description": "是否显示调试信息"
         },
-        "mpbit-studio.selectedBoard": {
+        "my-studio.selectedBoard": {
           "type": "string",
           "default": "",
           "description": "用户选择的开发板（内部使用，请通过命令选择）"
@@ -263,17 +265,17 @@
     "viewsContainers": {
       "panel": [
         {
-          "id": "mpbit-studio",
+          "id": "mpy-studio",
           "title": "MPY-REPL",
           "icon": "media/micropython-menu.svg"
         }
       ]
     },
     "views": {
-      "mpbit-studio": [
+      "mpy-studio": [
         {
           "type": "webview",
-          "id": "mpbit-studio.replPanel",
+          "id": "mpy-studio.replPanel",
           "name": "MPY-REPL"
         }
       ]
@@ -288,16 +290,14 @@
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
     "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && rm -rf out/typings && cp -r typings out/ && npx copyfiles -u 1 resources/**/* out/resources",
-    "postbuild": "npx copyfiles -u 1 resources/**/* out/resources"
+    "postbuild": "npx copyfiles -u 1 resources/**/* out/resources",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "publish:patch": "vsce publish patch",
+    "publish:minor": "vsce publish minor",
+    "publish:major": "vsce publish major"
   },
-  "files": [
-    "out",
-    "resources",
-    "package.json",
-    "out/**/*",
-    "media/**/*",
-    "typings/**/*"
-  ],
+
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
@@ -318,8 +318,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/ai_mpy/mpbit-studio.git"
+    "url": "https://gitee.com/ai_mpy/mpy-studio.git"
   },
+  "homepage": "https://gitee.com/ai_mpy/mpy-studio",
+  "bugs": {
+    "url": "https://gitee.com/ai_mpy/mpy-studio/issues"
+  },
+  "keywords": [
+    "micropython",
+    "esp32",
+    "esp32-s3",
+    "repl",
+    "python",
+    "embedded",
+    "iot"
+  ],
   "baseContentUrl": "https://gitee.com/ai_mpy/mpbit-studio/raw/main",
   "baseImagesUrl": "https://gitee.com/ai_mpy/mpbit-studio/raw/main"
 }

@@ -3,13 +3,12 @@
 src/**
 .gitignore
 .yarnrc
-webpack.config.js
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/.eslintrc.json
 **/*.map
 **/*.ts
+node_modules/**
 temp/**
-media/**/*.svg
-!media/dark/*.svg
-!media/light/*.svg
+.DS_Store
+*.vsix

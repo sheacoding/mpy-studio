@@ -1,7 +1,0 @@
-{
-    "boards": {
-        "k10":["esp32","lvgl","k10"],
-        "S3BIT":["esp32","lvgl","S3BIT"]
-    },
-    "default": "k10"
-}
