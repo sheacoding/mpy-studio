@@ -30,21 +30,40 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         _token: vscode.CancellationToken
     ) {
         this._view = webviewView;
+        
+        // 配置 webview 选项
         webviewView.webview.options = {
             enableScripts: true,
             localResourceRoots: [
-                vscode.Uri.file(this.context.asAbsolutePath('media'))
+                vscode.Uri.joinPath(this.context.extensionUri, 'media'),
+                vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media')
             ]
         };
-        webviewView.webview.html = this.getHtml(webviewView.webview);
+        
+        // 添加调试日志
+        console.log('ReplPanel: Configuring webview with extensionUri:', this.context.extensionUri.fsPath);
+        console.log('ReplPanel: Media path:', vscode.Uri.joinPath(this.context.extensionUri, 'media').fsPath);
+        
+        try {
+            const html = this.getHtml(webviewView.webview);
+            console.log('ReplPanel: Generated HTML successfully');
+            webviewView.webview.html = html;
+        } catch (error) {
+            console.error('ReplPanel: Failed to generate webview HTML:', error);
+            // 提供备用 HTML
+            webviewView.webview.html = this.getFallbackHtml();
+        }
+        
         webviewView.onDidChangeVisibility(() => {
             if (webviewView.visible) {
+                console.log('ReplPanel: Webview became visible, reloading...');
                 this.reload();
             }
         });
 
         // 处理来自webview的消息
         webviewView.webview.onDidReceiveMessage(async (message) => {
+            console.log('ReplPanel: Received message from webview:', message);
             switch (message.command) {
                 case 'sendCommand':
                     try {
@@ -80,6 +99,7 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                         this._lastCommand = ''
                         await this.deviceManager.connect();
                     } catch (err) {
+                        console.error('ReplPanel: Connect error:', err);
                     }
                     break;
                 }
@@ -88,6 +108,7 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                         this._lastCommand = ''
                         await this.deviceManager.disconnect();
                     } catch (err) {
+                        console.error('ReplPanel: Disconnect error:', err);
                     }
                     break;
             }
@@ -95,20 +116,29 @@ export class ReplPanel implements vscode.WebviewViewProvider {
     }
 
     private getHtml(webview: vscode.Webview): string {
+        // 使用 webview.asWebviewUri 确保资源路径正确
         const styleUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'terminal.css')
         );
         const connectIconUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'connect.svg')
-        ).toString();
+        );
         const disconnectIconUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'disconnect.svg')
-        ).toString();
+        );
+        const stopIconUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'stop.svg')
+        );
+        const deleteIconUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'delete.svg')
+        );
+        
         const html = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} data:; script-src 'nonce-${webview.cspSource.split(' ')[0]}';">
     <title>MPY-REPL</title>
     <link rel="stylesheet" href="${styleUri}">
 </head>
@@ -123,10 +153,10 @@ export class ReplPanel implements vscode.WebviewViewProvider {
             </div>
             <div class="terminal-controls">
                 <button id="stopButton" class="status-btn" title="中断">
-                  <img src="${webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', 'stop.svg')).toString()}" class="icon" alt="中断" />
+                  <img src="${stopIconUri}" class="icon" alt="中断" />
                 </button>
                 <button id="clearButton" class="status-btn" title="清空">
-                  <img src="${webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'media', 'delete.svg')).toString()}" class="icon" alt="清空" />
+                  <img src="${deleteIconUri}" class="icon" alt="清空" />
                 </button>
             </div>
         </div>
@@ -138,7 +168,7 @@ export class ReplPanel implements vscode.WebviewViewProvider {
             </div>
         </div>
     </div>
-    <script>
+    <script nonce="${webview.cspSource.split(' ')[0]}">
         const vscode = acquireVsCodeApi();
         const terminalOutput = document.getElementById('terminalOutput');
         const terminalInput = document.getElementById('terminalInput');
@@ -148,8 +178,8 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         const stopButton = document.getElementById('stopButton');
         const connectionStatusBtn = document.getElementById('connectionStatusBtn');
         const connectionStatusIcon = document.getElementById('connectionStatusIcon');
-        const connectIconUri = ${JSON.stringify(connectIconUri)};
-        const disconnectIconUri = ${JSON.stringify(disconnectIconUri)};
+        const connectIconUri = ${JSON.stringify(connectIconUri.toString())};
+        const disconnectIconUri = ${JSON.stringify(disconnectIconUri.toString())};
         let isConnected = false;
 
         // Robust DOMContentLoaded to ensure event binding
@@ -320,6 +350,106 @@ export class ReplPanel implements vscode.WebviewViewProvider {
 </body>
 </html>`;
         return html;
+    }
+
+    private getFallbackHtml(): string {
+        return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPY-REPL</title>
+    <style>
+        body { font-family: monospace; margin: 0; padding: 10px; background: #1e1e1e; color: #d4d4d4; }
+        .terminal-container { height: 100vh; display: flex; flex-direction: column; }
+        .terminal-header { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #333; }
+        .terminal-content { flex: 1; overflow-y: auto; }
+        .terminal-output { padding: 10px; }
+        .output-line { margin: 2px 0; }
+        .error { color: #f44336; }
+        .success { color: #4caf50; }
+        .info { color: #2196f3; }
+        button { background: #333; color: #fff; border: 1px solid #555; padding: 5px 10px; cursor: pointer; }
+        button:hover { background: #555; }
+        input { background: #2d2d2d; color: #d4d4d4; border: 1px solid #555; padding: 5px; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="connection-status">
+                <button id="connectionStatusBtn" title="连接状态">🔌</button>
+                <span class="status-text" id="statusText">未连接</span>
+            </div>
+            <div class="terminal-controls">
+                <button id="stopButton" title="中断">⏹</button>
+                <button id="clearButton" title="清空">🗑</button>
+            </div>
+        </div>
+        <div class="terminal-content">
+            <div class="terminal-output" id="terminalOutput">
+                <div class="output-line">REPL 终端加载中...</div>
+            </div>
+            <div class="terminal-input-line" id="terminalInputLine" style="display:none;">
+                <span class="prompt">>>> </span>
+                <input type="text" id="terminalInput" placeholder="输入命令..." disabled>
+            </div>
+        </div>
+    </div>
+    <script>
+        const vscode = acquireVsCodeApi();
+        // 简化的 JavaScript 代码，确保基本功能可用
+        document.getElementById('connectionStatusBtn').addEventListener('click', () => {
+            vscode.postMessage({ command: 'connect' });
+        });
+        document.getElementById('stopButton').addEventListener('click', () => {
+            vscode.postMessage({ command: 'stop' });
+        });
+        document.getElementById('clearButton').addEventListener('click', () => {
+            document.getElementById('terminalOutput').innerHTML = '';
+            vscode.postMessage({ command: 'clear' });
+        });
+        document.getElementById('terminalInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const command = e.target.value;
+                if (command.trim()) {
+                    vscode.postMessage({ command: 'sendCommand', text: command });
+                    e.target.value = '';
+                }
+            }
+        });
+        window.addEventListener('message', event => {
+            const message = event.data;
+            const output = document.getElementById('terminalOutput');
+            const statusText = document.getElementById('statusText');
+            const terminalInput = document.getElementById('terminalInput');
+            const terminalInputLine = document.getElementById('terminalInputLine');
+            
+            switch (message.command) {
+                case 'addOutput':
+                    const line = document.createElement('div');
+                    line.className = 'output-line ' + (message.type || 'output');
+                    line.textContent = message.text;
+                    output.appendChild(line);
+                    output.scrollTop = output.scrollHeight;
+                    break;
+                case 'clear':
+                    output.innerHTML = '';
+                    break;
+                case 'setStatus':
+                    statusText.textContent = message.text;
+                    terminalInput.disabled = !message.connected;
+                    if (message.connected) {
+                        terminalInputLine.style.display = '';
+                    } else {
+                        terminalInputLine.style.display = 'none';
+                    }
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>`;
     }
 
     public addOutput(text: string, type: string = 'output') {

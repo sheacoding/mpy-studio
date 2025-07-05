@@ -1,6 +1,6 @@
 {
   "name": "mpy-studio",
-  "displayName": "MPY Studio",
+  "displayName": "mpy-studio",
   "description": "A comprehensive MicroPython IDE for ESP32 and ESP32-S3 development boards. Features device management, code execution, REPL terminal, and more.",
   "version": "0.0.6",
   "publisher": "bright",
@@ -289,7 +289,7 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
-    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && rm -rf out/typings && cp -r typings out/ && npx copyfiles -u 1 resources/**/* out/resources",
+    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && mkdir -p out/typings && cp -r typings/* out/typings/ && mkdir -p out/resources && npx copyfiles -u 1 resources/**/* out/resources",
     "postbuild": "npx copyfiles -u 1 resources/**/* out/resources",
     "package": "vsce package",
     "publish": "vsce publish",
