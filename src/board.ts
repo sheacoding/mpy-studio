@@ -1,12 +1,10 @@
 import * as vscode from 'vscode';
 import { SerialPort } from 'serialport';
-import { PortInfo } from '@serialport/bindings-cpp';
 import { Logger } from './logger';
 import MicroPythonBoard from './micropython';
 import { StubsManager } from './stubs';
 
 export class DeviceManager {
-    // 私有字段
     private _statusBarItem: vscode.StatusBarItem;
     private _currentPort?: string;
     private _logger: Logger;
@@ -19,7 +17,6 @@ export class DeviceManager {
     private _boardStatusBarItem: vscode.StatusBarItem;
     private _stubsManager: StubsManager;
 
-    // 私有方法
     private _updateStatusBar() {
         if (this._currentPort) {
             const isConnected = this.isConnected();
@@ -55,7 +52,6 @@ export class DeviceManager {
         }
     }
 
-    // 构造函数
     constructor(logger: Logger, replPanel?: any, context?: vscode.ExtensionContext) {
         this._logger = logger;
         this._replPanel = replPanel;
@@ -73,7 +69,6 @@ export class DeviceManager {
 
     async loadConfig(context: vscode.ExtensionContext) {
         try {
-            // 获取当前开发板名称
             this._currentBoard = await this._stubsManager.getCurrentBoard();
             this._updateBoardStatusBar();
         } catch (error) {
@@ -84,18 +79,17 @@ export class DeviceManager {
         }
     }
 
-    // 公共方法
     async _listPorts(): Promise<string[]> {
         try {
             const ports = await SerialPort.list();
             this._logger.debug('扫描串口: ' + JSON.stringify(ports, null, 2));
-            return ports.filter((portInfo: PortInfo) => {
+            return ports.filter((portInfo: any) => {
                 if (!portInfo?.path) return false;
                 const path = portInfo.path.toLowerCase();
                 return path.includes('usbserial') || path.includes('usbmodem') ||
                     path.includes('slab_usbtouart') || path.includes('ttyusb') ||
                     path.includes('ttyacm') || /^com\d+/.test(path);
-            }).map((portInfo: PortInfo) => portInfo.path);
+            }).map((portInfo: any) => portInfo.path);
         } catch (error) {
             this._logger.warn(`串口扫描错误: ${error instanceof Error ? error.message : String(error)}`);
             return [];
@@ -104,17 +98,31 @@ export class DeviceManager {
 
     async selectPort(port?: string): Promise<string | undefined> {
         if (!port) {
+            this._logger.debug('Scanning for available ports...');
             const ports = await this._listPorts();
+            this._logger.debug(`Found ${ports.length} available ports: ${ports.join(', ')}`);
+            
             if (ports.length === 0) {
+                this._logger.warn('No available MPY device ports found');
                 vscode.window.showWarningMessage('无可用的MPY设备串口');
                 return undefined;
             }
+            
+            this._logger.debug('Showing port selection dialog...');
             const selection = await vscode.window.showQuickPick(ports, {
-                placeHolder: '选择MPY设备串口'
+                placeHolder: '选择MPY设备串口',
+                title: '选择串口设备'
             });
-            if (!selection) return undefined;
+            
+            if (!selection) {
+                this._logger.debug('User cancelled port selection');
+                return undefined;
+            }
+            
+            this._logger.debug(`User selected port: ${selection}`);
             port = selection;
         }
+        
         this._currentPort = port;
         this._updateStatusBar();
         this._logger.debug(`选择端口: ${port}`);
@@ -124,9 +132,13 @@ export class DeviceManager {
     async connect(): Promise<void> {
         let port = this._currentPort;
         if (!port) {
+            this._logger.debug('No port selected, attempting to select port...');
             const ports = await this.selectPort();
             port = this._currentPort;
-            if (!port) throw new Error('未选择串口设备');
+            if (!port) {
+                this._logger.debug('User cancelled port selection');
+                throw new Error('未选择串口设备');
+            }
         }
         if (this.isConnected() && this._currentPort === port) {
             return;

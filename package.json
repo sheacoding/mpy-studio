@@ -5,7 +5,8 @@
   "version": "0.0.6",
   "publisher": "bright",
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.101.0",
+    "node": ">=20.0.0"
   },
   "categories": [
     "Programming Languages",
@@ -13,6 +14,23 @@
     "Other"
   ],
   "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:python",
+    "onCommand:extension.mpyMenu",
+    "onCommand:extension.mpyRUN",
+    "onCommand:extension.mpyStop",
+    "onCommand:extension.mpyREPL",
+    "onCommand:extension.mpyMAIN",
+    "onCommand:extension.mpyHardReset",
+    "onCommand:extension.mpySelectPort",
+    "onCommand:extension.mpyDisconnect",
+    "onCommand:extension.mpyShowLogs",
+    "onCommand:extension.mpyClear",
+    "onCommand:extension.updateTypings",
+    "onCommand:extension.selectBoard",
+    "onCommand:extension.switchRunMode",
+    "onView:mpy-studio.replPanel"
+  ],
   "contributes": {
     "commands": [
       {
@@ -279,38 +297,36 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
+    "prepackage": "npm install && npm run compile",
     "clean": "rm -rf out/",
     "compile": "npm run clean && tsc -p ./ && npm run copy-resources",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
-    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && mkdir -p out/typings && cp -r typings/* out/typings/ && mkdir -p out/resources && npx copyfiles -u 1 resources/**/* out/resources",
-    "postbuild": "npx copyfiles -u 1 resources/**/* out/resources",
+    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && mkdir -p out/typings && cp -r typings/* out/typings/ && mkdir -p out/resources && npx copyfiles -u 1 resources/**/* out/resources && mkdir -p out/node_modules && cp -R node_modules/* out/node_modules/",
+    "postbuild": "npx copyfiles -u 1 resources/**/* out/resources && mkdir -p out/node_modules && cp -R node_modules/* out/node_modules/",
     "package": "vsce package",
     "publish": "vsce publish",
     "publish:patch": "vsce publish patch",
     "publish:minor": "vsce publish minor",
-    "publish:major": "vsce publish major"
+    "publish:major": "vsce publish major",
+    "start": "node --no-warnings ./out/extension.js"
   },
-
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^18.19.111",
-    "@types/vscode": "^1.85.0",
+    "@types/node": "^18.19.115",
+    "@types/vscode": "^1.101.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@serialport/bindings-cpp": "^12.0.1",
-    "about-window": "^1.15.2",
+    "@serialport/parser-readline": "^12.0.0",
     "fs-extra": "^11.3.0",
-    "iconv-lite": "^0.6.3",
-    "micropython.js": "github:arduino/micropython.js#v1.5.1",
-    "serialport": "^12.0.0",
-    "vscode-languageclient": "^8.1.0"
+    "serialport": "^12.0.0"
   },
   "repository": {
     "type": "git",

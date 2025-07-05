@@ -9,6 +9,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 node_modules/**
+!node_modules/@serialport/bindings-cpp/prebuilds/**
 temp/**
 .DS_Store
 *.vsix

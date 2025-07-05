@@ -1,6 +1,6 @@
 import { SerialPort } from 'serialport';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import { ReadlineParser } from '@serialport/parser-readline';
 
 function sleep(millis: number): Promise<void> {

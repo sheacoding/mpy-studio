@@ -29,7 +29,9 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         context: vscode.WebviewViewResolveContext,
         _token: vscode.CancellationToken
     ) {
+        console.log('ReplPanel: resolveWebviewView called');
         this._view = webviewView;
+        console.log('ReplPanel: _view set to:', this._view ? 'defined' : 'undefined');
         
         // 配置 webview 选项
         webviewView.webview.options = {
@@ -58,7 +60,15 @@ export class ReplPanel implements vscode.WebviewViewProvider {
             if (webviewView.visible) {
                 console.log('ReplPanel: Webview became visible, reloading...');
                 this.reload();
+            } else {
+                console.log('ReplPanel: Webview became hidden');
             }
+        });
+
+        // 监听面板被销毁
+        webviewView.onDidDispose(() => {
+            console.log('ReplPanel: Webview disposed');
+            this._view = undefined;
         });
 
         // 处理来自webview的消息
@@ -97,9 +107,18 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                 case 'connect': {
                     try {
                         this._lastCommand = ''
+                        console.log('ReplPanel: Attempting to connect...');
                         await this.deviceManager.connect();
+                        console.log('ReplPanel: Connect successful');
                     } catch (err) {
                         console.error('ReplPanel: Connect error:', err);
+                        const errorMessage = err instanceof Error ? err.message : String(err);
+                        this.addOutput(`连接失败: ${errorMessage}`, 'error');
+                        
+                        // 如果是因为没有选择端口导致的错误，提示用户
+                        if (errorMessage.includes('未选择串口设备')) {
+                            this.addOutput('请先选择串口设备', 'warning');
+                        }
                     }
                     break;
                 }
@@ -138,7 +157,7 @@ export class ReplPanel implements vscode.WebviewViewProvider {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} data:; script-src 'nonce-${webview.cspSource.split(' ')[0]}';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} data:; script-src ${webview.cspSource} 'unsafe-inline';">
     <title>MPY-REPL</title>
     <link rel="stylesheet" href="${styleUri}">
 </head>
@@ -168,8 +187,11 @@ export class ReplPanel implements vscode.WebviewViewProvider {
             </div>
         </div>
     </div>
-    <script nonce="${webview.cspSource.split(' ')[0]}">
+    <script>
+        console.log('REPL webview script starting...');
         const vscode = acquireVsCodeApi();
+        console.log('vscode API acquired:', !!vscode);
+        
         const terminalOutput = document.getElementById('terminalOutput');
         const terminalInput = document.getElementById('terminalInput');
         const terminalInputLine = document.getElementById('terminalInputLine');
@@ -181,21 +203,37 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         const connectIconUri = ${JSON.stringify(connectIconUri.toString())};
         const disconnectIconUri = ${JSON.stringify(disconnectIconUri.toString())};
         let isConnected = false;
+        
+        console.log('DOM elements found:', {
+            terminalOutput: !!terminalOutput,
+            terminalInput: !!terminalInput,
+            connectionStatusBtn: !!connectionStatusBtn,
+            clearButton: !!clearButton,
+            stopButton: !!stopButton
+        });
 
         // Robust DOMContentLoaded to ensure event binding
         function bindConnectBtn() {
+            console.log('bindConnectBtn called');
             const btn = document.getElementById('connectionStatusBtn');
+            console.log('connectionStatusBtn found:', !!btn);
             if (!btn) {
+                console.log('Connection button not found, retrying...');
                 setTimeout(bindConnectBtn, 100); // Retry until DOM ready
                 return;
             }
+            console.log('Adding click event listener to connection button');
             btn.addEventListener('click', () => {
+                console.log('Connection button clicked, isConnected:', isConnected);
                 if (isConnected) {
+                    console.log('Sending disconnect command');
                     vscode.postMessage({ command: 'disconnect' });
                 } else {
+                    console.log('Sending connect command');
                     vscode.postMessage({ command: 'connect' });
                 }
             });
+            console.log('Click event listener added successfully');
         }
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', bindConnectBtn);
@@ -267,6 +305,23 @@ export class ReplPanel implements vscode.WebviewViewProvider {
             vscode.postMessage({ command: 'clear' });
         });
         
+        // 支持上下键浏览历史命令
+        const commandHistory = [];
+        let historyIndex = -1;
+        
+        // 保存命令到历史记录
+        function saveToHistory(command) {
+            // 避免重复添加相同的命令
+            if (commandHistory.length === 0 || commandHistory[0] !== command) {
+                commandHistory.unshift(command);
+                // 限制历史记录长度
+                if (commandHistory.length > 50) {
+                    commandHistory.pop();
+                }
+            }
+            historyIndex = -1;
+        }
+        
         terminalInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const command = terminalInput.value;
@@ -278,10 +333,6 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                 }
             }
         });
-        
-        // 支持上下键浏览历史命令
-        const commandHistory = [];
-        let historyIndex = -1;
         
         terminalInput.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowUp') {
@@ -333,19 +384,6 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                     break;
             }
         });
-        
-        // 保存命令到历史记录
-        function saveToHistory(command) {
-            // 避免重复添加相同的命令
-            if (commandHistory.length === 0 || commandHistory[0] !== command) {
-                commandHistory.unshift(command);
-                // 限制历史记录长度
-                if (commandHistory.length > 50) {
-                    commandHistory.pop();
-                }
-            }
-            historyIndex = -1;
-        }
     </script>
 </body>
 </html>`;

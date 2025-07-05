@@ -1,23 +1,19 @@
-import { Logger, LogLevel } from './logger';
+import { Logger } from './logger';
 import { DeviceManager } from './board';
 import * as fs from 'fs';
-import { ReplPanel } from './repl-panel';
 
 export class Runner {
     private logger: Logger;
     private deviceManager: DeviceManager;
-    private replPanel?: ReplPanel;
 
-    constructor(logger: Logger, deviceManager: DeviceManager, replPanel?: ReplPanel) {
+    constructor(logger: Logger, deviceManager: DeviceManager) {
         this.logger = logger;
         this.deviceManager = deviceManager;
-        this.replPanel = replPanel;
     }
 
     // 运行文件
     async runFile(filePath: string): Promise<boolean> {
         try {
-            // 1. 读取文件内容
             let fileContent: string;
             try {
                 fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -27,10 +23,8 @@ export class Runner {
                 return false;
             }
             await this.deviceManager.connect();
-            // 3. 获取提示符
             this.logger.debug('获取提示符...');
             await this.deviceManager.getPrompt();
-            // 4. 运行代码
             this.logger.debug('开始运行代码...');
             const result = await this.deviceManager.run(fileContent);
             if (result) {
