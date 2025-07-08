@@ -29,10 +29,7 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         context: vscode.WebviewViewResolveContext,
         _token: vscode.CancellationToken
     ) {
-        console.log('ReplPanel: resolveWebviewView called');
-        this._view = webviewView;
-        console.log('ReplPanel: _view set to:', this._view ? 'defined' : 'undefined');
-        
+        this._view = webviewView;        
         // 配置 webview 选项
         webviewView.webview.options = {
             enableScripts: true,
@@ -41,33 +38,22 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                 vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media')
             ]
         };
-        
-        // 添加调试日志
-        console.log('ReplPanel: Configuring webview with extensionUri:', this.context.extensionUri.fsPath);
-        console.log('ReplPanel: Media path:', vscode.Uri.joinPath(this.context.extensionUri, 'media').fsPath);
-        
         try {
             const html = this.getHtml(webviewView.webview);
-            console.log('ReplPanel: Generated HTML successfully');
             webviewView.webview.html = html;
         } catch (error) {
-            console.error('ReplPanel: Failed to generate webview HTML:', error);
             // 提供备用 HTML
             webviewView.webview.html = this.getFallbackHtml();
         }
         
         webviewView.onDidChangeVisibility(() => {
             if (webviewView.visible) {
-                console.log('ReplPanel: Webview became visible, reloading...');
                 this.reload();
-            } else {
-                console.log('ReplPanel: Webview became hidden');
             }
         });
 
         // 监听面板被销毁
         webviewView.onDidDispose(() => {
-            console.log('ReplPanel: Webview disposed');
             this._view = undefined;
         });
 
@@ -130,6 +116,22 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                         console.error('ReplPanel: Disconnect error:', err);
                     }
                     break;
+                case 'hardReboot':
+                    try {
+                        await this.deviceManager.hard_reset();
+                    } catch (error) {
+                        const errorMessage = error instanceof Error ? error.message : String(error);
+                        this.addOutput('硬重启失败: ' + errorMessage, 'error');
+                    }
+                    break;
+                case 'softReboot':
+                    try {
+                        await this.deviceManager.reset();
+                    } catch (error) {
+                        const errorMessage = error instanceof Error ? error.message : String(error);
+                        this.addOutput('软重启失败: ' + errorMessage, 'error');
+                    }
+                    break;
             }
         });
     }
@@ -151,6 +153,12 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         const deleteIconUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this.context.extensionUri, 'media', 'delete.svg')
         );
+        const hardRebootIconUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'hard_reboot.svg')
+        );
+        const rebootIconUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'reboot.svg')
+        );
         
         const html = `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -171,6 +179,12 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                 <span class="status-text" id="statusText">未连接</span>
             </div>
             <div class="terminal-controls">
+                <button id="hardRebootButton" class="status-btn" title="硬重启">
+                  <img src="${hardRebootIconUri}" class="icon" alt="硬重启" />
+                </button>
+                <button id="softRebootButton" class="status-btn" title="软重启">
+                  <img src="${rebootIconUri}" class="icon" alt="软重启" />
+                </button>
                 <button id="stopButton" class="status-btn" title="中断">
                   <img src="${stopIconUri}" class="icon" alt="中断" />
                 </button>
@@ -243,6 +257,15 @@ export class ReplPanel implements vscode.WebviewViewProvider {
 
         stopButton.addEventListener('click', () => {
             vscode.postMessage({ command: 'stop' });
+        });
+
+        const hardRebootButton = document.getElementById('hardRebootButton');
+        const softRebootButton = document.getElementById('softRebootButton');
+        hardRebootButton.addEventListener('click', () => {
+            vscode.postMessage({ command: 'hardReboot' });
+        });
+        softRebootButton.addEventListener('click', () => {
+            vscode.postMessage({ command: 'softReboot' });
         });
 
         // 处理特殊的REPL输出格式

@@ -464,6 +464,7 @@ class DisplayDriver:
     def get_inactive_time(self) -> int:
         ...
 
+
     def trigger_activity(self) -> None:
         ...
 

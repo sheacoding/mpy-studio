@@ -12,7 +12,6 @@ from _typeshed import Incomplete, MaybeNone, OptExcInfo, ProfileFunction, TraceF
 from _typeshed.importlib import MetaPathFinderProtocol, PathEntryFinderProtocol
 from builtins import object as _object
 from collections.abc import AsyncGenerator, Callable
-from io import TextIOWrapper
 from types import FrameType, ModuleType, TracebackType
 from typing import Callable, overload, Any, Final, Literal, NoReturn, Protocol, TextIO, TypeVar, final
 from typing_extensions import Awaitable, TypeVar, TypeAlias
@@ -81,9 +80,9 @@ stderr: TextIO | MaybeNone
 if sys.version_info >= (3, 10):
     stdlib_module_names: frozenset[str]
 
-__stdin__: Final[TextIOWrapper | None]  # Contains the original value of stdin
-__stdout__: Final[TextIOWrapper | None]  # Contains the original value of stdout
-__stderr__: Final[TextIOWrapper | None]  # Contains the original value of stderr
+__stdin__: Final[TextIO | None]  # Contains the original value of stdin
+__stdout__: Final[TextIO | None]  # Contains the original value of stdout
+__stderr__: Final[TextIO | None]  # Contains the original value of stderr
 tracebacklimit: int
 version: str
 # api_version: int
@@ -454,37 +453,43 @@ def __mpy_has_no_atexit(func: Callable[[], None] | None, /) -> Callable[[], None
     ...
 
 @overload
-def print_exception(exc: Exception | BaseException, file: IOBase_mp = stdout, /) -> None:
+def print_exception(exc: Exception | BaseException, file: IOBase_mp | TextIO | None = stdout, /) -> None:
     """
-    Print exception with a traceback to a file-like object *file* (or
-    `sys.stdout` by default).
+    打印异常和回溯信息到文件类对象 *file* (默认为 `sys.stdout`)
 
-    Admonition:Difference to CPython
-       :class: attention
+    参数:
+        exc (Exception | BaseException): 要打印的异常对象
+        file (IOBase_mp | TextIO | None): 输出文件对象，默认为 stdout
 
-       This is simplified version of a function which appears in the
-       ``traceback`` module in CPython. Unlike ``traceback.print_exception()``,
-       this function takes just exception value instead of exception type,
-       exception value, and traceback object; *file* argument should be
-       positional; further arguments are not supported. CPython-compatible
-       ``traceback`` module can be found in `micropython-lib`.
+    返回:
+        (None): 无返回值
+
+    注意:
+        与CPython的差异
+        这是出现在CPython的 ``traceback`` 模块中的函数的简化版本。
+        与 ``traceback.print_exception()`` 不同，此函数只接受异常值而不是异常类型、
+        异常值和回溯对象；*file* 参数应该是位置参数；不支持其他参数。
+        CPython兼容的 ``traceback`` 模块可以在 `micropython-lib` 中找到。
     """
     ...
 
 @overload
-def print_exception(exc: Exception | BaseException, file: IOBase_mp = stdout, /) -> None:
+def print_exception(exc: Exception | BaseException, file: IOBase_mp | TextIO | None = stdout, /) -> None:
     """
-    Print exception with a traceback to a file-like object *file* (or
-    `sys.stdout` by default).
+    打印异常和回溯信息到文件类对象 *file* (默认为 `sys.stdout`)
 
-    Admonition:Difference to CPython
-       :class: attention
+    参数:
+        exc (Exception | BaseException): 要打印的异常对象
+        file (IOBase_mp | TextIO | None): 输出文件对象，默认为 stdout
 
-       This is simplified version of a function which appears in the
-       ``traceback`` module in CPython. Unlike ``traceback.print_exception()``,
-       this function takes just exception value instead of exception type,
-       exception value, and traceback object; *file* argument should be
-       positional; further arguments are not supported. CPython-compatible
-       ``traceback`` module can be found in `micropython-lib`.
+    返回:
+        (None): 无返回值
+
+    注意:
+        与CPython的差异
+        这是出现在CPython的 ``traceback`` 模块中的函数的简化版本。
+        与 ``traceback.print_exception()`` 不同，此函数只接受异常值而不是异常类型、
+        异常值和回溯对象；*file* 参数应该是位置参数；不支持其他参数。
+        CPython兼容的 ``traceback`` 模块可以在 `micropython-lib` 中找到。
     """
     ...

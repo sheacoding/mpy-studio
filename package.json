@@ -2,11 +2,11 @@
   "name": "mpy-studio",
   "displayName": "mpy-studio",
   "description": "A comprehensive MicroPython IDE for ESP32 and ESP32-S3 development boards. Features device management, code execution, REPL terminal, and more.",
-  "version": "0.0.6",
+  "version": "0.0.9",
   "publisher": "bright",
   "engines": {
-    "vscode": "^1.101.0",
-    "node": ">=20.0.0"
+    "vscode": "^1.92.0",
+    "node": ">=22.12.0"
   },
   "categories": [
     "Programming Languages",
@@ -15,21 +15,9 @@
   ],
   "main": "./out/extension.js",
   "activationEvents": [
+    "onStartupFinished",
     "onLanguage:python",
-    "onCommand:extension.mpyMenu",
-    "onCommand:extension.mpyRUN",
-    "onCommand:extension.mpyStop",
-    "onCommand:extension.mpyREPL",
-    "onCommand:extension.mpyMAIN",
-    "onCommand:extension.mpyHardReset",
-    "onCommand:extension.mpySelectPort",
-    "onCommand:extension.mpyDisconnect",
-    "onCommand:extension.mpyShowLogs",
-    "onCommand:extension.mpyClear",
-    "onCommand:extension.updateTypings",
-    "onCommand:extension.selectBoard",
-    "onCommand:extension.switchRunMode",
-    "onView:mpy-studio.replPanel"
+    "onFileSystem:micropython"
   ],
   "contributes": {
     "commands": [
@@ -99,6 +87,75 @@
       {
         "command": "extension.switchRunMode",
         "title": "切换运行模式"
+      },
+      {
+        "command": "extension.mpyDeviceFolder",
+        "title": "设备文件夹",
+        "icon": "$(folder)"
+      },
+      {
+        "command": "mpy-studio.openFile",
+        "title": "打开文件"
+      },
+      {
+        "command": "mpy-studio.copyFile",
+        "title": "复制"
+      },
+      {
+        "command": "mpy-studio.cutFile",
+        "title": "剪切"
+      },
+      {
+        "command": "mpy-studio.pasteFile",
+        "title": "粘贴"
+      },
+      {
+        "command": "mpy-studio.deleteFile",
+        "title": "删除"
+      },
+      {
+        "command": "mpy-studio.refreshDevice",
+        "title": "刷新设备目录",
+        "icon": {
+          "light": "media/refresh.svg",
+          "dark": "media/refresh.svg"
+        }
+      },
+      {
+        "command": "mpy-studio.createFile",
+        "title": "新建文件",
+        "icon": {
+          "light": "media/new-file.svg",
+          "dark": "media/new-file.svg"
+        }
+      },
+      {
+        "command": "mpy-studio.createFolder",
+        "title": "新建文件夹",
+        "icon": {
+          "light": "media/new-folder.svg",
+          "dark": "media/new-folder.svg"
+        }
+      },
+      {
+        "command": "mpy-studio.refresh",
+        "title": "刷新"
+      },
+      {
+        "command": "mpy-studio.uploadFile",
+        "title": "[mpy-studio]-上传到设备"
+      },
+      {
+        "command": "mpy-studio.runOnDevice",
+        "title": "[mpy-studio]-在设备上运行"
+      },
+      {
+        "command": "mpy-studio.downloadFile",
+        "title": "下载到本地"
+      },
+      {
+        "command": "mpy-studio.uploadToDevice",
+        "title": "[mpy-studio]-上传到设备"
       }
     ],
     "submenus": [
@@ -131,34 +188,51 @@
           "icon": "$(debug-stop)"
         },
         {
-          "command": "extension.mpyMAIN",
-          "group": "2_send",
-          "icon": "$(arrow-up)"
-        },
-        {
-          "command": "extension.mpyHardReset",
-          "group": "2_send",
-          "icon": "$(debug-restart)"
-        },
-        {
-          "command": "extension.mpyREPL",
-          "group": "3_repl",
-          "icon": "$(terminal)"
-        },
-        {
           "command": "extension.mpyClear",
-          "group": "4_clear",
+          "group": "1_run@3",
           "icon": "$(clear-all)"
         },
         {
+          "command": "extension.mpyMAIN",
+          "group": "1_run@4",
+          "icon": "$(arrow-up)"
+        },
+        {
+          "command": "extension.mpyREPL",
+          "group": "2_device",
+          "icon": "$(terminal)"
+        },
+        {
+          "command": "extension.mpyDeviceFolder",
+          "group": "2_device@2",
+          "icon": "$(folder)"
+        },
+        {
+          "command": "extension.mpyHardReset",
+          "group": "2_device@3",
+          "icon": "$(debug-restart)"
+        },
+        {
           "command": "extension.mpyDisconnect",
-          "group": "5_disconnect",
+          "group": "4_manage",
           "icon": "$(debug-disconnect)"
         },
         {
           "command": "extension.mpyShowLogs",
-          "group": "8_logs",
+          "group": "4_manage",
           "icon": "$(output)"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "mpy-studio.uploadToDevice",
+          "group": "navigation",
+          "when": "mpyStudio.deviceConnected"
+        },
+        {
+          "command": "mpy-studio.runOnDevice",
+          "group": "navigation",
+          "when": "resourceExtname == .py"
         }
       ],
       "commandPalette": [
@@ -170,10 +244,69 @@
           "command": "extension.mpyREPL",
           "when": "resourceLangId == python"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "mpy-studio.openFile",
+          "when": "view == mpy-studio.deviceFs && (viewItem == file || viewItem == python || viewItem == image)",
+          "group": "navigation"
+        },
+        {
+          "command": "mpy-studio.deleteFile",
+          "when": "view == mpy-studio.deviceFs && (viewItem == file || viewItem == python || viewItem == image)",
+          "group": "2_modification"
+        },
+        {
+          "command": "mpy-studio.downloadFile",
+          "when": "view == mpy-studio.deviceFs && (viewItem == file || viewItem == python || viewItem == image)",
+          "group": "2_modification"
+        },
+        {
+          "command": "mpy-studio.deleteFile",
+          "when": "view == mpy-studio.deviceFs && viewItem == folder",
+          "group": "2_modification"
+        },
+        {
+          "command": "mpy-studio.downloadFile",
+          "when": "view == mpy-studio.deviceFs && viewItem == folder",
+          "group": "2_modification"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "mpy-studio.refreshDevice",
+          "when": "view == mpy-studio.deviceFs",
+          "group": "navigation@0",
+          "icon": {
+            "light": "media/refresh.svg",
+            "dark": "media/refresh.svg"
+          },
+          "title": "刷新设备目录"
+        },
+        {
+          "command": "mpy-studio.createFolder",
+          "when": "view == mpy-studio.deviceFs",
+          "group": "navigation@2",
+          "icon": {
+            "light": "media/new-folder.svg",
+            "dark": "media/new-folder.svg"
+          },
+          "title": "新建文件夹"
+        },
+        {
+          "command": "mpy-studio.createFile",
+          "when": "view == mpy-studio.deviceFs",
+          "group": "navigation@1",
+          "icon": {
+            "light": "media/new-file.svg",
+            "dark": "media/new-file.svg"
+          },
+          "title": "新建文件"
+        }
       ]
     },
     "configuration": {
-      "title": "MicroPython Studio",
+      "title": "mpy-studio",
       "properties": {
         "micropython.port": {
           "type": "string",
@@ -256,7 +389,7 @@
           "default": false,
           "description": "是否显示调试信息"
         },
-        "my-studio.selectedBoard": {
+        "mpy-studio.selectedBoard": {
           "type": "string",
           "default": "",
           "description": "用户选择的开发板（内部使用，请通过命令选择）"
@@ -286,11 +419,19 @@
       ]
     },
     "views": {
+      "explorer": [
+        {
+          "id": "mpy-studio.deviceFs",
+          "name": "MPY-设备",
+          "when": "mpyStudio.deviceConnected == true"
+        }
+      ],
       "mpy-studio": [
         {
           "type": "webview",
           "id": "mpy-studio.replPanel",
-          "name": "MPY-REPL"
+          "name": "MPY-REPL",
+          "when": "true"
         }
       ]
     }
@@ -304,7 +445,7 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
-    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && mkdir -p out/typings && cp -r typings/* out/typings/ && mkdir -p out/resources && npx copyfiles -u 1 resources/**/* out/resources && mkdir -p out/node_modules && cp -R node_modules/* out/node_modules/",
+    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && mkdir -p out/typings && cp -r typings/* out/typings/ && mkdir -p out/node_modules && cp -R node_modules/* out/node_modules/",
     "postbuild": "npx copyfiles -u 1 resources/**/* out/resources && mkdir -p out/node_modules && cp -R node_modules/* out/node_modules/",
     "package": "vsce package",
     "publish": "vsce publish",
@@ -317,24 +458,24 @@
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
     "@types/node": "^18.19.115",
-    "@types/vscode": "^1.101.0",
+    "@types/vscode": "^1.85.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@serialport/bindings-cpp": "^12.0.1",
-    "@serialport/parser-readline": "^12.0.0",
+    "@serialport/bindings-cpp": "^13.0.1",
+    "@serialport/parser-readline": "^13.0.0",
     "fs-extra": "^11.3.0",
-    "serialport": "^12.0.0"
+    "serialport": "^13.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/ai_mpy/mpy-studio.git"
+    "url": "https://github.com/ai_mpy/mpy-studio.git"
   },
-  "homepage": "https://gitee.com/ai_mpy/mpy-studio",
+  "homepage": "https://github.com/ai_mpy/mpy-studio",
   "bugs": {
-    "url": "https://gitee.com/ai_mpy/mpy-studio/issues"
+    "url": "https://github.com/ai_mpy/mpy-studio/issues"
   },
   "keywords": [
     "micropython",
@@ -345,6 +486,6 @@
     "embedded",
     "iot"
   ],
-  "baseContentUrl": "https://gitee.com/ai_mpy/mpy-studio/raw/main",
-  "baseImagesUrl": "https://gitee.com/ai_mpy/mpy-studio/raw/main"
+  "baseContentUrl": "https://github.com/ai_mpy/mpy-studio/raw/main",
+  "baseImagesUrl": "https://github.com/ai_mpy/mpy-studio/raw/main"
 }

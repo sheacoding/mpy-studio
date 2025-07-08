@@ -11565,13 +11565,27 @@ class obj(object):
 
     def set_style_bg_color(self, value: color_t, selector: style_selector_t, /) -> None:
         """
-        No Docstrings Yet
+        设置背景颜色样式
+
+        参数:
+            value (color_t): 背景颜色值
+            selector (style_selector_t): 样式选择器
+
+        返回:
+            (None): 无返回值
         """
         ...
 
     def set_style_bg_opa(self, value: opa_t, selector: style_selector_t, /) -> None:
         """
-        No Docstrings Yet
+        设置背景颜色透明度
+
+        参数:
+            value (opa_t): 透明度值,0-255或使用预定义常量如LV_OPA_TRANSP、LV_OPA_COVER等
+            selector (style_selector_t): 样式选择器
+
+        返回:
+            (None): 无返回值
         """
         ...
 
@@ -17618,10 +17632,16 @@ class _image_dsc_t_type(TypedDict, total=False):
 
 class image_dsc_t(object):
     """
-    Image descriptor for Python-side LVGL set_src(dict)
+    Python端LVGL set_src(dict)的图像描述符
     """
     def __init__(self, args: Optional[_image_dsc_t_type] = None, /) -> None:
         """
-        No Docstrings Yet
+        初始化图像描述符对象
+
+        参数:
+            args (Optional[_image_dsc_t_type]): 图像描述符参数字典,包含header、data_size、data等字段
+
+        返回:
+            (None): 无返回值
         """
         ...

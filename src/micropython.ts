@@ -204,7 +204,10 @@ class MicroPythonBoard {
     folderPath = folderPath || '';
     let command = `import uos\n`;
     command += `try:\n`;
-    command += `  print(uos.listdir(\"${folderPath}\"))\n`;
+    command += `  l=[]\n`;
+    command += `  for f in uos.ilistdir(\"${folderPath}\"):\n`;
+    command += `    l.append({'name': f[0], 'type': 'folder' if f[1]==0x4000 else 'file'})\n`;
+    command += `  print(l)\n`;
     command += `except OSError:\n`;
     command += `  print([])\n`;
     await this.enter_raw_repl();
@@ -214,28 +217,6 @@ class MicroPythonBoard {
     output = output.replace(/'/g, '"');
     const files = JSON.parse(output);
     return Promise.resolve(files);
-  }
-
-  async fs_ils(folderPath: string) {
-    folderPath = folderPath || '';
-    let command = `import uos\n`;
-    command += `try:\n`;
-    command += `  l=[]\n`;
-    command += `  for f in uos.ilistdir(\"${folderPath}\"):\n`;
-    command += `    l.append(list(f))\n`;
-    command += `  print(l)\n`;
-    command += `except OSError:\n`;
-    command += `  print([])\n`;
-    command += `del l\n`;
-    command += `del f\n`;
-    await this.enter_raw_repl();
-    let output = await this.exec_raw(command) as string;
-    await this.exit_raw_repl();
-    output = extract(output);
-    output = output.replace(/'/g, '"');
-    const files = output.split('OK');
-    let parsedFiles = JSON.parse(files[0]);
-    return Promise.resolve(parsedFiles);
   }
 
   async fs_cat_binary(filePath: string) {
@@ -294,8 +275,8 @@ class MicroPythonBoard {
 
   async fs_save(content: string, dest: string, data_consumer?: (data: string) => void) {
     data_consumer = data_consumer || function () { };
-    if (content && dest) {
-      const contentBuffer = Buffer.from(content, 'utf-8');
+    if (typeof dest === 'string' && dest.length > 0) {
+      const contentBuffer = Buffer.from(content || '', 'utf-8');
       let out = '';
       out += await this.enter_raw_repl();
       out += await this.exec_raw(`f=open('${dest}','wb')\nw=f.write`);
@@ -310,7 +291,7 @@ class MicroPythonBoard {
       out += await this.exit_raw_repl();
       return Promise.resolve(out);
     } else {
-      return Promise.reject(new Error(`Must specify content and destination path`));
+      return Promise.reject(new Error(`Must specify destination path`));
     }
   }
 
@@ -364,6 +345,16 @@ class MicroPythonBoard {
       return this.exit_raw_repl();
     }
     return Promise.reject();
+  }
+
+  async get_root(): Promise<string> {
+    // 执行 helpers.py 的 get_root 并返回结果
+    await this.enter_raw_repl();
+    const output = await this.exec_raw('get_root()') as string;
+    await this.exit_raw_repl();
+    // 提取 OK ... \x04 之间的内容
+    const str = typeof output === 'string' ? output : (output !== undefined && output !== null ? String(output) : '');
+    return str.substring(str.indexOf('OK') + 2, str.indexOf('\x04'));
   }
 }
 

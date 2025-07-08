@@ -31,19 +31,23 @@ from typing_extensions import deprecated, Awaitable, TypeAlias, TypeVar
 from _mpy_shed import _IRQ, AnyReadableBuf, AnyWritableBuf
 from vfs import AbstractBlockDev
 
-ULP_WAKE: Final[int] = 6
+
 SLEEP: Final[int] = 2
-PWRON_RESET: Final[int] = 1
-PIN_WAKE: Final[int] = 2
-SOFT_RESET: Final[int] = 5
-WDT_RESET: Final[int] = 3
-TOUCHPAD_WAKE: Final[int] = 5
-TIMER_WAKE: Final[int] = 4
-HARD_RESET: Final[int] = 2
-EXT0_WAKE: Final[int] = 2
-DEEPSLEEP_RESET: Final[int] = 4
 DEEPSLEEP: Final[int] = 4
-EXT1_WAKE: Final[int] = 3
+
+PWRON_RESET = 1
+HARD_RESET = 2
+WDT_RESET = 3
+DEEPSLEEP_RESET = 4
+SOFT_RESET = 5
+
+PIN_WAKE = 2
+EXT0_WAKE = 2
+EXT1_WAKE = 3
+TIMER_WAKE = 4
+TOUCHPAD_WAKE =5
+ULP_WAKE = 6
+
 ATTN_0DB: int = ...
 ID_T: TypeAlias = int | str
 PinLike: TypeAlias = Pin | int | str
@@ -55,17 +59,17 @@ RTC_WAKE: Incomplete
 def deepsleep() -> NoReturn:
     """
     停止执行并尝试进入低功耗状态.
-    
+
     如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
-    
+
     无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
     应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
-    
+
     轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
-    
+
     * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
       所有子系统均可操作.
-    
+
     * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
       唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
       返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
@@ -75,17 +79,17 @@ def deepsleep() -> NoReturn:
 def deepsleep(time_ms: int, /) -> NoReturn:
     """
     停止执行并尝试进入低功耗状态.
-    
+
     如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
-    
+
     无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
     应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
-    
+
     轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
-    
+
     * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
       所有子系统均可操作.
-    
+
     * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
       唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
       返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
@@ -115,17 +119,17 @@ def unique_id() -> bytes:
 def time_pulse_us(pin: Pin, pulse_level: int, timeout_us: int = 1_000_000, /) -> int:
     """
     测量给定引脚上的脉冲持续时间,并以微秒为单位返回结果.
-    
+
     参数:
         pin (Pin): 要测量脉冲的引脚对象.
         pulse_level (int): 要测量的脉冲电平 (0=低电平脉冲,1=高电平脉冲).
         timeout_us (int): 超时时间,单位为微秒,默认为1,000,000微秒(1秒).
-    
+
     返回值:
         (int): 脉冲持续时间(微秒),如果发生超时则返回负值.
              -1: 测量过程中超时.
              -2: 等待初始电平变化时超时.
-    
+
     工作原理:
     1. 如果引脚当前电平与pulse_level不同,函数会等待直到电平变为pulse_level.
     2. 然后测量引脚保持在pulse_level电平的持续时间.
@@ -137,17 +141,17 @@ def bitstream(pin, encoding, timing, data, /) -> Incomplete:
     """
     通过对指定的*pin*进行位操作传输*data*.*encoding*参数指定如何编码位,
     *timing*是特定于编码的时序规范.
-    
+
     支持的编码有:
-    
+
       - ``0``表示"高低"脉冲持续时间调制.这将以定时脉冲传输0和1位,从最高有效位开始.
         *timing*必须是格式为``(high_time_0, low_time_0, high_time_1, low_time_1)``
         的四元组纳秒值.例如,``(400, 850, 800, 450)``是WS2812 RGB LED在800kHz下
         的时序规范.
-    
+
     时序精度因端口而异.在48MHz的Cortex M0上,最佳精度为+/- 120ns,但在更快的MCU
     (ESP8266, ESP32, STM32, Pyboard)上,精度将接近+/-30ns.
-    
+
     ``注意:`` 对于控制WS2812/NeoPixel条带,请参阅:mod:`neopixel`模块获取更高级的API.
     """
     ...
@@ -156,7 +160,7 @@ def idle() -> None:
     """
     关闭CPU时钟,有助于在短时间或长时间内降低功耗.外设继续工作,执行在任何中断
     触发时恢复,或最多在CPU暂停一毫秒后恢复.
-    
+
     建议在任何持续检查外部变化(即轮询)的紧密循环中调用此函数.这将减少功耗而不
     显著影响性能.要进一步降低功耗,请参阅:func:`lightsleep`、:func:`time.sleep()`
     和:func:`time.sleep_ms()`函数.
@@ -167,7 +171,7 @@ def idle() -> None:
 def freq() -> int:
     """
     返回CPU频率,单位为赫兹.
-    
+
     在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
@@ -175,7 +179,7 @@ def freq() -> int:
 def freq(hz: int, /) -> None:
     """
     返回CPU频率,单位为赫兹.
-    
+
     在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
@@ -183,7 +187,7 @@ def freq(hz: int, /) -> None:
 def freq(self) -> int:
     """
     返回CPU频率,单位为赫兹.
-    
+
     在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
@@ -195,7 +199,7 @@ def freq(
 ) -> None:
     """
     返回CPU频率,单位为赫兹.
-    
+
     在某些端口上,还可以通过传入*hz*参数来设置CPU频率.
     """
 
@@ -203,17 +207,17 @@ def freq(
 def lightsleep() -> None:
     """
     停止执行并尝试进入低功耗状态.
-    
+
     如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
-    
+
     无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
     应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
-    
+
     轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
-    
+
     * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
       所有子系统均可操作.
-    
+
     * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
       唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
       返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
@@ -223,17 +227,17 @@ def lightsleep() -> None:
 def lightsleep(time_ms: int, /) -> None:
     """
     停止执行并尝试进入低功耗状态.
-    
+
     如果指定了*time_ms*参数,则这将是睡眠持续的最大毫秒数.否则,睡眠可以无限期持续.
-    
+
     无论是否有超时设置,如果有需要处理的事件,执行可能会随时恢复.这些事件或唤醒源
     应在睡眠前配置好,例如`Pin`变化或`RTC`超时.
-    
+
     轻度睡眠和深度睡眠的精确行为和省电能力高度依赖于底层硬件,但一般特性如下:
-    
+
     * 轻度睡眠(lightsleep)具有完整的RAM和状态保留.唤醒后,执行从请求睡眠的点恢复,
       所有子系统均可操作.
-    
+
     * 深度睡眠(deepsleep)可能不保留RAM或系统的任何其他状态(例如外设或网络接口).
       唤醒后,执行从主脚本恢复,类似于硬复位或上电复位.`reset_cause()`函数将
       返回`machine.DEEPSLEEP`,可用于区分深度睡眠唤醒和其他复位.
@@ -270,7 +274,7 @@ def sleep() -> None:
 def wake_reason() -> int:
     """
     获取唤醒原因.有关可能的返回值,请参阅:ref:`常量 <machine_constants>`.
-    
+
     可用性: ESP32, WiPy.
     """
     ...
@@ -280,25 +284,25 @@ mem8: Incomplete  ## <class 'mem'> = <8-bit memory>
 class PWM:
     """
     此类提供脉宽调制输出.
-    
+
     使用示例::
-    
+
         from machine import PWM
-        
+
         pwm = PWM(pin)          # 在引脚上创建PWM对象.
         pwm.duty_u16(32768)     # 设置占空比为50%.
-        
+
         # 重新初始化,周期为200us,占空比为5us.
         pwm.init(freq=5000, duty_ns=5000)
-        
+
         pwm.duty_ns(3000)       # 设置脉冲宽度为3us.
-        
+
         pwm.deinit()
-    
-    
+
+
     PWM的限制
     ------------------
-    
+
     * 由于计算硬件的离散性质,不是所有频率都能以绝对精度生成.通常,PWM频率
       是通过将某个整数基频除以整数除数获得的.
       例如,如果基频为80MHz,所需PWM频率为300kHz,则除数必须是非整数
@@ -306,20 +310,20 @@ class PWM:
       四舍五入后,除数设置为267,PWM频率将为80000000 / 267 = 299625.5 Hz,
       而不是300kHz.如果除数设置为266,则PWM频率将为80000000 / 266 = 300751.9 Hz,
       但仍然不是300kHz.
-    
+
     * 占空比也具有相同的离散性质,无法达到其绝对精度.在大多数硬件平台上,
       占空比将在下一个频率周期应用.因此,在测量占空比之前,应等待超过"1/频率"的时间.
-    
+
     * 频率和占空比分辨率通常是相互依赖的.PWM频率越高,可用的占空比分辨率越低,
       反之亦然.例如,300kHz的PWM频率可以有8位占空比分辨率,而不是可能预期的16位.
       在这种情况下,*duty_u16*的最低8位是不重要的.所以::
-    
+
         pwm=PWM(Pin(13), freq=300_000, duty_u16=2**16//2)
-    
+
       和::
-    
+
         pwm=PWM(Pin(13), freq=300_000, duty_u16=2**16//2 + 255)
-    
+
       将生成具有相同50%占空比的PWM.
     """
 
@@ -327,9 +331,9 @@ class PWM:
     def duty_u16(self) -> int:
         """
         获取或设置PWM输出的当前占空比,作为0到65535(含)范围内的无符号16位值.
-        
+
         不带参数时返回占空比.
-        
+
         带有单个*value*参数时,将占空比设置为该值,以``value / 65535``的比率测量.
         """
 
@@ -341,9 +345,9 @@ class PWM:
     ) -> None:
         """
         获取或设置PWM输出的当前占空比,作为0到65535(含)范围内的无符号16位值.
-        
+
         不带参数时返回占空比.
-        
+
         带有单个*value*参数时,将占空比设置为该值,以``value / 65535``的比率测量.
         """
 
@@ -357,9 +361,9 @@ class PWM:
     def freq(self) -> int:
         """
         获取或设置PWM输出的当前频率.
-        
+
         不带参数时返回以Hz为单位的频率.
-        
+
         带有单个*value*参数时,将频率设置为以Hz为单位的该值.如果频率超出有效范围,
         该方法可能会引发``ValueError``.
         """
@@ -372,9 +376,9 @@ class PWM:
     ) -> None:
         """
         获取或设置PWM输出的当前频率.
-        
+
         不带参数时返回以Hz为单位的频率.
-        
+
         带有单个*value*参数时,将频率设置为以Hz为单位的该值.如果频率超出有效范围,
         该方法可能会引发``ValueError``.
         """
@@ -389,9 +393,9 @@ class PWM:
     def duty_ns(self) -> int:
         """
         获取或设置PWM输出的当前脉冲宽度,以纳秒为单位.
-        
+
         不带参数时返回以纳秒为单位的脉冲宽度.
-        
+
         带有单个*value*参数时,将脉冲宽度设置为该值.
         """
 
@@ -403,9 +407,9 @@ class PWM:
     ) -> None:
         """
         获取或设置PWM输出的当前脉冲宽度,以纳秒为单位.
-        
+
         不带参数时返回以纳秒为单位的脉冲宽度.
-        
+
         带有单个*value*参数时,将脉冲宽度设置为该值.
         """
 
@@ -1104,6 +1108,7 @@ class I2S:
         sck: PinLike,
         ws: PinLike,
         sd: PinLike,
+        mck: PinLike | None = None,
         mode: int,
         bits: int,
         format: int,
@@ -1241,7 +1246,9 @@ class I2C:
         """
         ...
 
-    def scan(self, ) -> List:
+    def scan(
+        self,
+    ) -> List:
         """
         扫描I2C总线上所有响应的设备地址
 
@@ -1869,7 +1876,7 @@ class Pin:
 
             - ``Pin.OUT`` - 引脚配置为(正常)输出.
 
-            - ``Pin.OPEN_DRAIN`` - 引脚配置为开漏输出.开漏输出的工作方式如下: 
+            - ``Pin.OPEN_DRAIN`` - 引脚配置为开漏输出.开漏输出的工作方式如下:
               如果输出值设置为0,则引脚在低电平下有效; 如果输出值为1,则引脚处于高阻态.
               并非所有端口都实现此模式,或者某些端口可能仅在特定引脚上实现.
 
@@ -1891,7 +1898,7 @@ class Pin:
           - ``value`` (Any): 仅对Pin.OUT和Pin.OPEN_DRAIN模式有效,如果给定,则指定初始输出引脚值,
             否则引脚外设的状态保持不变.
 
-          - ``drive`` (int | None): 指定引脚的输出功率,可以是: ``Pin.LOW_POWER``、``Pin.MED_POWER`` 
+          - ``drive`` (int | None): 指定引脚的输出功率,可以是: ``Pin.LOW_POWER``、``Pin.MED_POWER``
             或 ``Pin.HIGH_POWER``.实际的电流驱动能力取决于端口.并非所有端口都实现此参数.
 
           - ``alt`` (int | None): 指定引脚的替代功能,其可取的值取决于端口.此参数仅对 ``Pin.ALT`` 和
@@ -2009,83 +2016,104 @@ class WDT:
         它由底层系统决定.
         """
 
-class SDCard(AbstractBlockDev):
+class SDCard:
     """
-    SD卡是最常见的小型可移动存储媒体之一
-
-    SD卡有各种尺寸和物理形式. MMC卡是类似的可移动存储设备, 而eMMC设备是电气上类似的存储设备, 设计用于嵌入到其他系统中
-    这三种形式共享一个用于与其主机系统通信的通用协议, 高级支持对它们都是相同的
-    因此, 在MicroPython中, 它们在一个名为 `machine.SDCard` 的类中实现
-
-    SD和MMC接口都支持通过多种总线宽度访问. 当使用1位宽接口访问时, 可以使用SPI协议
-    不同的MicroPython硬件平台支持不同的宽度和引脚配置, 但对于大多数平台, 任何给定硬件都有标准配置
-    通常, 构造一个不传递任何参数的 `SDCard` 对象将为当前硬件初始化到默认卡槽的接口
-    下面列出的参数代表了可能需要设置的常见参数, 以便使用非标准插槽或非标准引脚分配
-    支持的确切参数子集会因平台而异
-
-    特定实现的详细信息请参考相关文档
+    ESP32的SD卡驱动
+    
+    此类提供对ESP32设备上SD卡功能的访问
+    支持SDMMC和SPI两种接口
     """
-
-    def ioctl(self, *args, **kwargs) -> Incomplete: ...
-    @overload
-    def readblocks(self, block_num: int, buf: bytearray) -> bool:
-        """
-        读取对齐的多个块
-
-        参数:
-            block_num (int): 起始块索引
-            buf (bytearray): 用于接收读取数据的字节数组
-
-        返回:
-            (bool): 是否成功读取
-        """
-
-    @overload
-    def readblocks(self, block_num: int, buf: bytearray, offset: int) -> bool:
-        """
-        读取块内任意位置的数据
-
-        参数:
-            block_num (int): 起始块索引
-            buf (bytearray): 用于接收读取数据的字节数组
-            offset (int): 块内的字节偏移量
-
-        返回:
-            (bool): 是否成功读取
-        """
-
-    @overload
-    def writeblocks(self, block_num: int, buf: bytes | bytearray, /) -> None:
-        """
-        写入对齐的多个块
-
-        参数:
-            block_num (int): 起始块索引
-            buf (bytes | bytearray): 包含要写入数据的字节对象或字节数组
-
-        返回:
-            (None): 无返回值
-        """
-
-    @overload
-    def writeblocks(
-        self, block_num: int, buf: bytes | bytearray, offset: int, /
+    
+    def __init__(
+        self, 
+        *,
+        width: int = 1,
+        cd: int = -1,
+        wp: int = -1,
+        slot: int = 1,
+        cmd: int = -1,
+        clk: int = -1,
+        data_pins: Optional[Tuple[int, ...]] = None,
+        spi_bus: Optional[SPI.Bus] = None,
+        cs: int = -1,
+        freq: int = 20000000
     ) -> None:
         """
-        写入块内任意位置的数据
-
+        初始化SD卡
+        
         参数:
-            block_num (int): 起始块索引
-            buf (bytes | bytearray): 包含要写入数据的字节对象或字节数组
-            offset (int): 块内的字节偏移量
-
-        返回:
-            (None): 无返回值
+            width (int): 总线宽度(1, 4或8位), 默认为1
+            cd (int): 卡检测引脚, 默认为-1(不使用)
+            wp (int): 写保护引脚, 默认为-1(不使用)
+            slot (int): SD/MMC槽号(0-3), 默认为1
+                  0,1为SD/MMC模式(如果支持)
+                  2,3为SPI模式(如果支持)
+            cmd (int): SDMMC模式的命令引脚, 默认为-1(使用默认引脚)
+            clk (int): SDMMC模式的时钟引脚, 默认为-1(使用默认引脚)
+            data_pins (Tuple[int, ...]): SDMMC模式的数据引脚, 数量必须与width匹配
+            spi_bus (SPI): SPI模式的总线对象, 默认为None
+            cs (int): SPI模式的片选引脚, 默认为-1
+            freq (int): 时钟频率(Hz), 默认为20MHz
         """
-    def info(self, *args, **kwargs) -> Incomplete: ...
-    def deinit(self, *args, **kwargs) -> Incomplete: ...
-    def __init__(self, *argv, **kwargs) -> None: ...
+        ...
+    
+    def deinit(self) -> None:
+        """
+        释放SD卡资源
+        """
+        ...
+    
+    def info(self) -> Tuple[int, int]:
+        """
+        获取SD卡信息
+        
+        返回:
+            (Tuple[int, int]): 包含(容量, 块大小)的元组
+                - 容量: SD卡总容量(字节)
+                - 块大小: 块大小(字节)
+        """
+        ...
+    
+    def readblocks(self, block_num: int, buf: bytearray) -> bool:
+        """
+        从SD卡读取数据块
+        
+        参数:
+            block_num (int): 起始块编号
+            buf (bytearray): 存储读取数据的缓冲区
+            
+        返回:
+            (bool): 成功返回True, 失败返回False
+        """
+        ...
+    
+    def writeblocks(self, block_num: int, buf: bytearray) -> bool:
+        """
+        向SD卡写入数据块
+        
+        参数:
+            block_num (int): 起始块编号
+            buf (bytearray): 包含要写入数据的缓冲区
+            
+        返回:
+            (bool): 成功返回True, 失败返回False
+        """
+        ...
+    
+    def ioctl(self, cmd: int, arg: Any) -> int:
+        """
+        控制SD卡
+        
+        参数:
+            cmd (int): 命令代码
+            arg (Any): 命令参数
+            
+        返回:
+            (int): 命令特定的返回值
+        """
+        ... 
 
+        
 class RTC:
     """
     RTC是一个独立的实时时钟 用于跟踪日期和时间
@@ -2266,7 +2294,9 @@ class RTC:
         """
 
     @overload
-    def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int]):
+    def __init__(
+        self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int]
+    ):
         """
         创建RTC对象
 
@@ -2278,7 +2308,9 @@ class RTC:
         """
 
     @overload
-    def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int]):
+    def __init__(
+        self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int]
+    ):
         """
         创建RTC对象
 
@@ -2290,7 +2322,9 @@ class RTC:
         """
 
     @overload
-    def __init__(self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int, int]):
+    def __init__(
+        self, id: int = 0, /, *, datetime: tuple[int, int, int, int, int, int, int, int]
+    ):
         """
         创建RTC对象
 
@@ -2458,7 +2492,9 @@ class RTC:
         """
 
     @overload
-    def alarm(self, id: int, time: tuple[int, int, int, int, int, int, int, int], /) -> None:
+    def alarm(
+        self, id: int, time: tuple[int, int, int, int, int, int, int, int], /
+    ) -> None:
         """
         设置RTC闹钟
 
@@ -2549,181 +2585,228 @@ class SPI:
     LSB: Final[int] = 1
     MSB: Final[int] = 0
     CONTROLLER: Incomplete
+
+    class Bus:
+        """
+        SPI总线类, 用于创建SPI总线
+        """
+
+        def __init__(self, *, host: int, mosi: int, miso: int, sck: int):
+            """
+            在给定总线上构造SPI.Bus对象
+
+            参数:
+                host (int): SPI主机编号
+                mosi (int): MOSI引脚编号
+                miso (int): MISO引脚编号
+                sck (int): SCK引脚编号
+            """
+            ...
+
+        def deinit(self) -> None:
+            """
+            关闭SPI总线
+            """
+            ...
+
+    class DualBus:
+        """
+        SPI双线总线类, 用于创建双线SPI总线
+        """
+
+        def __init__(self, *, host: int, data0: int, data1: int, sck: int):
+            """
+            在给定总线上构造SPI.DualBus对象
+
+            参数:
+                host (int): SPI主机编号
+                data0 (int): 数据0引脚编号
+                data1 (int): 数据1引脚编号
+                sck (int): SCK引脚编号
+            """
+            ...
+
+        def deinit(self) -> None:
+            """
+            关闭SPI总线
+            """
+            ...
+
+    class QuadBus:
+        """
+        SPI四线总线类, 用于创建四线SPI总线
+        """
+
+        def __init__(
+            self, *, host: int, data0: int, data1: int, data2: int, data3: int, sck: int
+        ):
+            """
+            在给定总线上构造SPI.QuadBus对象
+
+            参数:
+                host (int): SPI主机编号
+                data0 (int): 数据0引脚编号
+                data1 (int): 数据1引脚编号
+                data2 (int): 数据2引脚编号
+                data3 (int): 数据3引脚编号
+                sck (int): SCK引脚编号
+            """
+            ...
+
+        def deinit(self) -> None:
+            """
+            关闭SPI总线
+            """
+            ...
+
+    class OctalBus:
+        """
+        SPI八线总线类, 用于创建八线SPI总线
+        """
+
+        def __init__(
+            self,
+            *,
+            host: int,
+            data0: int,
+            data1: int,
+            data2: int,
+            data3: int,
+            data4: int,
+            data5: int,
+            data6: int,
+            data7: int,
+            sck: int,
+        ):
+            """
+            在给定总线上构造SPI.OctalBus对象
+
+            参数:
+                host (int): SPI主机编号
+                data0 (int): 数据0引脚编号
+                data1 (int): 数据1引脚编号
+                data2 (int): 数据2引脚编号
+                data3 (int): 数据3引脚编号
+                data4 (int): 数据4引脚编号
+                data5 (int): 数据5引脚编号
+                data6 (int): 数据6引脚编号
+                data7 (int): 数据7引脚编号
+                sck (int): SCK引脚编号
+            """
+            ...
+
+        def deinit(self) -> None:
+            """
+            关闭SPI总线
+            """
+            ...
+
+    class Device:
+        """
+        SPI设备类, 用于创建SPI设备
+        """
+
+        def __init__(
+            self,
+            *,
+            spi_bus: Union[
+                "SPI.Bus",
+                "SPI.DualBus",
+                "SPI.QuadBus",
+                "SPI.OctalBus",
+            ],
+            freq: int,
+            cs: int,
+            polarity: int = 0,
+            phase: int = 0,
+            bits: int = 8,
+            firstbit: int = 0,  # 默认使用MSB
+            dual: bool = False,
+            quad: bool = False,
+            octal: bool = False,
+        ):
+            """
+            构造SPI.Device对象
+
+            参数:
+                spi_bus (SPI.Bus | SPI.DualBus | SPI.QuadBus | SPI.OctalBus): SPI总线对象
+                freq (int): 设备通信频率
+                cs (int): 片选引脚编号
+                polarity (int): 空闲时钟线所处的电平 0或1
+                phase (int): 在第一个或第二个时钟边沿采样数据 0或1
+                bits (int): 每次传输的位宽
+                firstbit (int): MSB(0)或LSB(1)
+                dual (bool): 是否使用双线模式
+                quad (bool): 是否使用四线模式
+                octal (bool): 是否使用八线模式
+            """
+            ...
+
+        def deinit(self) -> None:
+            """
+            关闭SPI设备
+            """
+            ...
+
+        def read(self, nbytes: int, write: int = 0x00, /) -> bytes:
+            """
+            读取指定字节数 同时连续写入单个字节
+
+            参数:
+                nbytes (int): 要读取的字节数
+                write (int): 每次读取时要写入的单个字节 默认为0x00
+
+            返回:
+                (bytes): 包含所读取数据的bytes对象
+            """
+            ...
+
+        def readinto(self, buf: AnyWritableBuf, write: int = 0x00, /) -> int | None:
+            """
+            读取数据到指定缓冲区中 同时连续写入单个字节
+
+            参数:
+                buf (AnyWritableBuf): 用于接收读取数据的缓冲区
+                write (int): 每次读取时要写入的单个字节 默认为0x00
+
+            返回:
+                (int | None): 读取的字节数或None
+            """
+            ...
+
+        def write(self, buf: AnyReadableBuf, /) -> int | None:
+            """
+            写入缓冲区中的字节
+
+            参数:
+                buf (AnyReadableBuf): 包含要写入字节的缓冲区
+
+            返回:
+                (int | None): 写入的字节数或None
+            """
+            ...
+
+        def write_readinto(
+            self, write_buf: AnyReadableBuf, read_buf: AnyWritableBuf, /
+        ) -> int | None:
+            """
+            从write_buf写入字节 同时读取到read_buf中
+
+            参数:
+                write_buf (AnyReadableBuf): 包含要写入数据的缓冲区
+                read_buf (AnyWritableBuf): 用于接收读取数据的缓冲区
+
+            返回:
+                (int | None): 写入的字节数或None
+            """
+            ...
+
     def deinit(self) -> None:
         """
         关闭SPI总线
         """
         ...
-
-    @overload
-    def init(
-        self,
-        baudrate: int = 1_000_000,
-        *,
-        polarity: int = 0,
-        phase: int = 0,
-        bits: int = 8,
-        firstbit: int = MSB,
-        sck: PinLike | None = None,
-        mosi: PinLike | None = None,
-        miso: PinLike | None = None,
-    ) -> None:
-        """
-        使用给定参数初始化SPI总线
-
-        参数:
-            baudrate (int): SCK时钟速率
-            polarity (int): 空闲时钟线所处的电平 0或1
-            phase (int): 在第一个或第二个时钟边沿采样数据 0或1
-            bits (int): 每次传输的位宽
-            firstbit (int): MSB或LSB
-            sck (PinLike | None): SCK引脚对象
-            mosi (PinLike | None): MOSI引脚对象
-            miso (PinLike | None): MISO引脚对象
-            pins (tuple[PinLike, PinLike, PinLike] | None): WiPy端口的引脚元组 (sck, mosi, miso)
-
-        返回:
-            (None): 无返回值
-        """
-
-    @overload
-    def init(
-        self,
-        baudrate: int = 1_000_000,
-        *,
-        polarity: int = 0,
-        phase: int = 0,
-        bits: int = 8,
-        firstbit: int = MSB,
-        pins: tuple[PinLike, PinLike, PinLike] | None = None,
-    ) -> None:
-        """
-        使用给定参数初始化SPI总线
-
-        参数:
-            baudrate (int): SCK时钟速率
-            polarity (int): 空闲时钟线所处的电平 0或1
-            phase (int): 在第一个或第二个时钟边沿采样数据 0或1
-            bits (int): 每次传输的位宽
-            firstbit (int): MSB或LSB
-            sck (PinLike | None): SCK引脚对象
-            mosi (PinLike | None): MOSI引脚对象
-            miso (PinLike | None): MISO引脚对象
-            pins (tuple[PinLike, PinLike, PinLike] | None): WiPy端口的引脚元组 (sck, mosi, miso)
-
-        返回:
-            (None): 无返回值
-        """
-
-    def write_readinto(
-        self, write_buf: AnyReadableBuf, read_buf: AnyWritableBuf, /
-    ) -> int:
-        """
-        从write_buf写入字节 同时读取到read_buf中
-
-        参数:
-            write_buf (AnyReadableBuf): 包含要写入数据的缓冲区
-            read_buf (AnyWritableBuf): 用于接收读取数据的缓冲区
-
-        返回:
-            (int): 写入的字节数
-        """
-        ...
-
-    def read(self, nbytes: int, write: int = 0x00, /) -> bytes:
-        """
-        读取指定字节数 同时连续写入单个字节
-
-        参数:
-            nbytes (int): 要读取的字节数
-            write (int): 每次读取时要写入的单个字节 默认为0x00
-
-        返回:
-            (bytes): 包含所读取数据的bytes对象
-        """
-        ...
-
-    def write(self, buf: AnyReadableBuf, /) -> int:
-        """
-        写入缓冲区中的字节
-
-        参数:
-            buf (AnyReadableBuf): 包含要写入字节的缓冲区
-
-        返回:
-            (int): 写入的字节数
-        """
-        ...
-
-    def readinto(self, buf: AnyWritableBuf, write: int = 0x00, /) -> int:
-        """
-        读取数据到指定缓冲区中 同时连续写入单个字节
-
-        参数:
-            buf (AnyWritableBuf): 用于接收读取数据的缓冲区
-            write (int): 每次读取时要写入的单个字节 默认为0x00
-
-        返回:
-            (int): 读取的字节数
-        """
-        ...
-
-    @overload
-    def __init__(self, id: int, /):
-        """
-        在给定总线上构造SPI对象,*id*。*id*的值取决于特定的端口及其硬件。
-        通常使用0、1等值来选择硬件SPI块#0、#1等。
-
-        如果没有额外参数,则创建SPI对象但不进行初始化(它具有来自总线最后一次
-        初始化的设置,如果有的话)。如果给出额外参数,则总线被初始化。
-        有关初始化参数,请参见 ``init``。
-        """
-
-    @overload
-    def __init__(
-        self,
-        id: int,
-        /,
-        baudrate: int = 1_000_000,
-        *,
-        polarity: int = 0,
-        phase: int = 0,
-        bits: int = 8,
-        firstbit: int = MSB,
-        sck: PinLike | None = None,
-        mosi: PinLike | None = None,
-        miso: PinLike | None = None,
-    ):
-        """
-        在给定总线上构造SPI对象,*id*。*id*的值取决于特定的端口及其硬件。
-        通常使用0、1等值来选择硬件SPI块#0、#1等。
-
-        如果没有额外参数,则创建SPI对象但不进行初始化(它具有来自总线最后一次
-        初始化的设置,如果有的话)。如果给出额外参数,则总线被初始化。
-        有关初始化参数,请参见 ``init``。
-        """
-
-    @overload
-    def __init__(
-        self,
-        id: int,
-        /,
-        baudrate: int = 1_000_000,
-        *,
-        polarity: int = 0,
-        phase: int = 0,
-        bits: int = 8,
-        firstbit: int = MSB,
-        pins: tuple[PinLike, PinLike, PinLike] | None = None,
-    ):
-        """
-        在给定总线上构造SPI对象,*id*。*id*的值取决于特定的端口及其硬件。
-        通常使用0、1等值来选择硬件SPI块#0、#1等。
-
-        如果没有额外参数,则创建SPI对象但不进行初始化(它具有来自总线最后一次
-        初始化的设置,如果有的话)。如果给出额外参数,则总线被初始化。
-        有关初始化参数,请参见 ``init``。
-        """
+    ...
 
 class Signal:
     """

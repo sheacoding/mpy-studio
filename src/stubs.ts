@@ -55,7 +55,7 @@ export class StubsManager {
             
             // 特殊处理 python 选项
             if (selectedBoardKey === 'python') {
-                return 'PYTHON';
+                return 'Python';
             }
             
             // 读取配置以获取开发板的显示名称
@@ -71,8 +71,8 @@ export class StubsManager {
             return selectedBoardKey;
         } catch (error) {
             this._logger.warn(`获取开发板配置失败: ${error instanceof Error ? error.message : String(error)}`);
-            // 如果出错，返回 PYTHON
-            return 'PYTHON';
+            // 如果出错，返回 Python
+            return 'Python';
         }
     }
 
@@ -162,13 +162,13 @@ export class StubsManager {
                     this._logger.debug(`从配置中读取到用户选择的开发板: ${userSelectedBoard}`);
                     return userSelectedBoard;
                 } else {
-                    this._logger.warn(`用户选择的开发板 ${userSelectedBoard} 在配置中不存在，切换到 PYTHON 模式`);
+                    this._logger.warn(`用户选择的开发板 ${userSelectedBoard} 在配置中不存在，切换到 Python 模式`);
                     return 'python';
                 }
             }
             
             // 如果用户没有选择过，返回默认值
-            this._logger.debug(`用户未选择过开发板，使用默认值: PYTHON`);
+            this._logger.debug(`用户未选择过开发板，使用默认值: Python`);
             return 'python';
             
         } catch (error) {

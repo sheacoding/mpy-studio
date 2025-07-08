@@ -3,6 +3,8 @@ import { SerialPort } from 'serialport';
 import { Logger } from './logger';
 import MicroPythonBoard from './micropython';
 import { StubsManager } from './stubs';
+import { DeviceFolder } from './deviceFloder';
+import * as path from 'path';
 
 export class DeviceManager {
     private _statusBarItem: vscode.StatusBarItem;
@@ -16,6 +18,9 @@ export class DeviceManager {
     private _currentBoard: string = '未知开发板';
     private _boardStatusBarItem: vscode.StatusBarItem;
     private _stubsManager: StubsManager;
+    private _deviceFsProvider?: DeviceFolder;
+    private _context: vscode.ExtensionContext;
+    private openFileMap = new Map<string, string>();
 
     private _updateStatusBar() {
         if (this._currentPort) {
@@ -40,6 +45,7 @@ export class DeviceManager {
         this._replPanel?.setStatus?.('未连接', false);
         this._updateStatusBar();
         this._board = null;
+        vscode.commands.executeCommand('setContext', 'mpyStudio.deviceConnected', false);
         if (this._isHardReset) {
             this._isHardReset = false;
             setTimeout(() => {
@@ -52,7 +58,7 @@ export class DeviceManager {
         }
     }
 
-    constructor(logger: Logger, replPanel?: any, context?: vscode.ExtensionContext) {
+    constructor(logger: Logger, replPanel?: any, context?: vscode.ExtensionContext, deviceFsProvider?: DeviceFolder) {
         this._logger = logger;
         this._replPanel = replPanel;
         this._stubsManager = new StubsManager(context!, logger);
@@ -65,6 +71,8 @@ export class DeviceManager {
         this._statusBarItem.command = 'extension.mpyStatusBarConnect';
         this._updateStatusBar();
         this._statusBarItem.show();
+        this._deviceFsProvider = deviceFsProvider;
+        this._context = context!;
     }
 
     async loadConfig(context: vscode.ExtensionContext) {
@@ -172,6 +180,9 @@ export class DeviceManager {
             this._logger.info(`已连接到端口 ${port}`);
             this._isConnecting = false;
             this._updateStatusBar();
+            await vscode.commands.executeCommand('setContext', 'mpyStudio.deviceConnected', true);
+            // 连接成功后自动刷新 TreeView
+            this._deviceFsProvider?.refresh();
         } catch (error) {
             this._logger.warn(`连接失败: ${error instanceof Error ? error.message : String(error)}`);
             if (this._board) {
@@ -227,18 +238,32 @@ export class DeviceManager {
     }
 
     async disconnect(): Promise<void> {
-        if (this._dataListener && this._board) {
-            this._board.parser?.removeListener('data', this._dataListener);
-            this._dataListener = undefined;
+        for (const [tmpFile, devicePath] of this.openFileMap.entries()) {
+            const editors = vscode.window.visibleTextEditors.filter(e => e.document.fileName === tmpFile);
+            for (const editor of editors) {
+                await vscode.window.showTextDocument(editor.document, { preview: false, preserveFocus: false });
+                await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+            }
+            const doc = vscode.workspace.textDocuments.find(d => d.fileName === tmpFile);
+            if (doc) {
+                await vscode.window.showTextDocument(doc, { preview: false, preserveFocus: false });
+                await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+            }
+            try {
+                require('fs').unlinkSync(tmpFile);
+            } catch (e) {
+            }
         }
+        this.openFileMap.clear();
         if (this._board) {
             try {
                 await this._board.close();
-                this._handleSerialClosed();
-            } catch (error) {
-                this._logger.warn(`断开串口错误:${error instanceof Error ? error.message : String(error)}`);
-            }
+            } catch {}
+            this._board = null;
         }
+        this._currentPort = undefined;
+        this._updateStatusBar();
+        vscode.commands.executeCommand('setContext', 'mpyStudio.deviceConnected', false);
     }
 
     async getPrompt(): Promise<string> {
@@ -249,6 +274,29 @@ export class DeviceManager {
     async run(code: string): Promise<string> {
         if (!this._board) throw new Error('设备未连接');
         return await this._board.run(code) as string;
+    }
+
+    async loadFile(filePath: string): Promise<string> {
+        if (!this._board) throw new Error('设备未连接');
+        const ext = require('path').extname(filePath).toLowerCase();
+        if ([".png", ".jpg", ".jpeg", ".bmp", ".gif"].includes(ext)) {
+            // 读取二进制并转 base64
+            const bytes = await this._board.fs_cat_binary(filePath);
+            if (!bytes) return '';
+            // bytes 应为字符串，逗号分隔
+            const arr = (typeof bytes === 'string' ? bytes : String(bytes)).split(',').filter(Boolean).map(Number);
+            const buf = Buffer.from(arr);
+            const mime = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/*';
+            return `<img src="data:${mime};base64,${buf.toString('base64')}" />`;
+        } else {
+            // 普通文本文件
+            return await this._board.fs_cat(filePath);
+        }
+    }
+
+    async writeFile(filePath: string, content: string): Promise<void> {
+        if (!this._board) throw new Error('设备未连接');
+        await this._board.fs_save(content, filePath);
     }
 
     isConnected(): boolean {
@@ -296,14 +344,53 @@ export class DeviceManager {
         await this._board.exec_raw("import time, machine; time.sleep_ms(100); machine.reset()\n");
     }
 
+    async reset() {
+        if (!this._board) throw new Error('设备未连接');
+        await this._board?.stop();
+        await this._board?.exit_raw_repl();
+        await this._board?.reset();
+        return Promise.resolve();
+    }
+
     async fs_rm(filePath: string) {
         if (!this._board) throw new Error('设备未连接');
         return await this._board.fs_rm(filePath);
+    }
+
+    public async deleteFolder(fullPath: string, context: vscode.ExtensionContext) {
+        if (!this._board) throw new Error('设备未连接');
+        const helpersPath = path.join(context.extensionPath, 'media', 'helpers.py');
+        await this._board.execfile(helpersPath);
+        await this._board.run(`delete_folder('${fullPath}')`);
+    }
+
+    public async createFile(folderPath: string, fileName: string, context: vscode.ExtensionContext) {
+        if (!this._board) throw new Error('设备未连接');
+        const filePath = folderPath.endsWith('/') ? folderPath + fileName : folderPath + '/' + fileName;
+        await this._board.run(`with open('${filePath}', 'w') as f: pass`);
+    }
+
+    public async createFolder(folderPath: string, folderName: string, context: vscode.ExtensionContext) {
+        if (!this._board) throw new Error('设备未连接');
+        const dirPath = folderPath.endsWith('/') ? folderPath + folderName : folderPath + '/' + folderName;
+        await this._board.run(`import uos; uos.mkdir('${dirPath}')`);
+    }
+
+    public getDeviceFsProvider() {
+        return this._deviceFsProvider;
+    }
+
+    getBoard(): MicroPythonBoard | null {
+        return this._board;
     }
 
     dispose() {
         this._statusBarItem?.dispose();
         this._boardStatusBarItem?.dispose();
         this._board?.close();
+    }
+
+    getOpenFileMap() {
+        return this.openFileMap;
     }
 } 

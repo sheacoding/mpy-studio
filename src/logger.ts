@@ -13,7 +13,7 @@ export class Logger {
     private static instance: Logger;
     private logFile: string;
     private outputChannel: vscode.OutputChannel;
-    private currentLevel: LogLevel = LogLevel.INFO;
+    private currentLevel: LogLevel = LogLevel.DEBUG;
 
     private constructor(context: vscode.ExtensionContext, outputChannel?: vscode.OutputChannel) {
         const logDir = context.globalStorageUri.fsPath;
