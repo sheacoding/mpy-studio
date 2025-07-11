@@ -3007,7 +3007,7 @@ class display_t(object):
         """
         ...
 
-    def get_next(self, /) -> "display_t":
+    def get_next(self, /) -> display_t:
         """
         No Docstrings Yet
         """
@@ -3201,7 +3201,7 @@ class display_t(object):
         ...
 
     def add_event_cb(
-        self, event_cb: Callable, filter: event_code_t, disp: "display_t", /
+        self, event_cb: Callable, filter: event_code_t, disp: display_t|None, /
     ) -> None:
         """
         No Docstrings Yet
@@ -3227,7 +3227,7 @@ class display_t(object):
         ...
 
     def remove_event_cb_with_user_data(
-        self, event_cb: Callable, disp: "display_t", /
+        self, event_cb: Callable, disp: display_t, /
     ) -> int:
         """
         No Docstrings Yet
@@ -3288,13 +3288,13 @@ class display_t(object):
         """
         ...
 
-    def set_user_data(self, disp: "display_t", /) -> None:
+    def set_user_data(self, disp: display_t, /) -> None:
         """
         No Docstrings Yet
         """
         ...
 
-    def set_driver_data(self, disp: "display_t", /) -> None:
+    def set_driver_data(self, disp: display_t|Any, /) -> None:
         """
         No Docstrings Yet
         """
@@ -8535,7 +8535,7 @@ class indev_t(object):
         """
         ...
 
-    def set_display(self, disp: "display_t", /) -> None:
+    def set_display(self, disp: display_t, /) -> None:
         """
         No Docstrings Yet
         """
@@ -8583,7 +8583,7 @@ class indev_t(object):
         """
         ...
 
-    def get_display(self, /) -> "display_t":
+    def get_display(self, /) -> display_t:
         """
         No Docstrings Yet
         """
@@ -10749,7 +10749,7 @@ class obj(object):
         """
         ...
 
-    def get_display(self, /) -> "display_t":
+    def get_display(self, /) -> display_t:
         """
         No Docstrings Yet
         """
@@ -17070,13 +17070,13 @@ def draw_layer_go_to_xy(layer: "layer_t", x: int, y: int, /) -> Any:
     """
     ...
 
-def display_create(hor_res: int, ver_res: int, /) -> "display_t":
+def display_create(hor_res: int, ver_res: int, /) -> display_t:
     """
     No Docstrings Yet
     """
     ...
 
-def display_get_default() -> "display_t":
+def display_get_default() -> display_t:
     """
     No Docstrings Yet
     """
@@ -17276,7 +17276,7 @@ def objid_builtin_destroy() -> None:
     """
     ...
 
-def refr_now(disp: "display_t", /) -> None:
+def refr_now(disp: display_t, /) -> None:
     """
     No Docstrings Yet
     """
@@ -17571,7 +17571,7 @@ def theme_get_color_secondary(obj: obj, /) -> color_t:
     ...
 
 def theme_default_init(
-    disp: "display_t",
+    disp: display_t,
     color_primary: color_t,
     color_secondary: color_t,
     dark: bool,
@@ -17601,7 +17601,7 @@ def theme_default_deinit() -> None:
     """
     ...
 
-def theme_simple_init(disp: "display_t", /) -> "theme_t":
+def theme_simple_init(disp: display_t, /) -> "theme_t":
     """
     No Docstrings Yet
     """

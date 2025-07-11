@@ -95,7 +95,6 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                         this._lastCommand = ''
                         console.log('ReplPanel: Attempting to connect...');
                         await this.deviceManager.connect();
-                        console.log('ReplPanel: Connect successful');
                     } catch (err) {
                         console.error('ReplPanel: Connect error:', err);
                         const errorMessage = err instanceof Error ? err.message : String(err);

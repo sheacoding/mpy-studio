@@ -35,7 +35,9 @@ export class DeviceFolder implements vscode.TreeDataProvider<DeviceNode> {
     private deviceManager: DeviceManager,
     private context: vscode.ExtensionContext,
     private logger?: { info: Function; warn: Function; error: Function }
-  ) { }
+  ) {
+    console.log("初始化设备文件夹")
+  }
 
 
   async refresh(node?: DeviceNode): Promise<void> {
@@ -162,7 +164,7 @@ export class DeviceFolder implements vscode.TreeDataProvider<DeviceNode> {
     if (!board) return;
     try {
       const fullPath = `${parentPath.replace(/'/g, "\\'")}/${fileName.replace(/'/g, "\\'")}`;
-      await board.fs_save('', fullPath);
+      await board.fs_put('', fullPath);
       vscode.window.showInformationMessage(`已创建文件: ${fileName}`);
       this.refresh();
     } catch (e) {
@@ -174,11 +176,15 @@ export class DeviceFolder implements vscode.TreeDataProvider<DeviceNode> {
     const board = this.deviceManager.getBoard();
     if (!board || !node) return;
     try {
-      // 先上传并执行 helpers.py
-      const helpersPath = path.join(this.context.extensionPath, 'media', 'helpers.py');
-      await board.execfile(helpersPath);
-      // 调用 delete_folder(path)
-      await board.run(`delete_folder('${node.fullPath}')`);
+      if(node.isDir){
+        // 先上传并执行 helpers.py
+        const helpersPath = path.join(this.context.extensionPath, 'media', 'helpers.py');
+        await board.execfile(helpersPath);
+        // 调用 delete_folder(path)
+        await board.run(`delete_folder('${node.fullPath}')`);
+      }else{
+        await board.fs_rm(node.fullPath);
+      }
       // 计算父节点路径
       const parentPath = node.fullPath.substring(0, node.fullPath.lastIndexOf('/')) || '/';
       if (parentPath === this.rootPath) {

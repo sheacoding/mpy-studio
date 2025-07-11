@@ -2,7 +2,7 @@
   "name": "mpy-studio",
   "displayName": "mpy-studio",
   "description": "A comprehensive MicroPython IDE for ESP32 and ESP32-S3 development boards. Features device management, code execution, REPL terminal, and more.",
-  "version": "0.0.9",
+  "version": "1.0.1",
   "publisher": "bright",
   "engines": {
     "vscode": "^1.92.0",

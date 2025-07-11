@@ -18,7 +18,7 @@ export class DeviceManager {
     private _currentBoard: string = '未知开发板';
     private _boardStatusBarItem: vscode.StatusBarItem;
     private _stubsManager: StubsManager;
-    private _deviceFsProvider?: DeviceFolder;
+    private _deviceFolder?: DeviceFolder;
     private _context: vscode.ExtensionContext;
     private openFileMap = new Map<string, string>();
 
@@ -58,7 +58,7 @@ export class DeviceManager {
         }
     }
 
-    constructor(logger: Logger, replPanel?: any, context?: vscode.ExtensionContext, deviceFsProvider?: DeviceFolder) {
+    constructor(logger: Logger, replPanel?: any, context?: vscode.ExtensionContext) {
         this._logger = logger;
         this._replPanel = replPanel;
         this._stubsManager = new StubsManager(context!, logger);
@@ -71,7 +71,6 @@ export class DeviceManager {
         this._statusBarItem.command = 'extension.mpyStatusBarConnect';
         this._updateStatusBar();
         this._statusBarItem.show();
-        this._deviceFsProvider = deviceFsProvider;
         this._context = context!;
     }
 
@@ -109,28 +108,28 @@ export class DeviceManager {
             this._logger.debug('Scanning for available ports...');
             const ports = await this._listPorts();
             this._logger.debug(`Found ${ports.length} available ports: ${ports.join(', ')}`);
-            
+
             if (ports.length === 0) {
                 this._logger.warn('No available MPY device ports found');
                 vscode.window.showWarningMessage('无可用的MPY设备串口');
                 return undefined;
             }
-            
+
             this._logger.debug('Showing port selection dialog...');
             const selection = await vscode.window.showQuickPick(ports, {
                 placeHolder: '选择MPY设备串口',
                 title: '选择串口设备'
             });
-            
+
             if (!selection) {
                 this._logger.debug('User cancelled port selection');
                 return undefined;
             }
-            
+
             this._logger.debug(`User selected port: ${selection}`);
             port = selection;
         }
-        
+
         this._currentPort = port;
         this._updateStatusBar();
         this._logger.debug(`选择端口: ${port}`);
@@ -182,7 +181,7 @@ export class DeviceManager {
             this._updateStatusBar();
             await vscode.commands.executeCommand('setContext', 'mpyStudio.deviceConnected', true);
             // 连接成功后自动刷新 TreeView
-            this._deviceFsProvider?.refresh();
+            this._deviceFolder?.refresh();
         } catch (error) {
             this._logger.warn(`连接失败: ${error instanceof Error ? error.message : String(error)}`);
             if (this._board) {
@@ -258,7 +257,7 @@ export class DeviceManager {
         if (this._board) {
             try {
                 await this._board.close();
-            } catch {}
+            } catch { }
             this._board = null;
         }
         this._currentPort = undefined;
@@ -278,25 +277,12 @@ export class DeviceManager {
 
     async loadFile(filePath: string): Promise<string> {
         if (!this._board) throw new Error('设备未连接');
-        const ext = require('path').extname(filePath).toLowerCase();
-        if ([".png", ".jpg", ".jpeg", ".bmp", ".gif"].includes(ext)) {
-            // 读取二进制并转 base64
-            const bytes = await this._board.fs_cat_binary(filePath);
-            if (!bytes) return '';
-            // bytes 应为字符串，逗号分隔
-            const arr = (typeof bytes === 'string' ? bytes : String(bytes)).split(',').filter(Boolean).map(Number);
-            const buf = Buffer.from(arr);
-            const mime = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/*';
-            return `<img src="data:${mime};base64,${buf.toString('base64')}" />`;
-        } else {
-            // 普通文本文件
-            return await this._board.fs_cat(filePath);
-        }
+        return await this._board.fs_cat(filePath);
     }
 
     async writeFile(filePath: string, content: string): Promise<void> {
         if (!this._board) throw new Error('设备未连接');
-        await this._board.fs_save(content, filePath);
+        await this._board.fs_put(content, filePath);
     }
 
     isConnected(): boolean {
@@ -376,8 +362,12 @@ export class DeviceManager {
         await this._board.run(`import uos; uos.mkdir('${dirPath}')`);
     }
 
-    public getDeviceFsProvider() {
-        return this._deviceFsProvider;
+    public getDeviceFolder() {
+        return this._deviceFolder;
+    }
+
+    setDeviceFolder(folder: DeviceFolder) {
+        this._deviceFolder = folder;
     }
 
     getBoard(): MicroPythonBoard | null {

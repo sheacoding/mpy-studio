@@ -254,15 +254,15 @@ class MicroPythonBoard {
   async fs_put(src: string, dest: string, data_consumer?: (data: string) => void) {
     data_consumer = data_consumer || function () { };
     if (src && dest) {
-      const fileContent = fs.readFileSync(path.resolve(src), 'utf8');
-      const contentBuffer = Buffer.from(fileContent, 'utf8');
+      const fileContent = fs.readFileSync(path.resolve(src), 'binary')
+      const contentBuffer =  Buffer.from(fileContent, 'binary')
       let out = '';
       out += await this.enter_raw_repl();
       out += await this.exec_raw(`f=open('${dest}','wb')\nw=f.write`);
       const chunkSize = 256;
       for (let i = 0; i < contentBuffer.length; i += chunkSize) {
         let slice = Uint8Array.from(contentBuffer.subarray(i, i + chunkSize));
-        let line = `w(bytes([${Array.from(slice).join(',')}]))`;
+        let line = `w(bytes([${slice}]))`
         out += await this.exec_raw(line) as string;
         data_consumer(Math.floor((i / contentBuffer.length) * 100).toString() + '%');
       }

@@ -6,8 +6,6 @@ import { ReplPanel } from './repl-panel';
 import { DeviceFolder } from './deviceFloder';
 import * as fs from 'fs';
 import * as nodePath from 'path';
-// 临时文件与设备路径映射
-// const openFileMap = new Map();
 
 let deviceManager: DeviceManager | undefined;
 
@@ -58,9 +56,11 @@ export async function activate(context: vscode.ExtensionContext) {
     const outputChannel = vscode.window.createOutputChannel('MPY-REPL');
     const logger = Logger.getInstance(context, outputChannel);
     // 先初始化 deviceManager
-    deviceManager = new DeviceManager(logger, undefined, context);
+    deviceManager = new DeviceManager(logger, context);
     // 再初始化 DeviceFolder
     const deviceFolder = new DeviceFolder(deviceManager!, context, logger);
+    // 显式注入 deviceFolder
+    deviceManager.setDeviceFolder(deviceFolder);
     vscode.window.createTreeView('mpy-studio.deviceFs', {
       treeDataProvider: deviceFolder
     });
@@ -80,15 +80,14 @@ export async function activate(context: vscode.ExtensionContext) {
             vscode.window.showErrorMessage('图片读取失败');
             return;
           }
-          const arr = (typeof bytes === 'string' ? bytes : String(bytes)).split(',').filter(Boolean).map(Number);
-          const buf = Buffer.from(arr);
-          fs.writeFileSync(tmpFile, buf);
+          const data = Buffer.from(bytes)
+          fs.writeFileSync(tmpFile, data);
           const uri = vscode.Uri.file(tmpFile);
           vscode.commands.executeCommand('vscode.open', uri);
           return;
         }
         // 支持编辑的文本文件类型
-        const editable = ['.py', '.txt', '.json', '.md', '.csv'];
+        const editable = ['.py', '.txt', '.json'];
         if (editable.includes(ext)) {
           // 从设备读取内容
           const content = await deviceManager!.loadFile(node.fullPath);
@@ -122,46 +121,84 @@ export async function activate(context: vscode.ExtensionContext) {
           deviceManager!.getOpenFileMap().delete(doc.fileName);
         }
       }),
-      vscode.commands.registerCommand('mpy-studio.uploadToDevice', async (uri: vscode.Uri) => {
-        if (!uri || !uri.fsPath) {
-          vscode.window.showWarningMessage('未检测到本地文件/文件夹');
-          return;
-        }
-        const stat = fs.statSync(uri.fsPath);
-        const board = deviceManager!.getBoard();
-        if (!board) {
-          vscode.window.showWarningMessage('请先连接设备');
-          return;
-        }
-        // 让用户选择目标目录
-        const targetDir = await vscode.window.showInputBox({ prompt: '输入设备目标目录（如 / 或 /lib）', value: '/' });
-        if (!targetDir) return;
-        if (stat.isDirectory()) {
-          // 递归上传文件夹
-          const uploadFolder = async (localFolder: string, targetDir: string) => {
-            if (!fs.existsSync(localFolder)) return;
-            try { await board.fs_mkdir(targetDir); } catch {}
-            const items = fs.readdirSync(localFolder, { withFileTypes: true });
+      vscode.commands.registerCommand('mpy-studio.uploadToDevice',
+        async (uri: vscode.Uri) => {
+          if (!uri || !uri.fsPath) {
+            vscode.window.showWarningMessage('未检测到本地文件/文件夹');
+            return;
+          }
+          const stat = fs.statSync(uri.fsPath);
+          const board = deviceManager!.getBoard();
+          if (!board) {
+            vscode.window.showWarningMessage('请先连接设备');
+            return;
+          }
+          const targetDir = await vscode.window.showInputBox({ prompt: '输入设备目标目录（如 / 或 /lib）', value: '/' });
+          if (!targetDir) return;
+
+          // 统计文件夹下所有文件数
+          function countFiles(dir: string): number {
+            let count = 0;
+            const items = fs.readdirSync(dir, { withFileTypes: true });
             for (const item of items) {
-              const localPath = nodePath.join(localFolder, item.name);
-              const remotePath = nodePath.posix.join(targetDir, item.name);
+              const fullPath = nodePath.join(dir, item.name);
               if (item.isDirectory()) {
-                await uploadFolder(localPath, remotePath);
+                count += countFiles(fullPath);
               } else {
-                const content = fs.readFileSync(localPath);
-                await board.fs_save(content.toString(), remotePath);
+                count += 1;
               }
             }
-          };
-          await uploadFolder(uri.fsPath, nodePath.posix.join(targetDir, nodePath.basename(uri.fsPath)));
-        } else {
-          const content = fs.readFileSync(uri.fsPath);
-          const destPath = nodePath.posix.join(targetDir, nodePath.basename(uri.fsPath));
-          await board.fs_save(content.toString(), destPath);
-        }
-        vscode.window.showInformationMessage('上传完成');
-        deviceFolder.refresh();
-      }),
+            return count;
+          }
+
+          if (stat.isDirectory()) {
+            const totalFiles = countFiles(uri.fsPath);
+            let uploadedFiles = 0;
+            await vscode.window.withProgress({
+              location: vscode.ProgressLocation.Notification,
+              title: `正在上传文件夹到设备`,
+              cancellable: false
+            }, async (progress) => {
+              const uploadFolder = async (localFolder: string, targetDir: string) => {
+                if (!fs.existsSync(localFolder)) return;
+                try { await board.fs_mkdir(targetDir); } catch {}
+                const items = fs.readdirSync(localFolder, { withFileTypes: true });
+                for (const item of items) {
+                  const localPath = nodePath.join(localFolder, item.name);
+                  const remotePath = nodePath.posix.join(targetDir, item.name);
+                  if (item.isDirectory()) {
+                    await uploadFolder(localPath, remotePath);
+                  } else {
+                    await board.fs_put(localPath, remotePath, (percent) => {
+                      progress.report({
+                        message: `正在上传: ${item.name} (${percent})，总进度: ${uploadedFiles + 1}/${totalFiles}`,
+                        increment: 0
+                      });
+                    });
+                    uploadedFiles++;
+                    progress.report({
+                      message: `已上传: ${uploadedFiles}/${totalFiles}`,
+                      increment: (1 / totalFiles) * 100
+                    });
+                  }
+                }
+              };
+              await uploadFolder(uri.fsPath, nodePath.posix.join(targetDir, nodePath.basename(uri.fsPath)));
+            });
+          } else {
+            const destPath = nodePath.posix.join(targetDir, nodePath.basename(uri.fsPath));
+            await vscode.window.withProgress({
+              location: vscode.ProgressLocation.Notification,
+              title: `正在上传 ${nodePath.basename(uri.fsPath)} 到设备`,
+              cancellable: false
+            }, async (progress) => {
+              await board.fs_put(uri.fsPath, destPath, (percent) => {
+                progress.report({ message: `进度: ${percent}` });
+              });
+            });
+          }
+          deviceFolder.refresh();
+        }),
       vscode.commands.registerCommand('mpy-studio.runOnDevice', async (uri: vscode.Uri) => {
         if (!uri || !uri.fsPath) {
           vscode.window.showWarningMessage('未检测到本地文件');
@@ -551,24 +588,86 @@ export async function activate(context: vscode.ExtensionContext) {
                 const targetDir = folderUris[0].fsPath;
                 const targetPath = nodePath.join(targetDir, fileName);
                 try {
-                    let content: Buffer | string;
-                    if ([".png", ".jpg", ".jpeg", ".bmp", ".gif"].includes(ext)) {
-                        // 图片/二进制
-                        const bytes = await deviceManager!.getBoard()!.fs_cat_binary(node.fullPath);
-                        if (!bytes) throw new Error('读取设备文件失败');
-                        const arr = (typeof bytes === 'string' ? bytes : String(bytes)).split(',').filter(Boolean).map(Number);
-                        content = Buffer.from(arr);
-                        fs.writeFileSync(targetPath, content);
-                    } else {
-                        // 文本
-                        content = await deviceManager!.loadFile(node.fullPath);
-                        fs.writeFileSync(targetPath, content, 'utf8');
-                    }
-                    showMessage('文件已保存到本地: ' + targetPath, 'info');
-                } catch (e) {
-                    showMessage('下载失败: ' + (e instanceof Error ? e.message : String(e)), 'error');
-                }
-            }),
+                    if (node.isDir) {
+                        // 递归下载文件夹
+                        await vscode.window.withProgress({
+                            location: vscode.ProgressLocation.Notification,
+                            title: `正在下载文件夹 ${node.fullPath}`,
+                            cancellable: false
+                        }, async (progress) => {
+                            // 1. 上传并执行 helpers.py
+                            const helpersPath = nodePath.join(context.extensionPath, 'media', 'helpers.py');
+                            const board = deviceManager!.getBoard();
+                            if (!board) {
+                              showMessage('未连接设备，无法下载文件夹', 'error');
+                              return;
+                            }
+                            await board.execfile(helpersPath);
+                            let outputRaw = await board.run(`ilist_all('${node.fullPath}')`);
+                            let output = typeof outputRaw === 'string' ? outputRaw : String(outputRaw);
+                            let files: { path: string, type: string }[] = [];
+                            try {
+                                if (output) {
+                                  const okIdx = output.indexOf('OK');
+                                  const endIdx = output.indexOf('\x04');
+                                  if (okIdx !== -1 && endIdx !== -1 && endIdx > okIdx + 2) {
+                                    output = output.substring(okIdx + 2, endIdx).trim();
+                                  } else {
+                                    output = output.trim();
+                                  }
+                                  files = JSON.parse(output);
+                                } else {
+                                  showMessage('设备端文件列表为空', 'error');
+                                  return;
+                                }
+                              } catch (e) {
+                                showMessage('设备端文件列表解析失败: ' + output, 'error');
+                                return;
+                              }
+                              let downloaded = 0;
+                              for (const file of files) {
+                                const relativePath = file.path.substring(node.fullPath.length).replace(/^\//, '');
+                                const localFullPath = nodePath.join(targetPath, relativePath);
+                                if (file.type === 'folder') {
+                                  await fs.promises.mkdir(localFullPath, { recursive: true });
+                                } else {
+                                  const ext = nodePath.extname(file.path).toLowerCase();
+                                  if ([".png", ".jpg", ".jpeg", ".bmp", ".gif"].includes(ext)) {
+                                    const bytes = await board.fs_cat_binary(file.path);
+                                    const arr = (typeof bytes === 'string' ? bytes : String(bytes)).split(',').filter(Boolean).map(Number);
+                                    const buf = Buffer.from(arr);
+                                    fs.writeFileSync(localFullPath, buf);
+                                  } else {
+                                    const content = await deviceManager!.loadFile(file.path);
+                                    fs.writeFileSync(localFullPath, content, 'utf8');
+                                  }
+                                }
+                                downloaded++;
+                                progress.report({
+                                  message: `已下载: ${downloaded}/${files.length}`,
+                                  increment: (1 / files.length) * 100
+                                });
+                              }
+                            });
+                            showMessage('文件夹已保存到本地: ' + targetPath, 'info');
+                          } else {
+                            // 单文件下载（原有逻辑）
+                            let content: Buffer | string;
+                            if ([".png", ".jpg", ".jpeg", ".bmp", ".gif"].includes(ext)) {
+                              const bytes = await deviceManager!.getBoard()!.fs_cat_binary(node.fullPath);
+                              if (!bytes) throw new Error('读取设备文件失败');
+                              content = Buffer.from(bytes);
+                              fs.writeFileSync(targetPath, content);
+                            } else {
+                              content = await deviceManager!.loadFile(node.fullPath);
+                              fs.writeFileSync(targetPath, content, 'utf8');
+                            }
+                            showMessage('文件已保存到本地: ' + targetPath, 'info');
+                          }
+                        } catch (e) {
+                          showMessage('下载失败: ' + (e instanceof Error ? e.message : String(e)), 'error');
+                        }
+                    }),
             vscode.commands.registerCommand('mpy-studio.refreshDevice', async () => {
               deviceFolder.refresh();
             }),
@@ -605,10 +704,6 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.window.onDidChangeWindowState(async (state) => {
             // 这里无法直接监听 context 变化，需在 connect/disconnect 后手动刷新
         });
-
-        // 在 connect/disconnect 后刷新 TreeView
-        // 建议在 DeviceManager.connect/disconnect 里调用 deviceFsProvider.refresh()
-        // 并在 connect 后调用 deviceManager._board.fs_ls('/') 获取最新文件列表
         vscode.workspace.registerTextDocumentContentProvider('mpy-device', new DeviceTextDocumentContentProvider(deviceManager));
     } catch (error) {
         vscode.window.showErrorMessage(`mpy-studio扩展激活失败: ${error instanceof Error ? error.message : String(error)}`);

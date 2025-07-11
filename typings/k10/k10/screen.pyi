@@ -3,11 +3,13 @@ from typing import Optional, Union, Any, Tuple
 import lvgl as lv
 import machine
 from k10.tca9555 import TCA9555
+from display_driver_framework import DisplayDriver
 
 class Screen:
     """显示屏控制类"""
 
-    canvas: lv.obj
+    canvas: lv.obj|None
+    _display: DisplayDriver|None
 
     def __init__(self, tca9555: TCA9555 | None = None) -> None:
         """
