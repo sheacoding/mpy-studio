@@ -2,21 +2,17 @@ from typing import Optional, Union, Any, Tuple
 
 import lvgl as lv
 import machine
-from k10.tca9555 import TCA9555
 from display_driver_framework import DisplayDriver
 
 class Screen:
     """显示屏控制类"""
 
-    canvas: lv.obj|None
-    _display: DisplayDriver|None
+    canvas: lv.obj | None
+    _display: DisplayDriver | None
 
-    def __init__(self, tca9555: TCA9555 | None = None) -> None:
+    def __init__(self) -> None:
         """
-        初始化显示屏对象, 但不开启电源
-
-        参数:
-            tca9555 (TCA9555 | None): TCA9555 IO扩展器对象, 默认为None
+        初始化显示屏对象
         """
         ...
 
@@ -26,6 +22,12 @@ class Screen:
 
         参数:
             dir (int): 屏幕方向, 0-3分别对应0度, 90度, 180度, 270度
+        """
+        ...
+
+    def clear(self) -> None:
+        """
+        清除屏幕
         """
         ...
 

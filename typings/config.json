@@ -1,0 +1,24 @@
+{
+  "boards": {
+    "esp32": {
+      "name": "esp32",
+      "stubs": ["esp32","lvgl"],
+      "board": "ESP32"
+    },
+    "s3bit": {
+      "name": "S3开发板",
+      "stubs": ["esp32","lvgl","s3bit"],
+      "board": "ESP32-S3"
+    },
+    "k10": {
+      "name": "行空板K10",
+      "stubs": ["esp32","lvgl","k10"],
+      "board": "ESP32-S3"
+    },
+    "lgbit": {
+      "name": "Matrix:Bit/IO:Bit/掌控板2",
+      "stubs": ["esp32","lgbit"],
+      "board": "ESP32"
+    }
+  }
+}

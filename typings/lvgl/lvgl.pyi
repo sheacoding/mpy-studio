@@ -79,6 +79,8 @@ timer_handler_resume_cb_t = function
 delay_cb_t = function
 tick_get_cb_t = function
 
+font_puhui_20_4: font_t
+
 class _draw_sw_mask_radius_circle_dsc_t(object): ...
 class _draw_sw_mask_common_dsc_t(object): ...
 class mutex_t(object): ...
@@ -98,7 +100,7 @@ STRIDE_AUTO: int
 GRID_CONTENT: int
 GRID_TEMPLATE_LAST: int
 SCALE_NONE: int
-RADIUS_CIRCLE: int
+RADIUS_CIRCLE = 0x7FFF
 LABEL_DOT_NUM: int
 LABEL_POS_LAST: int
 LABEL_TEXT_SELECTION_OFF: int
@@ -367,16 +369,24 @@ class PART(object):
     No Docstrings Yet
     """
 
-    MAIN: ClassVar[int]
-    SCROLLBAR: ClassVar[int]
-    INDICATOR: ClassVar[int]
-    KNOB: ClassVar[int]
-    SELECTED: ClassVar[int]
-    ITEMS: ClassVar[int]
-    CURSOR: ClassVar[int]
-    CUSTOM_FIRST: ClassVar[int]
-    ANY: ClassVar[int]
-    ...
+    MAIN = 0x000000
+    """ 主要部分，通常是背景矩形 """
+    SCROLLBAR = 0x010000
+    """ 滚动条部分 """
+    INDICATOR = 0x020000
+    """ 指示器部分，例如滑块、进度条、开关的指示条或复选框的对勾 """
+    KNOB = 0x030000
+    """ 把手部分，用于拖动或调整数值 """
+    SELECTED = 0x040000
+    """ 当前选中的选项或区域 """
+    ITEMS = 0x050000
+    """ 多元素部件（如表格的单元格） """
+    CURSOR = 0x060000
+    """ 光标部分，例如文本区的光标或图表上的标记 """
+    CUSTOM_FIRST = 0x080000
+    """ 自定义部件的起始值，供自定义控件扩展使用 """
+    ANY = 0x0F0000
+    """ 特殊值，可用于某些函数以同时作用于所有部件 """
 
 class PART_TEXTAREA(object):
     """
@@ -3201,7 +3211,7 @@ class display_t(object):
         ...
 
     def add_event_cb(
-        self, event_cb: Callable, filter: event_code_t, disp: display_t|None, /
+        self, event_cb: Callable, filter: event_code_t, disp: display_t | None, /
     ) -> None:
         """
         No Docstrings Yet
@@ -3294,7 +3304,7 @@ class display_t(object):
         """
         ...
 
-    def set_driver_data(self, disp: display_t|Any, /) -> None:
+    def set_driver_data(self, disp: display_t | Any, /) -> None:
         """
         No Docstrings Yet
         """
@@ -3891,10 +3901,518 @@ class style_t(object):
         """
         ...
 
-class _style_value_t_type(TypedDict, total=False):
-    num: int
-    ptr: Any
-    color: color_t
+    def set_bg_grad_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_bg_grad(self, value: "grad_dsc_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_bg_image_src(self, value: Any, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_bg_image_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_bg_image_recolor(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_bg_image_recolor_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_bg_image_tiled(self, value: bool, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_border_color(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_border_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_border_width(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_border_side(self, value: "border_side_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_border_post(self, value: bool, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_outline_width(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_outline_color(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_outline_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_outline_pad(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_shadow_width(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_shadow_offset_x(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_shadow_offset_y(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_shadow_spread(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_shadow_color(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_shadow_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_image_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_image_recolor(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_image_recolor_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_line_width(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_line_dash_width(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_line_dash_gap(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_line_rounded(self, value: bool, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_line_color(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_line_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_arc_width(self, value: int, /) -> None:
+        """
+        设置圆弧的宽度（线宽）。
+
+        参数:
+            value (int): 圆弧的宽度(像素）。
+        """
+        ...
+
+    def set_arc_rounded(self, value: bool, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_arc_color(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_arc_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_arc_image_src(self, value: Any, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_color(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_font(self, value: "font_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_letter_space(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_line_space(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_decor(self, value: "text_decor_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_align(self, value: "text_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_outline_stroke_color(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_outline_stroke_width(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_text_outline_stroke_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_radius(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_radial_offset(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_clip_corner(self, value: bool, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_opa_layered(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_color_filter_dsc(self, value: "color_filter_dsc_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_color_filter_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_recolor(self, value: "color_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_recolor_opa(self, value: "opa_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_anim(self, value: "anim_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_anim_duration(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_transition(self, value: "style_transition_dsc_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_blend_mode(self, value: "blend_mode_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_layout(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_base_dir(self, value: "base_dir_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_bitmap_mask_src(self, value: Any, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_rotary_sensitivity(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_flex_flow(self, value: "flex_flow_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_flex_main_place(self, value: "flex_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_flex_cross_place(self, value: "flex_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_flex_track_place(self, value: "flex_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_flex_grow(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_column_dsc_array(self, value: List[int], /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_column_align(self, value: "grid_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_row_dsc_array(self, value: List[int], /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_row_align(self, value: "grid_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_cell_column_pos(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_cell_x_align(self, value: "grid_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_cell_column_span(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_cell_row_pos(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_cell_y_align(self, value: "grid_align_t", /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    def set_grid_cell_row_span(self, value: int, /) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    @property
+    def values_and_props(self) -> Any:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    @values_and_props.setter
+    def values_and_props(self, value: Any) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    @property
+    def has_group(self) -> int:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    @has_group.setter
+    def has_group(self, value: int) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    @property
+    def prop_cnt(self) -> int:
+        """
+        No Docstrings Yet
+        """
+        ...
+
+    @prop_cnt.setter
+    def prop_cnt(self, value: int) -> None:
+        """
+        No Docstrings Yet
+        """
+        ...
 
 class style_value_t(object):
     """
@@ -3906,7 +4424,7 @@ class style_value_t(object):
         No Docstrings Yet
         """
         ...
-    __SIZE__: ClassVar[int]
+    __SIZE__: ClassVar[int] = ...
 
     @property
     def num(self) -> int:
@@ -3937,18 +4455,23 @@ class style_value_t(object):
         ...
 
     @property
-    def color(self) -> color_t:
+    def color(self) -> "color_t":
         """
         No Docstrings Yet
         """
         ...
 
     @color.setter
-    def color(self, value: color_t) -> None:
+    def color(self, value: "color_t") -> None:
         """
         No Docstrings Yet
         """
         ...
+
+class _style_value_t_type(TypedDict, total=False):
+    num: int
+    ptr: Any
+    color: color_t
 
 class _draw_rect_dsc_t_type(TypedDict, total=False):
     base: "draw_dsc_base_t"
@@ -9766,45 +10289,77 @@ class obj(object):
         No Docstrings Yet
         """
 
-        HIDDEN: ClassVar[int]
-        CLICKABLE: ClassVar[int]
-        CLICK_FOCUSABLE: ClassVar[int]
-        CHECKABLE: ClassVar[int]
-        SCROLLABLE: ClassVar[int]
-        SCROLL_ELASTIC: ClassVar[int]
-        SCROLL_MOMENTUM: ClassVar[int]
-        SCROLL_ONE: ClassVar[int]
-        SCROLL_CHAIN_HOR: ClassVar[int]
-        SCROLL_CHAIN_VER: ClassVar[int]
-        SCROLL_CHAIN: ClassVar[int]
-        SCROLL_ON_FOCUS: ClassVar[int]
-        SCROLL_WITH_ARROW: ClassVar[int]
-        SNAPPABLE: ClassVar[int]
-        PRESS_LOCK: ClassVar[int]
-        EVENT_BUBBLE: ClassVar[int]
-        GESTURE_BUBBLE: ClassVar[int]
-        ADV_HITTEST: ClassVar[int]
-        IGNORE_LAYOUT: ClassVar[int]
-        FLOATING: ClassVar[int]
-        SEND_DRAW_TASK_EVENTS: ClassVar[int]
-        OVERFLOW_VISIBLE: ClassVar[int]
-        FLEX_IN_NEW_TRACK: ClassVar[int]
-        LAYOUT_1: ClassVar[int]
-        LAYOUT_2: ClassVar[int]
-        WIDGET_1: ClassVar[int]
-        WIDGET_2: ClassVar[int]
-        USER_1: ClassVar[int]
-        USER_2: ClassVar[int]
-        USER_3: ClassVar[int]
-        USER_4: ClassVar[int]
+        HIDDEN = 0x1
+        """ 让对象隐藏（就像它根本不存在一样）"""
+        CLICKABLE = 0x2
+        """ 使对象可被输入设备点击 """
+        CLICK_FOCUSABLE = 0x4
+        """ 点击时让对象获得焦点 """
+        CHECKABLE = 0x8
+        """ 点击对象时切换选中状态 """
+        SCROLLABLE = 0x10
+        """ 使对象可滚动 """
+        SCROLL_ELASTIC = 0x20
+        """ 允许滚动但带有弹性效果 """
+        SCROLL_MOMENTUM = 0x40
+        """ 滚动时有惯性 """
+        SCROLL_ONE = 0x80
+        """ 只允许滚动一个可吸附的子项 """
+        SCROLL_CHAIN_HOR = 0x100
+        """ 横向滚动可传递到父对象 """
+        SCROLL_CHAIN_VER = 0x200
+        """ 纵向滚动可传递到父对象 """
+        SCROLL_CHAIN = 0x100 | 0x200
+        """ 横纵滚动都可传递到父对象 """
+        SCROLL_ON_FOCUS = 0x400
+        """ 获得焦点时自动滚动到可见 """
+        SCROLL_WITH_ARROW = 0x800
+        """ 用方向键滚动获得焦点的对象 """
+        SNAPPABLE = 0x1000
+        """ 父对象启用吸附时可吸附到此对象 """
+        PRESS_LOCK = 0x2000
+        """ 按下后即使滑出对象也保持按下状态 """
+        EVENT_BUBBLE = 0x4000
+        """ 事件冒泡到父对象 """
+        GESTURE_BUBBLE = 0x8000
+        """ 手势冒泡到父对象 """
+        ADV_HITTEST = 0x10000
+        """ 更精确的点击测试（如考虑圆角） """
+        IGNORE_LAYOUT = 0x20000
+        """ 不被布局系统定位 """
+        FLOATING = 0x40000
+        """ 父对象滚动时不滚动本对象且忽略布局 """
+        SEND_DRAW_TASK_EVENTS = 0x80000
+        """ 发送 LV_EVENT_DRAW_TASK_ADDED 事件 """
+        OVERFLOW_VISIBLE = 0x100000
+        """ 子对象超出父对象时不裁剪 """
+        FLEX_IN_NEW_TRACK = 0x200000
+        """ 在此项上开始新的 flex 行/列 """
+        LAYOUT_1 = 0x800000
+        """ 自定义布局标志1 """
+        LAYOUT_2 = 0x1000000
+        """ 自定义布局标志2 """
+        WIDGET_1 = 0x2000000
+        """ 自定义控件标志1 """
+        WIDGET_2 = 0x4000000
+        """ 自定义控件标志2 """
+        USER_1 = 0x8000000
+        """ 用户自定义标志1 """
+        USER_2 = 0x10000000
+        """ 用户自定义标志2 """
+        USER_3 = 0x20000000
+        """ 用户自定义标志3 """
+        USER_4 = 0x40000000
+        """ 用户自定义标志4 """
 
-    def __init__(self, parent: obj|None=None, /) -> None:
+    def __init__(self, parent: obj | None = None, /) -> None:
         """
         No Docstrings Yet
         """
         ...
 
-    def style_get_selector_state(self, /) -> "state_t":
+    def clear_flag(self, flag: int) -> None: ...
+    def style_get_selector_state(self, /) -> state_t:
         """
         No Docstrings Yet
         """
@@ -12305,9 +12860,13 @@ class obj(object):
         """
         ...
 
-    def remove_flag(self, f: obj, /) -> None:
+    def remove_flag(self, flag: int, /) -> None:
         """
-        No Docstrings Yet
+        移除指定的标志位
+        参数:
+            flag (int): 取值如 obj.Flag.CLICKABLE、obj.Flag.HIDDEN 等
+        返回:
+            None: 无返回值
         """
         ...
 
@@ -14598,13 +15157,13 @@ class scale(obj):
         No Docstrings Yet
         """
 
-        HORIZONTAL_TOP: ClassVar[int]
-        HORIZONTAL_BOTTOM: ClassVar[int]
-        VERTICAL_LEFT: ClassVar[int]
-        VERTICAL_RIGHT: ClassVar[int]
-        ROUND_INNER: ClassVar[int]
-        ROUND_OUTER: ClassVar[int]
-        LAST: ClassVar[int]
+        HORIZONTAL_TOP = 0x0
+        HORIZONTAL_BOTTOM = 0x1
+        VERTICAL_LEFT = 0x2
+        VERTICAL_RIGHT = 0x4
+        ROUND_INNER = 0x8
+        ROUND_OUTER = 0x10
+        LAST = 0x11
 
     def __init__(self, parent: obj, /) -> None:
         """
@@ -14612,7 +15171,7 @@ class scale(obj):
         """
         ...
 
-    def set_mode(self, mode: "scale", /) -> None:
+    def set_mode(self, mode: int, /) -> None:
         """
         No Docstrings Yet
         """
@@ -17624,7 +18183,7 @@ def theme_simple_deinit() -> None:
     No Docstrings Yet
     """
     ...
-    
+
 class _image_dsc_t_type(TypedDict, total=False):
     header: Any
     data_size: int
@@ -17634,6 +18193,7 @@ class image_dsc_t(object):
     """
     Python端LVGL set_src(dict)的图像描述符
     """
+
     def __init__(self, args: Optional[_image_dsc_t_type] = None, /) -> None:
         """
         初始化图像描述符对象

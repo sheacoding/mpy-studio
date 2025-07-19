@@ -56,7 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const outputChannel = vscode.window.createOutputChannel('MPY-REPL');
   const logger = Logger.getInstance(context, outputChannel);
   // 先初始化 deviceManager
-  deviceManager = new DeviceManager(logger, context);
+  deviceManager = new DeviceManager(logger, undefined, context);
   // 再初始化 DeviceFolder
   const deviceFolder = new DeviceFolder(deviceManager!, context, logger);
   // 显式注入 deviceFolder
