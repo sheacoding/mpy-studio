@@ -3,7 +3,7 @@ from oled import OLED1106
 
 class OLED(OLED1106):
     """
-    OLED 显示模块类，用于控制 OLED 屏幕。
+    OLED 显示模块类,用于控制 OLED 屏幕。
     """
 
     def __init__(self, scl: int = 19, sda: int = 20, i2c: Optional[object] = None) -> None:

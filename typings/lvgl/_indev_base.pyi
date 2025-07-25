@@ -35,7 +35,7 @@ class IndevBase:
         初始化输入设备基类
         
         参数:
-            debug (bool): 调试模式，默认False
+            debug (bool): 调试模式,默认False
         返回:
             (None): 无返回值
         """

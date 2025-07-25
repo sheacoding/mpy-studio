@@ -8,7 +8,7 @@ class Fusion:
         初始化传感器融合
         
         参数:
-            declination (float | None): 磁偏角，默认None
+            declination (float | None): 磁偏角,默认None
         返回:
             (None): 无返回值
         """
@@ -37,7 +37,7 @@ class Fusion:
         参数:
             accel (Tuple[float, float, float]): 加速度计数据
             gyro (Tuple[float, float, float]): 陀螺仪数据
-            mag (Tuple[float, float, float] | None): 磁力计数据，默认None
+            mag (Tuple[float, float, float] | None): 磁力计数据,默认None
         返回:
             (Tuple[float, float, float]): 融合后的姿态数据
         """

@@ -41,7 +41,7 @@ class Tpcal(object):
         初始化触摸校准器
         
         参数:
-            touch_count (int): 触摸计数，默认500
+            touch_count (int): 触摸计数,默认500
         返回:
             (None): 无返回值
         """

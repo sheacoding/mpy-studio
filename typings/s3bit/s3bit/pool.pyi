@@ -37,7 +37,7 @@ class Pool:
 
     def __del__(self) -> None:
         """
-        析构函数，自动释放资源
+        析构函数,自动释放资源
         参数:
             无
         返回:
@@ -61,7 +61,7 @@ class Pool:
         参数:
             key (str): 对象的键名
         返回:
-            (object): 获取到的对象，若不存在返回 None
+            (object): 获取到的对象,若不存在返回 None
         """
         ...
 

@@ -459,7 +459,7 @@ def print_exception(exc: Exception | BaseException, file: IOBase_mp | TextIO | N
 
     参数:
         exc (Exception | BaseException): 要打印的异常对象
-        file (IOBase_mp | TextIO | None): 输出文件对象，默认为 stdout
+        file (IOBase_mp | TextIO | None): 输出文件对象,默认为 stdout
 
     返回:
         (None): 无返回值
@@ -467,7 +467,7 @@ def print_exception(exc: Exception | BaseException, file: IOBase_mp | TextIO | N
     注意:
         与CPython的差异
         这是出现在CPython的 ``traceback`` 模块中的函数的简化版本。
-        与 ``traceback.print_exception()`` 不同，此函数只接受异常值而不是异常类型、
+        与 ``traceback.print_exception()`` 不同,此函数只接受异常值而不是异常类型、
         异常值和回溯对象；*file* 参数应该是位置参数；不支持其他参数。
         CPython兼容的 ``traceback`` 模块可以在 `micropython-lib` 中找到。
     """
@@ -480,7 +480,7 @@ def print_exception(exc: Exception | BaseException, file: IOBase_mp | TextIO | N
 
     参数:
         exc (Exception | BaseException): 要打印的异常对象
-        file (IOBase_mp | TextIO | None): 输出文件对象，默认为 stdout
+        file (IOBase_mp | TextIO | None): 输出文件对象,默认为 stdout
 
     返回:
         (None): 无返回值
@@ -488,7 +488,7 @@ def print_exception(exc: Exception | BaseException, file: IOBase_mp | TextIO | N
     注意:
         与CPython的差异
         这是出现在CPython的 ``traceback`` 模块中的函数的简化版本。
-        与 ``traceback.print_exception()`` 不同，此函数只接受异常值而不是异常类型、
+        与 ``traceback.print_exception()`` 不同,此函数只接受异常值而不是异常类型、
         异常值和回溯对象；*file* 参数应该是位置参数；不支持其他参数。
         CPython兼容的 ``traceback`` 模块可以在 `micropython-lib` 中找到。
     """

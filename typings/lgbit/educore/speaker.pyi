@@ -18,8 +18,8 @@ class speaker:
         播放指定频率的声音
 
         参数:
-            freq (Union[int, list]): 要播放的频率值或频率列表（若为列表取第一个值）
-            dur (Optional[int]): 持续时间（单位：毫秒），若为 None 表示持续播放
+            freq (Union[int, list]): 要播放的频率值或频率列表（若为列表取第一个值)
+            dur (Optional[int]): 持续时间（单位：毫秒),若为 None 表示持续播放
         """
         ...
 

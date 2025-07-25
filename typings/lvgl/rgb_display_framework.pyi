@@ -72,7 +72,7 @@ class RGBDisplayDriver(display_driver_framework.DisplayDriver):
 
     def get_params(self, cmd, params) -> None:
         '''
-        获取显示参数（未实现）
+        获取显示参数（未实现)
         参数:
             cmd: 命令
             params: 参数
@@ -83,7 +83,7 @@ class RGBDisplayDriver(display_driver_framework.DisplayDriver):
 
     def _set_memory_location(self, x1: int, y1: int, x2: int, y2: int) -> int:
         '''
-        设置内存位置（重载，RGB 总线无效）
+        设置内存位置（重载,RGB 总线无效)
         参数:
             x1 (int): 起始 X
             y1 (int): 起始 Y
@@ -96,7 +96,7 @@ class RGBDisplayDriver(display_driver_framework.DisplayDriver):
 
     def _spi_3wire_init(self, *args, **kwargs) -> None:
         '''
-        SPI 3 线初始化（未实现）
+        SPI 3 线初始化（未实现)
         参数:
             *args: 位置参数
             **kwargs: 关键字参数

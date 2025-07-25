@@ -10,7 +10,7 @@ from typing_extensions import Awaitable, TypeAlias, TypeVar
 MONO_HMSB: Final[int] = 4       # 单色水平MSB
 MONO_HLSB: Final[int] = 3       # 单色水平LSB
 RGB565: Final[int] = 1          # RGB565 格式
-MONO_VLSB: Final[int] = 0       # 单色垂直LSB（常用）
+MONO_VLSB: Final[int] = 0       # 单色垂直LSB（常用)
 MVLSB: Final[int] = 0           # 同 MONO_VLSB
 GS2_HMSB: Final[int] = 5        # 2位灰度水平MSB
 GS8: Final[int] = 6             # 8位灰度
@@ -20,7 +20,7 @@ def FrameBuffer1(*args, **kwargs) -> Incomplete: ...
 
 class FrameBuffer:
     """
-    FrameBuffer 类提供了一个像素缓冲区，可用于绘制像素、线条、矩形、文本甚至其他 FrameBuffer 图像.
+    FrameBuffer 类提供了一个像素缓冲区,可用于绘制像素、线条、矩形、文本甚至其他 FrameBuffer 图像.
     它通常用于生成发送到显示屏的内容.
 
     示例::
@@ -37,12 +37,12 @@ class FrameBuffer:
 
     def poly(self, x, y, coords, c, f: Optional[Any] = None) -> Incomplete:
         """
-        给定一组坐标，在指定位置绘制任意（凸或凹）闭合多边形.
+        给定一组坐标,在指定位置绘制任意（凸或凹)闭合多边形.
         
         参数:
             x: int 多边形的x坐标偏移
             y: int 多边形的y坐标偏移
-            coords: (array) 坐标数组，格式为 array('h', [x0, y0, x1, y1, ... xn, yn])
+            coords: (array) 坐标数组,格式为 array('h', [x0, y0, x1, y1, ... xn, yn])
             c: int 多边形的颜色值
             f: (bool) 可选,如果为True则填充多边形,否则只绘制轮廓
         """
@@ -117,8 +117,8 @@ class FrameBuffer:
         滚动帧缓冲区内容.
         
         参数:
-            xstep: int 水平滚动的像素数(正值向右，负值向左)
-            ystep: int 垂直滚动的像素数(正值向下，负值向上)
+            xstep: int 水平滚动的像素数(正值向右,负值向左)
+            ystep: int 垂直滚动的像素数(正值向下,负值向上)
             
         注意: 这可能会在帧缓冲区中留下之前颜色的痕迹.
         """
@@ -135,7 +135,7 @@ class FrameBuffer:
             yr: int 椭圆y方向的半径
             c: int 椭圆颜色
             f: bool 可选,如果为True则填充椭圆,否则只绘制轮廓
-            m: int 可选，控制绘制哪些象限(位0=Q1,位1=Q2,位2=Q3,位3=Q4)
+            m: int 可选,控制绘制哪些象限(位0=Q1,位1=Q2,位2=Q3,位3=Q4)
             
         注意: 象限按逆时针编号,Q1为右上角.
         """
@@ -170,8 +170,8 @@ class FrameBuffer:
             fbuf: FrameBuffer 源帧缓冲区
             x: int 目标位置的x坐标
             y: int 目标位置的y坐标
-            key: int 可选，指定透明色值，默认为-1(无透明色)
-            palette: bytes 可选，用于颜色映射的调色板
+            key: int 可选,指定透明色值,默认为-1(无透明色)
+            palette: bytes 可选,用于颜色映射的调色板
             
         注意: 如果指定了palette,它应该是一个与当前帧缓冲区格式相同的FrameBuffer实例,
         高度为1像素,宽度等于源帧缓冲区中的颜色数量.
@@ -225,7 +225,7 @@ class FrameBuffer:
         构造一个FrameBuffer对象.
         
         参数:
-            buffer: (AnyWritableBuf) 支持缓冲协议的对象，用于存储像素数据
+            buffer: (AnyWritableBuf) 支持缓冲协议的对象,用于存储像素数据
             width: int 帧缓冲区宽度(像素)
             height: int 帧缓冲区高度(像素)
             format: int 像素格式(如MONO_VLSB, RGB565等)

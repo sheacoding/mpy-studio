@@ -99,7 +99,7 @@ class I2C(object):
             
             参数:
                 buf (_BUFFER_TYPE): 缓冲区
-                nack (bool): 是否发送NACK，默认True
+                nack (bool): 是否发送NACK,默认True
             返回:
                 (None): 无返回值
             """
@@ -271,9 +271,9 @@ class I2C(object):
             读取数据
             
             参数:
-                nbytes (Optional[int]): 读取字节数，默认None
-                buf (Optional[_BUFFER_TYPE]): 缓冲区，默认None
-                stop (bool): 是否发送停止信号，默认True
+                nbytes (Optional[int]): 读取字节数,默认None
+                buf (Optional[_BUFFER_TYPE]): 缓冲区,默认None
+                stop (bool): 是否发送停止信号,默认True
             返回:
                 (Optional[bytes]): 读取的数据
             """
@@ -285,7 +285,7 @@ class I2C(object):
             
             参数:
                 buf (_BUFFER_TYPE): 要写入的数据
-                stop (bool): 是否发送停止信号，默认True
+                stop (bool): 是否发送停止信号,默认True
             返回:
                 (None): 无返回值
             """

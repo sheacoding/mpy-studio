@@ -269,16 +269,16 @@ class OLED1106(SSD1106_I2C):
         external_vcc: bool = False,
     ) -> None:
         """
-        初始化 0.96 寸 OLED 屏幕（SSD1106 驱动）
+        初始化 0.96 寸 OLED 屏幕（SSD1106 驱动)
 
         参数:
-            width int: 屏幕宽度，默认 128
-            height int: 屏幕高度，默认 64
+            width int: 屏幕宽度,默认 128
+            height int: 屏幕高度,默认 64
             scl int: SCL 引脚编号
             sda int: SDA 引脚编号
-            i2c (I2C): 外部 I2C 总线对象（可选）
-            addr int: I2C 设备地址，默认 0x3C
-            external_vcc (bool): 是否使用外部 VCC，默认否
+            i2c (I2C): 外部 I2C 总线对象（可选)
+            addr int: I2C 设备地址,默认 0x3C
+            external_vcc (bool): 是否使用外部 VCC,默认否
         """
         ...
 
@@ -290,7 +290,7 @@ class OLED1106(SSD1106_I2C):
             x0 int: 圆心 X 坐标
             y0 int: 圆心 Y 坐标
             radius int: 半径
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -302,7 +302,7 @@ class OLED1106(SSD1106_I2C):
             x0 int: 圆心 X 坐标
             y0 int: 圆心 Y 坐标
             radius int: 半径
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -314,8 +314,8 @@ class OLED1106(SSD1106_I2C):
             x0 int: 圆心 X 坐标
             y0 int: 圆心 Y 坐标
             radius int: 半径
-            cornername int: 圆角标识（0x1~0x8）
-            c int: 颜色（0 或 1）
+            cornername int: 圆角标识（0x1~0x8)
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -329,7 +329,7 @@ class OLED1106(SSD1106_I2C):
             w int: 宽度
             h int: 高度
             r int: 圆角半径
-            color int: 颜色（0 或 1），默认为 1
+            color int: 颜色（0 或 1),默认为 1
         """
         ...
 
@@ -343,7 +343,7 @@ class OLED1106(SSD1106_I2C):
             w int: 宽度
             h int: 高度
             r int: 圆角半径
-            color int: 颜色（0 或 1），默认为 1
+            color int: 颜色（0 或 1),默认为 1
         """
         ...
 
@@ -358,7 +358,7 @@ class OLED1106(SSD1106_I2C):
             y1 int: 第二点 Y 坐标
             x2 int: 第三点 X 坐标
             y2 int: 第三点 Y 坐标
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -373,7 +373,7 @@ class OLED1106(SSD1106_I2C):
             y1 int: 第二点 Y 坐标
             x2 int: 第三点 X 坐标
             y2 int: 第三点 Y 坐标
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -385,7 +385,7 @@ class OLED1106(SSD1106_I2C):
             s (str): 要绘制的字符串
             x int: 起始 X 坐标
             y int: 起始 Y 坐标
-            mode (TextMode): 显示模式（NORMAL/REV/TRANS/XOR）
+            mode (TextMode): 显示模式（NORMAL/REV/TRANS/XOR)
             wrap (bool): 是否自动换行
 
         返回:
@@ -431,7 +431,7 @@ class OLED1106(SSD1106_I2C):
             y int: 起始 Y 坐标
             width int: 进度条宽度
             height int: 进度条高度
-            progress int: 当前进度百分比（0 ~ 100）
+            progress int: 当前进度百分比（0 ~ 100)
         """
         ...
 
@@ -444,8 +444,8 @@ class OLED1106(SSD1106_I2C):
             y int: 起始 Y 坐标
             width int: 柱状条宽度
             height int: 柱状条高度
-            progress int: 当前进度百分比（0 ~ 100）
-            dir int: 方向（1=水平，0=垂直）
+            progress int: 当前进度百分比（0 ~ 100)
+            dir int: 方向（1=水平,0=垂直)
             frame int: 是否绘制外框
         """
         ...
@@ -468,14 +468,14 @@ class OLED1306(SSD1306_I2C):
         self, width: int = 128, height: int = 32, scl: int = 19, sda: int = 20, addr: int = 0x3C, external_vcc: bool = False
     ) -> None:
         """
-        初始化 0.91 寸 OLED 屏幕（SSD1306 驱动）
+        初始化 0.91 寸 OLED 屏幕（SSD1306 驱动)
 
         参数:
-            width int: 屏幕宽度，默认 128
-            height int: 屏幕高度，默认 32
+            width int: 屏幕宽度,默认 128
+            height int: 屏幕高度,默认 32
             scl int: SCL 引脚编号
             sda int: SDA 引脚编号
-            addr int: I2C 地址，默认 0x3C
+            addr int: I2C 地址,默认 0x3C
             external_vcc (bool): 是否使用外部 VCC
         """
         ...
@@ -488,7 +488,7 @@ class OLED1306(SSD1306_I2C):
             x0 int: 圆心 X 坐标
             y0 int: 圆心 Y 坐标
             radius int: 半径
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -500,7 +500,7 @@ class OLED1306(SSD1306_I2C):
             x0 int: 圆心 X 坐标
             y0 int: 圆心 Y 坐标
             radius int: 半径
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -512,8 +512,8 @@ class OLED1306(SSD1306_I2C):
             x0 int: 圆心 X 坐标
             y0 int: 圆心 Y 坐标
             radius int: 半径
-            cornername int: 圆角标识（0x1~0x8）
-            c int: 颜色（0 或 1）
+            cornername int: 圆角标识（0x1~0x8)
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -527,7 +527,7 @@ class OLED1306(SSD1306_I2C):
             w int: 宽度
             h int: 高度
             r int: 圆角半径
-            color int: 颜色（0 或 1），默认为 1
+            color int: 颜色（0 或 1),默认为 1
         """
         ...
 
@@ -541,7 +541,7 @@ class OLED1306(SSD1306_I2C):
             w int: 宽度
             h int: 高度
             r int: 圆角半径
-            color int: 颜色（0 或 1），默认为 1
+            color int: 颜色（0 或 1),默认为 1
         """
         ...
 
@@ -556,7 +556,7 @@ class OLED1306(SSD1306_I2C):
             y1 int: 第二点 Y 坐标
             x2 int: 第三点 X 坐标
             y2 int: 第三点 Y 坐标
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -571,7 +571,7 @@ class OLED1306(SSD1306_I2C):
             y1 int: 第二点 Y 坐标
             x2 int: 第三点 X 坐标
             y2 int: 第三点 Y 坐标
-            c int: 颜色（0 或 1）
+            c int: 颜色（0 或 1)
         """
         ...
 
@@ -583,7 +583,7 @@ class OLED1306(SSD1306_I2C):
             s (str): 要绘制的字符串
             x int: 起始 X 坐标
             y int: 起始 Y 坐标
-            mode (TextMode): 显示模式（NORMAL/REV/TRANS/XOR）
+            mode (TextMode): 显示模式（NORMAL/REV/TRANS/XOR)
             wrap (bool): 是否自动换行
 
         返回:
@@ -629,7 +629,7 @@ class OLED1306(SSD1306_I2C):
             y int: 起始 Y 坐标
             width int: 进度条宽度
             height int: 进度条高度
-            progress int: 当前进度百分比（0 ~ 100）
+            progress int: 当前进度百分比（0 ~ 100)
         """
         ...
 
@@ -642,8 +642,8 @@ class OLED1306(SSD1306_I2C):
             y int: 起始 Y 坐标
             width int: 柱状条宽度
             height int: 柱状条高度
-            progress int: 当前进度百分比（0 ~ 100）
-            dir int: 方向（1=水平，0=垂直）
+            progress int: 当前进度百分比（0 ~ 100)
+            dir int: 方向（1=水平,0=垂直)
             frame int: 是否绘制外框
         """
         ...

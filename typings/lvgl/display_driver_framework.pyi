@@ -142,23 +142,23 @@ class DisplayDriver:
             data_bus (_DatabusType): 数据总线对象
             display_width (int): 显示宽度
             display_height (int): 显示高度
-            frame_buffer1 (Optional[_BufferType]): 帧缓冲区1，默认None
-            frame_buffer2 (Optional[_BufferType]): 帧缓冲区2，默认None
-            reset_pin (Optional[_PinType]): 复位引脚，默认None
-            reset_state (int): 复位状态，默认STATE_HIGH
-            power_pin (Optional[_PinType]): 电源引脚，默认None
-            power_on_state (int): 电源开启状态，默认STATE_HIGH
-            backlight_pin (Optional[_PinType]): 背光引脚，默认None
-            backlight_on_state (int): 背光开启状态，默认STATE_HIGH
-            offset_x (int): X轴偏移，默认0
-            offset_y (int): Y轴偏移，默认0
-            color_byte_order (int): 颜色字节顺序，默认BYTE_ORDER_RGB
-            color_space (int): 颜色空间，默认RGB888
-            rgb565_byte_swap (bool): RGB565字节交换，默认False
-            spi_3wire (Optional[lcd_bus.SPI3Wire]): 3线SPI，默认None
-            _cmd_bits (int): 命令位数，默认8
-            _param_bits (int): 参数位数，默认8
-            _init_bus (bool): 是否初始化总线，默认True
+            frame_buffer1 (Optional[_BufferType]): 帧缓冲区1,默认None
+            frame_buffer2 (Optional[_BufferType]): 帧缓冲区2,默认None
+            reset_pin (Optional[_PinType]): 复位引脚,默认None
+            reset_state (int): 复位状态,默认STATE_HIGH
+            power_pin (Optional[_PinType]): 电源引脚,默认None
+            power_on_state (int): 电源开启状态,默认STATE_HIGH
+            backlight_pin (Optional[_PinType]): 背光引脚,默认None
+            backlight_on_state (int): 背光开启状态,默认STATE_HIGH
+            offset_x (int): X轴偏移,默认0
+            offset_y (int): Y轴偏移,默认0
+            color_byte_order (int): 颜色字节顺序,默认BYTE_ORDER_RGB
+            color_space (int): 颜色空间,默认RGB888
+            rgb565_byte_swap (bool): RGB565字节交换,默认False
+            spi_3wire (Optional[lcd_bus.SPI3Wire]): 3线SPI,默认None
+            _cmd_bits (int): 命令位数,默认8
+            _param_bits (int): 参数位数,默认8
+            _init_bus (bool): 是否初始化总线,默认True
         返回:
             (object): 显示驱动对象
         """

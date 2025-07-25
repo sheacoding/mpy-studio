@@ -2,7 +2,7 @@
 
 专为 ESP32/ESP32-S3 设计的 VSCode MicroPython 扩展。
 
-![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)
+![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)
 ![MicroPython](https://img.shields.io/badge/MicroPython-1.26.0-green.svg)
 ![LVGL](https://img.shields.io/badge/LVGL-9.3-orange.svg)
 

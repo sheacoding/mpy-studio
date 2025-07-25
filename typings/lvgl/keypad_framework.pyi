@@ -27,7 +27,7 @@ class KeypadDriver(_indev_base.IndevBase):
         参数:
             无
         返回:
-            (Optional[Tuple[int, int]]): 如果没有按键则返回None，否则返回按键ID
+            (Optional[Tuple[int, int]]): 如果没有按键则返回None,否则返回按键ID
             
         异常:
             NotImplimentedError: 如果键盘驱动中没有重写此方法

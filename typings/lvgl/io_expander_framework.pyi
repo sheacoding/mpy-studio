@@ -33,9 +33,9 @@ class Pin(object):
         
         参数:
             id (int): 引脚ID
-            mode (int): 引脚模式，默认-1
-            pull (int | None): 上拉下拉，默认-1
-            value (int | float): 初始值，默认-1
+            mode (int): 引脚模式,默认-1
+            pull (int | None): 上拉下拉,默认-1
+            value (int | float): 初始值,默认-1
         返回:
             (None): 无返回值
         """

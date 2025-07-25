@@ -16,7 +16,7 @@ class ButtonDriver(_indev_base.IndevBase):
         设置按钮点
         
         参数:
-            *points (list[_lv.point_t]): 可变参数，按钮点列表
+            *points (list[_lv.point_t]): 可变参数,按钮点列表
                 使用示例:
                 
                 button_driver.set_button_points(
@@ -25,7 +25,7 @@ class ButtonDriver(_indev_base.IndevBase):
                     (lv.point_t(dict(x=0, y=115)), lv.point_t(dict(x=100, y=170)))
                 )
                 
-                您不需要担心保持对点的引用，这在驱动内部完成。
+                您不需要担心保持对点的引用,这在驱动内部完成。
                 但是您需要保持对驱动的引用。
         返回:
             (None): 无返回值
@@ -47,13 +47,13 @@ class ButtonDriver(_indev_base.IndevBase):
         读取按钮状态
         
         此函数需要返回被按下按钮的ID。
-        为了使此功能正常工作，您需要将点添加到相应的软件按钮中。
+        为了使此功能正常工作,您需要将点添加到相应的软件按钮中。
         ID将是您设置的点的索引号。
         
         参数:
             无
         返回:
-            (Optional[int]): 如果没有按钮被按下则返回None，否则返回按钮ID
+            (Optional[int]): 如果没有按钮被按下则返回None,否则返回按钮ID
             
         异常:
             NotImplimentedError: 如果按钮驱动中没有重写此方法

@@ -30,9 +30,9 @@ class PointerDriver(_indev_base.IndevBase):
         初始化指针驱动
         
         参数:
-            touch_cal (Optional[_touch_cal_data.TouchCalData]): 触摸校准数据，默认None
-            startup_rotation: 启动旋转，默认0度
-            debug (bool): 调试模式，默认False
+            touch_cal (Optional[_touch_cal_data.TouchCalData]): 触摸校准数据,默认None
+            startup_rotation: 启动旋转,默认0度
+            debug (bool): 调试模式,默认False
         返回:
             (None): 无返回值
         """
@@ -65,12 +65,12 @@ class PointerDriver(_indev_base.IndevBase):
         """
         读取触摸坐标
         
-        这是触摸驱动完成工作的地方。当制作触摸驱动时，此方法必须被重写。
+        这是触摸驱动完成工作的地方。当制作触摸驱动时,此方法必须被重写。
         
         参数:
             无
         返回:
-            (Optional[Tuple[int, int, int]]): 如果没有触摸输入则返回None，否则返回(x, y)元组
+            (Optional[Tuple[int, int, int]]): 如果没有触摸输入则返回None,否则返回(x, y)元组
             
         异常:
             NotImplimentedError: 如果触摸驱动中没有重写此方法

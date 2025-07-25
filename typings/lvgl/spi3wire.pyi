@@ -25,12 +25,12 @@ class Spi3Wire:
             sda (int): SDA引脚
             cs (int): CS引脚
             freq (int): 频率
-            spi_mode (int): SPI模式，默认0
-            use_dc_bit (bool): 是否使用DC位，默认True
-            dc_zero_on_data (bool): 数据时DC为0，默认False
-            lsb_first (bool): LSB优先，默认False
-            cs_high_active (bool): CS高电平有效，默认False
-            del_keep_cs_inactive (bool): 延迟保持CS无效，默认False
+            spi_mode (int): SPI模式,默认0
+            use_dc_bit (bool): 是否使用DC位,默认True
+            dc_zero_on_data (bool): 数据时DC为0,默认False
+            lsb_first (bool): LSB优先,默认False
+            cs_high_active (bool): CS高电平有效,默认False
+            del_keep_cs_inactive (bool): 延迟保持CS无效,默认False
         返回:
             (None): 无返回值
         """
@@ -76,7 +76,7 @@ class Spi3Wire:
         
         参数:
             cmd (int): 命令
-            params (Optional[memoryview]): 参数，默认None
+            params (Optional[memoryview]): 参数,默认None
         返回:
             (None): 无返回值
         """

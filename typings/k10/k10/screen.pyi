@@ -1,7 +1,6 @@
-from typing import Optional, Union, Any, Tuple
+from typing import Optional, Union, Any
 
 import lvgl as lv
-import machine
 from k10.tca9555 import TCA9555
 from display_driver_framework import DisplayDriver
 
@@ -17,6 +16,16 @@ class Screen:
 
         参数:
             tca9555 (TCA9555 | None): TCA9555 IO扩展器对象, 默认为None
+        """
+        ...
+
+    def deinit(self) -> None:
+        """
+        释放显示屏资源
+        参数:
+            无
+        返回:
+            None: 无返回值
         """
         ...
 

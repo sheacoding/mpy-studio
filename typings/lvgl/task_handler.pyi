@@ -21,7 +21,7 @@ def _default_exception_hook(e: Exception):
 ##############################################################################
 
 class TaskHandler(object):
-    _current_instance: TaskHandler = ...
+    _current_instance: TaskHandler|None = ...
 
     duration: int = ...
     refresh_cb: Optional[Callable] = ...
@@ -44,11 +44,11 @@ class TaskHandler(object):
         初始化任务处理器
         
         参数:
-            duration (int): 任务执行间隔毫秒数，默认33
-            timer_id (int): 定时器ID，默认使用默认定时器
-            max_scheduled (int): 最大调度任务数，默认2
-            refresh_cb (Optional[Callable]): 刷新回调函数，默认None
-            exception_hook (Callable[[Exception], None]): 异常处理钩子，默认使用默认钩子
+            duration (int): 任务执行间隔毫秒数,默认33
+            timer_id (int): 定时器ID,默认使用默认定时器
+            max_scheduled (int): 最大调度任务数,默认2
+            refresh_cb (Optional[Callable]): 刷新回调函数,默认None
+            exception_hook (Callable[[Exception], None]): 异常处理钩子,默认使用默认钩子
         返回:
             (None): 无返回值
         """

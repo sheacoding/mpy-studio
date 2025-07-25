@@ -18,6 +18,16 @@ class TFCard:
             None: 无返回值
         """
         ...
+    
+    def deinit(self) -> None:
+        """
+        释放 SD 卡资源
+        参数:
+            无
+        返回:
+            None: 无返回值
+        """
+        ...
 
     def mount(self) -> bool:
         """
@@ -32,16 +42,6 @@ class TFCard:
     def unmount(self) -> None:
         """
         卸载 SD 卡
-        参数:
-            无
-        返回:
-            None: 无返回值
-        """
-        ...
-
-    def deinit(self) -> None:
-        """
-        释放 SD 卡资源
         参数:
             无
         返回:

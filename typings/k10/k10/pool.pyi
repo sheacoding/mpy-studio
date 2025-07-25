@@ -1,7 +1,11 @@
+from k10.screen import Screen
+from k10.speaker import Speaker
+
 class Pool:
     """
     对象池类
     """
+
     def __init__(self) -> None:
         """
         初始化对象池
@@ -34,7 +38,7 @@ class Pool:
 
     def __del__(self) -> None:
         """
-        析构函数，自动释放资源
+        析构函数,自动释放资源
         参数:
             无
         返回:
@@ -52,13 +56,13 @@ class Pool:
         """
         ...
 
-    def get(self, key: str) -> object:
+    def get(self, key: str) -> Screen | Speaker | None:
         """
         获取对象
         参数:
             key (str): 对象的键名
         返回:
-            (object): 获取到的对象，若不存在返回 None
+            (object): 获取到的对象,若不存在返回 None
         """
         ...
 
@@ -71,4 +75,4 @@ class Pool:
         返回:
             (None): 无返回值
         """
-        ... 
+        ...

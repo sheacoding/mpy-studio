@@ -37,8 +37,8 @@ class SSD1306(framebuf.FrameBuffer):
         初始化SSD1306显示驱动
         
         参数:
-            width: int 显示屏宽度（像素）
-            height: int 显示屏高度（像素）
+            width: int 显示屏宽度（像素)
+            height: int 显示屏高度（像素)
             external_vcc: bool 是否使用外部VCC
         """
         ...
@@ -88,7 +88,7 @@ class SSD1306(framebuf.FrameBuffer):
         
     def write_cmd(self, cmd: int) -> None:
         """
-        写入命令（抽象方法，需要在子类中实现）
+        写入命令（抽象方法,需要在子类中实现)
         
         参数:
             cmd: int 命令字节
@@ -97,7 +97,7 @@ class SSD1306(framebuf.FrameBuffer):
         
     def write_data(self, buf: Union[bytes, bytearray]) -> None:
         """
-        写入显示数据（抽象方法，需要在子类中实现）
+        写入显示数据（抽象方法,需要在子类中实现)
         
         参数:
             buf: bytes|bytearray 数据缓冲区
@@ -117,8 +117,8 @@ class SSD1306_I2C(SSD1306):
         初始化SSD1306 I2C显示驱动
         
         参数:
-            width: int 显示屏宽度（像素）
-            height: int  显示屏高度（像素）
+            width: int 显示屏宽度（像素)
+            height: int  显示屏高度（像素)
             i2c: I2C I2C总线对象
             addr: int I2C设备地址
             external_vcc: bool是否使用外部VCC
@@ -158,8 +158,8 @@ class SSD1306_SPI(SSD1306):
         初始化SSD1306 SPI显示驱动
         
         参数:
-            width: int显示屏宽度(像素）
-            height: int 显示屏高度(像素）
+            width: int显示屏宽度(像素)
+            height: int 显示屏高度(像素)
             spi: SPI SPI总线对象
             dc: Pin 数据/命令控制引脚
             res: Pin复位引脚
