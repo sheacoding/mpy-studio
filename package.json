@@ -446,7 +446,7 @@
     "lint": "echo 'Linting skipped'",
     "test": "echo 'Tests skipped'",
     "copy-resources": "node build.js",
-    "package": "vsce package --no-dependencies",
+    "package": "vsce package --no-dependencies --skip-license",
     "publish": "vsce publish",
     "publish:patch": "vsce publish patch",
     "publish:minor": "vsce publish minor",
@@ -474,11 +474,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sheacoding-studio.git"
+    "url": "https://github.com/sheacoding/mpy-studio.git"
   },
-  "homepage": "https://github.com/sheacoding-studio",
+  "homepage": "https://github.com/sheacoding/mpy-studio",
   "bugs": {
-    "url": "https://github.com/sheacoding-studio/issues"
+    "url": "https://github.com/sheacoding/mpy-studio/issues"
   },
   "author": {
     "name": "ericoding",

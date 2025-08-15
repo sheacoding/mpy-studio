@@ -14,7 +14,14 @@ PUBLISHING.md
 .github/**
 **/.DS_Store
 **/.git
-# 保留编译后的node_modules在out目录中
-!out/node_modules/**
+build.js
+node_modules/**
+yarn.lock
+package-lock.json
+.claude/**
+CLAUDE.md
+*.vsix
+# 保留编译后的文件
+!out/**
 # 保留typings目录用于MicroPython自动补全
 !typings/**

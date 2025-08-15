@@ -38,7 +38,7 @@ jobs:
       
     - name: Package extension
       run: |
-        vsce package --no-dependencies || vsce package --yarn
+        vsce package --no-dependencies --skip-license || vsce package --skip-license
       
     - name: Upload VSIX artifact
       if: success()

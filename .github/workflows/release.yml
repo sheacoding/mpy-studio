@@ -58,7 +58,7 @@ jobs:
       
     - name: Package extension
       run: |
-        vsce package --no-dependencies || vsce package --yarn
+        vsce package --no-dependencies --skip-license || vsce package --skip-license
       
     - name: Rename VSIX file
       run: |
