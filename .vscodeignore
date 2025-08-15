@@ -15,10 +15,32 @@ PUBLISHING.md
 **/.DS_Store
 **/.git
 build.js
+verify-build.js
 yarn.lock
 .claude/**
 CLAUDE.md
 *.vsix
+.nvmrc
+# 排除不必要的 node_modules 文件
+node_modules/**/test/**
+node_modules/**/tests/**
+node_modules/**/spec/**
+node_modules/**/docs/**
+node_modules/**/doc/**
+node_modules/**/*.md
+node_modules/**/README*
+node_modules/**/CHANGELOG*
+node_modules/**/LICENSE*
+node_modules/**/.git*
+node_modules/**/.npm*
+node_modules/**/.*ignore
+node_modules/**/Makefile*
+node_modules/**/makefile*
+node_modules/**/*.gyp
+node_modules/**/*.node
+node_modules/**/*.cc
+node_modules/**/*.cpp
+node_modules/**/*.h
 # 保留编译后的文件
 !out/**
 # 保留typings目录用于MicroPython自动补全
@@ -28,3 +50,10 @@ CLAUDE.md
 !node_modules/serialport/**
 !node_modules/fs-extra/**
 !node_modules/just/**
+# 但排除这些依赖中的不必要文件
+node_modules/@serialport/**/test/**
+node_modules/@serialport/**/docs/**
+node_modules/serialport/**/test/**
+node_modules/serialport/**/docs/**
+node_modules/fs-extra/**/test/**
+node_modules/fs-extra/**/docs/**
