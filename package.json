@@ -439,14 +439,14 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "prepackage": "npm install && npm run compile",
-    "clean": "rm -rf out/",
+    "clean": "rimraf out/",
     "compile": "npm run clean && tsc -p ./ && npm run copy-resources",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
-    "copy-resources": "mkdir -p out/media && cp -r media/* out/media/ && mkdir -p out/typings && cp -r typings/* out/typings/ && mkdir -p out/node_modules && cp -R node_modules/* out/node_modules/",
-    "postbuild": "npx copyfiles -u 1 resources/**/* out/resources && mkdir -p out/node_modules && cp -R node_modules/* out/node_modules/",
+    "copy-resources": "copyfiles -u 0 media/**/* out/ && copyfiles -u 0 typings/**/* out/ && copyfiles -u 1 node_modules/**/* out/",
+    "postbuild": "copyfiles -u 1 resources/**/* out/resources && copyfiles node_modules/**/* out/node_modules/",
     "package": "vsce package",
     "publish": "vsce publish",
     "publish:patch": "vsce publish patch",
@@ -461,22 +461,38 @@
     "@types/vscode": "^1.85.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^5.0.5",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@serialport/bindings-cpp": "^13.0.1",
     "@serialport/parser-readline": "^13.0.0",
     "fs-extra": "^11.3.0",
-    "serialport": "^13.0.0"
+    "just": "^0.1.8",
+    "serialport": "^13.0.0",
+    "vsce": "^2.15.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ai_mpy/mpy-studio.git"
+    "url": "https://github.com/sheacoding-studio.git"
   },
-  "homepage": "https://github.com/ai_mpy/mpy-studio",
+  "homepage": "https://github.com/sheacoding-studio",
   "bugs": {
-    "url": "https://github.com/ai_mpy/mpy-studio/issues"
+    "url": "https://github.com/sheacoding-studio/issues"
   },
+  "author": {
+    "name": "ericoding",
+    "email": "sheacoding@gmail.com",
+    "url": "https://github.com/sheacoding"
+  },
+  "contributors": [
+    {
+      "name": "bright",
+      "email": "flashpf@qq.com",
+      "url": "https://gitee.com/ai_mpy"
+    }
+  ],
   "keywords": [
     "micropython",
     "esp32",
@@ -486,6 +502,6 @@
     "embedded",
     "iot"
   ],
-  "baseContentUrl": "https://github.com/ai_mpy/mpy-studio/raw/main",
-  "baseImagesUrl": "https://github.com/ai_mpy/mpy-studio/raw/main"
+  "baseContentUrl": "https://github.com/sheacoding/mpy-studio/raw/main",
+  "baseImagesUrl": "https://github.com/sheacoding/mpy-studio/raw/main"
 }

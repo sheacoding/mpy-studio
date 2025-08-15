@@ -2,9 +2,12 @@
 
 专为 ESP32/ESP32-S3 设计的 VSCode MicroPython 扩展。
 
+> **Fork 来源**: 本项目 fork 自 [https://gitee.com/ai_mpy/mpy-studio](https://gitee.com/ai_mpy/mpy-studio) ，感谢原作者的贡献！
+
 ![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)
 ![MicroPython](https://img.shields.io/badge/MicroPython-1.26.0-green.svg)
 ![LVGL](https://img.shields.io/badge/LVGL-9.3-orange.svg)
+![Fork](https://img.shields.io/badge/fork-ericoding-purple.svg)
 
 ## ✨ 核心功能
 
@@ -29,12 +32,16 @@
 - [LVGL MicroPython](https://github.com/lvgl-micropython/lvgl_micropython) - LVGL GUI 库的 MicroPython 绑定
 - [Arduino Lab MicroPython Editor](https://github.com/arduino/lab-micropython-editor.git) - Arduino 官方 MicroPython 编辑器
 
-## 📞 联系作者
+## 📞 联系信息
 
-- 项目地址：[mpy-studio](https://gitee.com/ai_mpy/mpy-studio)
-- 问题反馈：[Issues](https://gitee.com/ai_mpy/mpy-studio/issues)
-- 技术交流：QQ 370995782
-- 邮箱联系：flashpf@qq.com
+### 当前维护者
+- GitHub: [@ericoding](https://github.com/ericoding)
+- 邮箱: sheacoding@gmail.com
+- 项目地址: [https://github.com/sheacoding/mpy-studio](https://github.com/sheacoding/mpy-studio)
+- 问题反馈: [Issues](https://github.com/sheacoding/mpy-studio/issues)
+
+### 原项目作者
+- 原项目地址：[https://gitee.com/ai_mpy/mpy-studio](https://gitee.com/ai_mpy/mpy-studio)
 
 ## 📄 许可证
 
