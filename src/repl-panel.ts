@@ -40,9 +40,13 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         };
         try {
             const html = this.getHtml(webviewView.webview);
+            console.log('Setting REPL webview HTML...');
             webviewView.webview.html = html;
+            console.log('REPL webview HTML set successfully');
         } catch (error) {
+            console.error('Error setting REPL webview HTML:', error);
             // 提供备用 HTML
+            console.log('Using fallback HTML for REPL');
             webviewView.webview.html = this.getFallbackHtml();
         }
         
@@ -81,7 +85,38 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                             this.addOutput('设备未连接，无法发送中断信号', 'error');
                             return;
                         }
-                        await this.deviceManager.getPrompt();
+                        this.addOutput('正在强制停止程序...', 'warning');
+                        
+                        // 首先尝试常规停止（快速超时）
+                        try {
+                            await this.deviceManager.stop();
+                            await new Promise(resolve => setTimeout(resolve, 300));
+                            await Promise.race([
+                                this.deviceManager.getPrompt(),
+                                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 1000))
+                            ]);
+                            this.addOutput('程序已停止', 'info');
+                        } catch (error) {
+                            // 如果常规停止失败，直接使用软重启（最有效）
+                            this.addOutput('常规停止失败，执行软重启...', 'warning');
+                            try {
+                                await this.deviceManager.reset();
+                                await new Promise(resolve => setTimeout(resolve, 1500));
+                                // 重启后获取提示符
+                                await this.deviceManager.getPrompt();
+                                this.addOutput('已通过软重启停止程序', 'info');
+                            } catch (resetError) {
+                                // 最后尝试硬重启
+                                this.addOutput('软重启失败，执行硬重启...', 'error');
+                                try {
+                                    await this.deviceManager.hard_reset();
+                                    await new Promise(resolve => setTimeout(resolve, 2000));
+                                    this.addOutput('已通过硬重启停止程序', 'info');
+                                } catch (hardResetError) {
+                                    this.addOutput('所有停止方法都失败了', 'error');
+                                }
+                            }
+                        }
                     } catch (error) {
                         const errorMessage = error instanceof Error ? error.message : String(error);
                         this.addOutput(`停止失败:${errorMessage}`, 'error');
@@ -92,9 +127,18 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                     break;
                 case 'connect': {
                     try {
-                        this._lastCommand = ''
+                        this._lastCommand = '';
+                        
+                        // 检查是否已连接，避免重复连接
+                        if (this.deviceManager.isConnected()) {
+                            this.addOutput('设备已连接', 'info');
+                            return;
+                        }
+                        
                         console.log('ReplPanel: Attempting to connect...');
+                        this.addOutput('正在连接设备...', 'info');
                         await this.deviceManager.connect();
+                        this.addOutput('设备连接成功', 'info');
                     } catch (err) {
                         console.error('ReplPanel: Connect error:', err);
                         const errorMessage = err instanceof Error ? err.message : String(err);
@@ -117,7 +161,13 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                     break;
                 case 'hardReboot':
                     try {
+                        if (!this.deviceManager.isConnected()) {
+                            this.addOutput('设备未连接，无法硬重启', 'error');
+                            return;
+                        }
+                        this.addOutput('正在执行硬重启...', 'warning');
                         await this.deviceManager.hard_reset();
+                        this.addOutput('硬重启完成', 'info');
                     } catch (error) {
                         const errorMessage = error instanceof Error ? error.message : String(error);
                         this.addOutput('硬重启失败: ' + errorMessage, 'error');
@@ -125,7 +175,13 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                     break;
                 case 'softReboot':
                     try {
+                        if (!this.deviceManager.isConnected()) {
+                            this.addOutput('设备未连接，无法软重启', 'error');
+                            return;
+                        }
+                        this.addOutput('正在执行软重启...', 'warning');
                         await this.deviceManager.reset();
+                        this.addOutput('软重启完成', 'info');
                     } catch (error) {
                         const errorMessage = error instanceof Error ? error.message : String(error);
                         this.addOutput('软重启失败: ' + errorMessage, 'error');
@@ -138,25 +194,25 @@ export class ReplPanel implements vscode.WebviewViewProvider {
     private getHtml(webview: vscode.Webview): string {
         // 使用 webview.asWebviewUri 确保资源路径正确
         const styleUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'terminal.css')
+            vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media', 'terminal.css')
         );
         const connectIconUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'connect.svg')
+            vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media', 'connect.svg')
         );
         const disconnectIconUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'disconnect.svg')
+            vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media', 'disconnect.svg')
         );
         const stopIconUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'stop.svg')
+            vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media', 'stop.svg')
         );
         const deleteIconUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'delete.svg')
+            vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media', 'delete.svg')
         );
         const hardRebootIconUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'hard_reboot.svg')
+            vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media', 'hard_reboot.svg')
         );
         const rebootIconUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this.context.extensionUri, 'media', 'reboot.svg')
+            vscode.Uri.joinPath(this.context.extensionUri, 'out', 'media', 'reboot.svg')
         );
         
         const html = `<!DOCTYPE html>
@@ -418,6 +474,7 @@ export class ReplPanel implements vscode.WebviewViewProvider {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
     <title>MPY-REPL</title>
     <style>
         body { font-family: monospace; margin: 0; padding: 10px; background: #1e1e1e; color: #d4d4d4; }
@@ -429,9 +486,12 @@ export class ReplPanel implements vscode.WebviewViewProvider {
         .error { color: #f44336; }
         .success { color: #4caf50; }
         .info { color: #2196f3; }
+        .warning { color: #ff9800; }
         button { background: #333; color: #fff; border: 1px solid #555; padding: 5px 10px; cursor: pointer; }
         button:hover { background: #555; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
         input { background: #2d2d2d; color: #d4d4d4; border: 1px solid #555; padding: 5px; width: 100%; }
+        .loading-message { color: #ffa726; font-style: italic; }
     </style>
 </head>
 <body>
@@ -442,13 +502,14 @@ export class ReplPanel implements vscode.WebviewViewProvider {
                 <span class="status-text" id="statusText">未连接</span>
             </div>
             <div class="terminal-controls">
-                <button id="stopButton" title="中断">⏹</button>
+                <button id="stopButton" title="中断" disabled>⏹</button>
                 <button id="clearButton" title="清空">🗑</button>
             </div>
         </div>
         <div class="terminal-content">
             <div class="terminal-output" id="terminalOutput">
-                <div class="output-line">REPL 终端加载中...</div>
+                <div class="output-line loading-message">MPY-REPL 终端已就绪</div>
+                <div class="output-line info">点击 🔌 按钮连接设备</div>
             </div>
             <div class="terminal-input-line" id="terminalInputLine" style="display:none;">
                 <span class="prompt">>>> </span>
@@ -518,6 +579,27 @@ export class ReplPanel implements vscode.WebviewViewProvider {
             this._lastCommand = '';
             if (!text) return; // 如果去掉回显后没有内容，直接返回
         }
+        
+        // 过滤重复的启动信息
+        const duplicatePatterns = [
+            /MicroPython v\d+\.\d+\.\d+ on \d{4}-\d{2}-\d{2}; .+ with .+/,
+            /Type "help\(\)" for more information\./,
+            />>>/
+        ];
+        
+        const isStartupMessage = duplicatePatterns.some(pattern => pattern.test(text.trim()));
+        
+        // 如果是重复的启动信息，且历史记录中已有相似信息，则跳过
+        if (isStartupMessage && this._outputHistory.length > 0) {
+            const recentMessages = this._outputHistory.slice(-3);
+            const hasSimilar = recentMessages.some(msg => 
+                duplicatePatterns.some(pattern => pattern.test(msg.text.trim()))
+            );
+            if (hasSimilar) {
+                return; // 跳过重复的启动信息
+            }
+        }
+        
         this._outputHistory.push({ text, type });
 
         // 限制历史记录数量

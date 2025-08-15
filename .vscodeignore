@@ -8,8 +8,13 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
-node_modules/**
-!node_modules/@serialport/bindings-cpp/prebuilds/**
-temp/**
-.DS_Store
-*.vsix
+tools/**
+justfile
+PUBLISHING.md
+.github/**
+**/.DS_Store
+**/.git
+# 保留编译后的node_modules在out目录中
+!out/node_modules/**
+# 保留typings目录用于MicroPython自动补全
+!typings/**

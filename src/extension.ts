@@ -27,7 +27,7 @@ function showMessage(message: string, type: 'info' | 'warning' | 'error' = 'info
 // 更新类型定义
 async function updateTypings(context: vscode.ExtensionContext) {
   const pythonConfig = vscode.workspace.getConfiguration('python.analysis');
-  const typingsPath = nodePath.join(context.extensionPath, 'out', 'typings');
+  const typingsPath = nodePath.join(context.extensionPath, 'typings');
 
   pythonConfig.update('typeCheckingMode', 'basic', vscode.ConfigurationTarget.Workspace);
   pythonConfig.update('stubPath', nodePath.join(typingsPath, 'esp32'), vscode.ConfigurationTarget.Workspace);
@@ -216,8 +216,11 @@ export async function activate(context: vscode.ExtensionContext) {
         return;
       }
       try {
-        // 如果未连接，自动弹出串口选择并连接
+        // 检查设备连接状态，避免重复连接
         if (!deviceManager!.isConnected()) {
+          if (replPanel) {
+            replPanel.addOutput('设备未连接，正在连接...', 'info');
+          }
           await deviceManager!.connect();
         }
       } catch (connErr) {
@@ -333,8 +336,32 @@ export async function activate(context: vscode.ExtensionContext) {
             showMessage('运行器未初始化，无法停止运行', 'error');
             return;
           }
-          await runner.stop();
+          if (!deviceManager || !deviceManager.isConnected()) {
+            showMessage('设备未连接，无法停止程序', 'error');
+            return;
+          }
+          
+          // 显示进度提示
+          await vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "正在停止MCU程序...",
+            cancellable: false
+          }, async (progress) => {
+            progress.report({ increment: 0, message: "尝试中断信号..." });
+            
+            try {
+              await runner.stop();
+              progress.report({ increment: 100, message: "程序已停止" });
+            } catch (error) {
+              progress.report({ increment: 100, message: "停止失败" });
+              throw error;
+            }
+          });
+          
+          showMessage('程序已成功停止', 'info');
         } catch (err) {
+          const errorMessage = err instanceof Error ? err.message : String(err);
+          showMessage(`停止程序失败: ${errorMessage}`, 'error');
         }
       }),
 
@@ -365,8 +392,15 @@ export async function activate(context: vscode.ExtensionContext) {
           }
 
           try {
-            await deviceManager.connect();
+            // 避免重复连接
+            if (!deviceManager.isConnected()) {
+              await deviceManager.connect();
+            }
           } catch (connErr) {
+            const msg = connErr instanceof Error ? connErr.message : String(connErr);
+            if (replPanel) {
+              replPanel.addOutput(`连接失败: ${msg}`, 'error');
+            }
             return;
           }
 
@@ -404,7 +438,10 @@ export async function activate(context: vscode.ExtensionContext) {
           }
 
           try {
-            await deviceManager.connect();
+            // 避免重复连接
+            if (!deviceManager.isConnected()) {
+              await deviceManager.connect();
+            }
           } catch (connErr) {
             const msg = connErr instanceof Error ? connErr.message : String(connErr);
             showMessage('设备连接失败: ' + msg, 'error');

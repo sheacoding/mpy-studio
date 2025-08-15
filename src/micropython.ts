@@ -168,10 +168,110 @@ class MicroPythonBoard {
 
   async stop() {
     if (this.reject_run) {
-      this.reject_run(new Error('pre stop'));
+      this.reject_run(new Error('Force stopped by user'));
       this.reject_run = null;
     }
-    await this.serial.write(Buffer.from(`\x03`));
+    
+    try {
+      // 1. 发送多个 Ctrl+C 信号尝试中断
+      await this.serial.write(Buffer.from(`\x03`));
+      await sleep(50);
+      await this.serial.write(Buffer.from(`\x03`));
+      await sleep(50);
+      
+      // 2. 尝试退出 raw REPL 模式
+      await this.serial.write(Buffer.from(`\x02`));
+      await sleep(100);
+      
+      // 3. 再次发送中断信号
+      await this.serial.write(Buffer.from(`\x03`));
+      await sleep(50);
+      await this.serial.write(Buffer.from(`\x03`));
+      
+    } catch (error) {
+      // 忽略发送过程中的错误
+    }
+    
+    return Promise.resolve();
+  }
+
+  // 专门针对定时器和硬件中断的强制停止
+  async forceStopWithTimerKill() {
+    if (this.reject_run) {
+      this.reject_run(new Error('Force stopped by user'));
+      this.reject_run = null;
+    }
+    
+    try {
+      // 1. 首先尝试常规停止
+      await this.stop();
+      await sleep(200);
+      
+      // 2. 发送强制停止命令清理所有定时器
+      const stopTimerCode = `
+import machine
+import gc
+try:
+    print("Stopping all timers...")
+    # 停止所有可能的定时器 (ESP32通常有0-3)
+    for i in range(8):  # 尝试更多定时器ID
+        try:
+            t = machine.Timer(i)
+            t.deinit()
+            print(f"Timer {i} stopped")
+        except:
+            pass
+    
+    # 尝试停止所有可能的软定时器
+    try:
+        import _thread
+        _thread.exit()  # 退出所有线程
+    except:
+        pass
+    
+    # 清理所有定时器相关的中断
+    try:
+        import micropython
+        micropython.alloc_emergency_exception_buf(100)
+    except:
+        pass
+    
+    # 强制垃圾回收
+    gc.collect()
+    print("All timers and interrupts cleaned")
+    
+except Exception as e:
+    print(f"Timer cleanup error: {e}")
+    # 即使清理失败也要尝试基本重置
+    try:
+        import machine
+        machine.freq(machine.freq())  # 重置CPU频率可能有助于停止定时器
+    except:
+        pass
+`;
+      
+      // 3. 进入raw REPL执行清理代码
+      await this.serial.write(Buffer.from(`\x01`)); // 进入raw REPL
+      await sleep(100);
+      
+      // 发送清理代码
+      await this.serial.write(Buffer.from(stopTimerCode));
+      await this.serial.write(Buffer.from(`\x04`)); // 执行
+      await sleep(300);
+      
+      // 4. 退出raw REPL
+      await this.serial.write(Buffer.from(`\x02`));
+      await sleep(100);
+      
+      // 5. 最后的中断信号
+      await this.serial.write(Buffer.from(`\x03`));
+      await this.serial.write(Buffer.from(`\x03`));
+      
+    } catch (error) {
+      // 如果清理失败，至少尝试基本中断
+      await this.serial.write(Buffer.from(`\x03\x03`));
+    }
+    
     return Promise.resolve();
   }
 
