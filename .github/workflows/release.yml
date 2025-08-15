@@ -1,0 +1,123 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.6)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Is this a pre-release?'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Update package.json version
+      run: |
+        npm version ${{ steps.version.outputs.version }} --no-git-tag-version --allow-same-version
+        
+    - name: Compile TypeScript
+      run: npm run compile
+      
+    - name: Package extension
+      run: npm run package
+      
+    - name: Rename VSIX file
+      run: |
+        mv *.vsix mpy-studio-${{ steps.version.outputs.version }}.vsix
+        
+    - name: Create Release Notes
+      id: release_notes
+      run: |
+        cat << EOF > release-notes.md
+        # MPY-Studio v${{ steps.version.outputs.version }}
+        
+        ## 🎉 新版本发布
+        
+        ### 📦 安装方式
+        
+        1. **VSCode 扩展市场**（推荐）
+           - 在 VSCode 中搜索 "mpy-studio"
+           - 点击安装即可
+        
+        2. **手动安装 VSIX**
+           - 下载下方的 \`mpy-studio-${{ steps.version.outputs.version }}.vsix\` 文件
+           - 在 VSCode 中按 \`Ctrl+Shift+P\`
+           - 输入 "Install from VSIX"
+           - 选择下载的文件进行安装
+        
+        ### ✨ 更新内容
+        
+        - 修复构建脚本和依赖问题
+        - 优化代码结构
+        - 提升性能和稳定性
+        
+        ### 🔗 相关链接
+        
+        - [项目主页](https://github.com/sheacoding/mpy-studio)
+        - [问题反馈](https://github.com/sheacoding/mpy-studio/issues)
+        - [Fork 来源](https://gitee.com/ai_mpy/mpy-studio)
+        
+        ### 📝 完整更新日志
+        
+        查看 [Commits](https://github.com/sheacoding/mpy-studio/commits/v${{ steps.version.outputs.version }})
+        
+        ---
+        
+        **构建信息**
+        - 构建时间: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        - Commit: ${{ github.sha }}
+        - Node.js: 22.x
+        EOF
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.version.outputs.version }}
+        name: MPY-Studio v${{ steps.version.outputs.version }}
+        body_path: release-notes.md
+        draft: false
+        prerelease: ${{ github.event.inputs.prerelease || false }}
+        files: |
+          mpy-studio-${{ steps.version.outputs.version }}.vsix
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload to Release Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-${{ steps.version.outputs.version }}
+        path: mpy-studio-${{ steps.version.outputs.version }}.vsix
+        retention-days: 90
