@@ -35,7 +35,7 @@ jobs:
       
     - name: Package extension
       run: |
-        vsce package --no-dependencies --skip-license || vsce package --skip-license
+        vsce package --skip-license
       
     - name: Publish to VSCode Marketplace
       env:

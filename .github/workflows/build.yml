@@ -31,15 +31,34 @@ jobs:
       run: |
         npm install
         npm install -g @vscode/vsce
+        
+    - name: Rebuild native modules
+      run: |
+        npm rebuild --unsafe-perm
       
     - name: Compile TypeScript
       run: |
         npm run compile || echo "Compile completed with warnings"
       
+    - name: Verify build before packaging
+      run: |
+        npm run verify
+      
     - name: Package extension
       run: |
-        vsce package --no-dependencies --skip-license || vsce package --skip-license
+        vsce package --skip-license
       
+    - name: Verify VSIX contents
+      run: |
+        echo "VSIX file contents (first 30 entries):"
+        unzip -l *.vsix | head -30
+        echo ""
+        echo "Checking for required dependencies in VSIX:"
+        unzip -l *.vsix | grep -E "(node_modules/serialport|node_modules/@serialport|node_modules/fs-extra)" || echo "⚠️ Dependencies not found in VSIX"
+        echo ""
+        echo "VSIX file size:"
+        ls -lh *.vsix
+        
     - name: Upload VSIX artifact
       if: success()
       uses: actions/upload-artifact@v4

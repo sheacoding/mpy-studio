@@ -15,9 +15,7 @@ PUBLISHING.md
 **/.DS_Store
 **/.git
 build.js
-node_modules/**
 yarn.lock
-package-lock.json
 .claude/**
 CLAUDE.md
 *.vsix
@@ -25,3 +23,8 @@ CLAUDE.md
 !out/**
 # 保留typings目录用于MicroPython自动补全
 !typings/**
+# 保留必要的运行时依赖
+!node_modules/@serialport/**
+!node_modules/serialport/**
+!node_modules/fs-extra/**
+!node_modules/just/**

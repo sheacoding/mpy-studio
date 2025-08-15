@@ -37,6 +37,10 @@ jobs:
       run: |
         npm install
         npm install -g @vscode/vsce
+        
+    - name: Rebuild native modules
+      run: |
+        npm rebuild --unsafe-perm
       
     - name: Get version
       id: version
@@ -60,7 +64,7 @@ jobs:
       
     - name: Package extension
       run: |
-        vsce package --no-dependencies --skip-license || vsce package --skip-license
+        vsce package --skip-license
       
     - name: List and rename VSIX file
       run: |
