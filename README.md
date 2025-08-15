@@ -35,7 +35,7 @@
 ## 📞 联系信息
 
 ### 当前维护者
-- GitHub: [@ericoding](https://github.com/ericoding)
+- GitHub: [@ericoding](https://github.com/sheacoding)
 - 邮箱: sheacoding@gmail.com
 - 项目地址: [https://github.com/sheacoding/mpy-studio](https://github.com/sheacoding/mpy-studio)
 - 问题反馈: [Issues](https://github.com/sheacoding/mpy-studio/issues)
