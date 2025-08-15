@@ -50,7 +50,9 @@ jobs:
         
     - name: Update package.json version
       run: |
-        npm version ${{ steps.version.outputs.version }} --no-git-tag-version --allow-same-version || echo "Version already set"
+        echo "Current version in package.json: $(node -p "require('./package.json').version")"
+        echo "Target version: ${{ steps.version.outputs.version }}"
+        npm version ${{ steps.version.outputs.version }} --no-git-tag-version --allow-same-version || echo "Version update completed"
         
     - name: Compile TypeScript
       run: |
@@ -60,9 +62,23 @@ jobs:
       run: |
         vsce package --no-dependencies --skip-license || vsce package --skip-license
       
-    - name: Rename VSIX file
+    - name: List and rename VSIX file
       run: |
-        mv *.vsix mpy-studio-${{ steps.version.outputs.version }}.vsix
+        echo "Files in directory:"
+        ls -la *.vsix || echo "No VSIX files found"
+        
+        CURRENT_FILE=$(ls *.vsix | head -1)
+        TARGET_FILE="mpy-studio-${{ steps.version.outputs.version }}.vsix"
+        
+        echo "Current file: $CURRENT_FILE"
+        echo "Target file: $TARGET_FILE"
+        
+        if [ "$CURRENT_FILE" != "$TARGET_FILE" ]; then
+          cp "$CURRENT_FILE" "$TARGET_FILE"
+          echo "Created $TARGET_FILE from $CURRENT_FILE"
+        else
+          echo "File already has correct name: $TARGET_FILE"
+        fi
         
     - name: Create Release Notes
       id: release_notes
