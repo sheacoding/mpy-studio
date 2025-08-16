@@ -37,7 +37,7 @@ node_modules/**/.*ignore
 node_modules/**/Makefile*
 node_modules/**/makefile*
 node_modules/**/*.gyp
-node_modules/**/*.node
+# node_modules/**/*.node  # Commented out - native modules needed for serialport
 node_modules/**/*.cc
 node_modules/**/*.cpp
 node_modules/**/*.h
@@ -50,6 +50,10 @@ node_modules/**/*.h
 !node_modules/serialport/**
 !node_modules/fs-extra/**
 !node_modules/just/**
+# 保留其他必要的运行时依赖
+!node_modules/graceful-fs/**
+!node_modules/jsonfile/**
+!node_modules/universalify/**
 # 但排除这些依赖中的不必要文件
 node_modules/@serialport/**/test/**
 node_modules/@serialport/**/docs/**
