@@ -2,7 +2,7 @@
   "name": "mpy-studio",
   "displayName": "mpy-studio",
   "description": "A comprehensive MicroPython IDE for ESP32 and ESP32-S3 development boards. Features device management, code execution, REPL terminal, and more.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "publisher": "bright",
   "engines": {
     "vscode": "^1.92.0",
@@ -156,6 +156,21 @@
       {
         "command": "mpy-studio.uploadToDevice",
         "title": "[mpy-studio]-上传到设备"
+      },
+      {
+        "command": "extension.wokwiQuickSimulation",
+        "title": "模拟仿真",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "extension.wokwiSimulation",
+        "title": "模拟仿真 (详细模式)",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "extension.wokwiShowBoards",
+        "title": "支持的开发板",
+        "icon": "$(circuit-board)"
       }
     ],
     "submenus": [
@@ -221,6 +236,21 @@
           "command": "extension.mpyShowLogs",
           "group": "4_manage",
           "icon": "$(output)"
+        },
+        {
+          "command": "extension.wokwiQuickSimulation",
+          "group": "3_simulation@1",
+          "icon": "$(zap)"
+        },
+        {
+          "command": "extension.wokwiSimulation",
+          "group": "3_simulation@2",
+          "icon": "$(settings-gear)"
+        },
+        {
+          "command": "extension.wokwiShowBoards",
+          "group": "3_simulation@3",
+          "icon": "$(circuit-board)"
         }
       ],
       "explorer/context": [
@@ -243,6 +273,15 @@
         {
           "command": "extension.mpyREPL",
           "when": "resourceLangId == python"
+        },
+        {
+          "command": "extension.wokwiQuickSimulation"
+        },
+        {
+          "command": "extension.wokwiSimulation"
+        },
+        {
+          "command": "extension.wokwiShowBoards"
         }
       ],
       "view/item/context": [

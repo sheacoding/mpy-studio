@@ -4,6 +4,7 @@ import { Runner } from './runner';
 import { Logger } from './logger';
 import { ReplPanel } from './repl-panel';
 import { DeviceFolder } from './deviceFloder';
+import { SimpleWokwi } from './wokwi/simple-wokwi';
 import * as fs from 'fs';
 import * as nodePath from 'path';
 
@@ -253,7 +254,11 @@ export async function activate(context: vscode.ExtensionContext) {
     // 3. 加载配置
     await deviceManager!.loadConfig(context);
 
-    // 4. 注册命令
+    // 4. 初始化简化的Wokwi仿真功能
+    const simpleWokwi = new SimpleWokwi();
+    console.log('Wokwi仿真功能已加载');
+
+    // 5. 注册命令
     const commands = [
       vscode.commands.registerCommand('extension.updateTypings', async () => {
         try {
@@ -705,6 +710,20 @@ export async function activate(context: vscode.ExtensionContext) {
       }),
       vscode.commands.registerCommand('mpy-studio.refreshDevice', async () => {
         deviceFolder.refresh();
+      }),
+
+      // 简化的Wokwi仿真命令
+      vscode.commands.registerCommand('extension.wokwiSimulation', async () => {
+        await simpleWokwi.openWokwiSimulation();
+      }),
+
+      // 快速仿真命令（一键复制并打开）
+      vscode.commands.registerCommand('extension.wokwiQuickSimulation', async () => {
+        await simpleWokwi.quickSimulation();
+      }),
+
+      vscode.commands.registerCommand('extension.wokwiShowBoards', async () => {
+        await simpleWokwi.showSupportedBoards();
       }),
     ];
     context.subscriptions.push(...commands, outputChannel);
