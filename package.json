@@ -432,6 +432,27 @@
           "type": "string",
           "default": "",
           "description": "用户选择的开发板（内部使用，请通过命令选择）"
+        },
+        "mpy-studio.stubPath": {
+          "type": "string",
+          "default": "",
+          "description": "类型定义路径（当python.analysis不可用时的备用存储）"
+        },
+        "mpy-studio.typeshedPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "类型定义搜索路径（当python.analysis不可用时的备用存储）"
+        },
+        "mpy-studio.extraPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "额外Python路径（当python.analysis不可用时的备用存储）"
         }
       }
     },

@@ -89,55 +89,101 @@ export class StubsManager {
      */
     async updateSettingsForBoard(boardKey: string, boardConfig?: any): Promise<void> {
         try {
-            const pythonConfig = vscode.workspace.getConfiguration('python.analysis');
             const extensionTypingsPath = this.getExtensionTypingsPath();
+            let pythonConfigUpdated = false;
 
-            if (boardKey === 'python') {
-                // 如果是 python，移除所有 MicroPython 相关配置，只保留原生 Python 支持
-                this._logger.info('切换到 Python 模式，移除 MicroPython 配置');
-                
-                // 清除 MicroPython 相关设置
-                await pythonConfig.update('stubPath', undefined, vscode.ConfigurationTarget.Workspace);
-                await pythonConfig.update('typeshedPaths', undefined, vscode.ConfigurationTarget.Workspace);
-                await pythonConfig.update('extraPaths', undefined, vscode.ConfigurationTarget.Workspace);
-                
-                // 保留基本的 Python 分析设置
-                await pythonConfig.update('typeCheckingMode', 'basic', vscode.ConfigurationTarget.Workspace);
-                await pythonConfig.update('diagnosticSeverityOverrides', {
-                    'reportMissingModuleSource': 'none'
-                }, vscode.ConfigurationTarget.Workspace);
-            } else {
-                // 如果是其他开发板，配置对应的 stubs
-                if (!boardConfig || !boardConfig.stubs) {
-                    throw new Error(`开发板 ${boardKey} 缺少 stubs 配置`);
+            // 尝试更新 Python 分析配置
+            try {
+                const pythonConfig = vscode.workspace.getConfiguration('python.analysis');
+
+                if (boardKey === 'python') {
+                    // 如果是 python，移除所有 MicroPython 相关配置，只保留原生 Python 支持
+                    this._logger.info('切换到 Python 模式，移除 MicroPython 配置');
+                    
+                    // 清除 MicroPython 相关设置
+                    await pythonConfig.update('stubPath', undefined, vscode.ConfigurationTarget.Workspace);
+                    await pythonConfig.update('typeshedPaths', undefined, vscode.ConfigurationTarget.Workspace);
+                    await pythonConfig.update('extraPaths', undefined, vscode.ConfigurationTarget.Workspace);
+                    
+                    // 保留基本的 Python 分析设置
+                    await pythonConfig.update('typeCheckingMode', 'basic', vscode.ConfigurationTarget.Workspace);
+                    await pythonConfig.update('diagnosticSeverityOverrides', {
+                        'reportMissingModuleSource': 'none'
+                    }, vscode.ConfigurationTarget.Workspace);
+                } else {
+                    // 如果是其他开发板，配置对应的 stubs
+                    if (!boardConfig || !boardConfig.stubs) {
+                        throw new Error(`开发板 ${boardKey} 缺少 stubs 配置`);
+                    }
+
+                    this._logger.info(`切换到开发板 ${boardKey}，配置 stubs: ${boardConfig.stubs.join(', ')}`);
+                    
+                    // 设置 stubPath（使用第一个 stub）
+                    const primaryStub = boardConfig.stubs[0];
+                    await pythonConfig.update('stubPath', path.join(extensionTypingsPath, primaryStub), vscode.ConfigurationTarget.Workspace);
+                    
+                    // 设置 typeshedPaths（所有 stubs）
+                    const typeshedPaths = boardConfig.stubs.map((stub: string) => path.join(extensionTypingsPath, stub));
+                    await pythonConfig.update('typeshedPaths', typeshedPaths, vscode.ConfigurationTarget.Workspace);
+                    
+                    // 设置 extraPaths（所有 stubs）
+                    const extraPaths = boardConfig.stubs.map((stub: string) => path.join(extensionTypingsPath, stub));
+                    await pythonConfig.update('extraPaths', extraPaths, vscode.ConfigurationTarget.Workspace);
+                    
+                    // 保留基本设置
+                    await pythonConfig.update('typeCheckingMode', 'basic', vscode.ConfigurationTarget.Workspace);
+                    await pythonConfig.update('diagnosticSeverityOverrides', {
+                        'reportMissingModuleSource': 'none'
+                    }, vscode.ConfigurationTarget.Workspace);
                 }
+                
+                pythonConfigUpdated = true;
+                this._logger.info('成功更新 python.analysis 配置');
+                
+            } catch (pythonConfigError) {
+                const errorMsg = pythonConfigError instanceof Error ? pythonConfigError.message : String(pythonConfigError);
+                this._logger.warn(`无法更新 python.analysis 配置: ${errorMsg}`);
+                
+                // 如果是因为配置未注册的错误，则使用备用方案
+                if (errorMsg.includes('没有注册配置') || errorMsg.includes('not registered')) {
+                    this._logger.info('检测到VSCode衍生IDE环境，python.analysis配置不可用，使用插件内部配置存储类型定义信息');
+                    
+                    // 使用插件自己的配置来存储类型定义信息
+                    const mpConfig = vscode.workspace.getConfiguration('mpy-studio');
+                    
+                    if (boardKey === 'python') {
+                        await mpConfig.update('stubPath', undefined, vscode.ConfigurationTarget.Workspace);
+                        await mpConfig.update('typeshedPaths', undefined, vscode.ConfigurationTarget.Workspace);
+                        await mpConfig.update('extraPaths', undefined, vscode.ConfigurationTarget.Workspace);
+                    } else {
+                        if (!boardConfig || !boardConfig.stubs) {
+                            throw new Error(`开发板 ${boardKey} 缺少 stubs 配置`);
+                        }
 
-                this._logger.info(`切换到开发板 ${boardKey}，配置 stubs: ${boardConfig.stubs.join(', ')}`);
-                
-                // 设置 stubPath（使用第一个 stub）
-                const primaryStub = boardConfig.stubs[0];
-                await pythonConfig.update('stubPath', path.join(extensionTypingsPath, primaryStub), vscode.ConfigurationTarget.Workspace);
-                
-                // 设置 typeshedPaths（所有 stubs）
-                const typeshedPaths = boardConfig.stubs.map((stub: string) => path.join(extensionTypingsPath, stub));
-                await pythonConfig.update('typeshedPaths', typeshedPaths, vscode.ConfigurationTarget.Workspace);
-                
-                // 设置 extraPaths（所有 stubs）
-                const extraPaths = boardConfig.stubs.map((stub: string) => path.join(extensionTypingsPath, stub));
-                await pythonConfig.update('extraPaths', extraPaths, vscode.ConfigurationTarget.Workspace);
-                
-                // 保留基本设置
-                await pythonConfig.update('typeCheckingMode', 'basic', vscode.ConfigurationTarget.Workspace);
-                await pythonConfig.update('diagnosticSeverityOverrides', {
-                    'reportMissingModuleSource': 'none'
-                }, vscode.ConfigurationTarget.Workspace);
+                        const primaryStub = boardConfig.stubs[0];
+                        const typeshedPaths = boardConfig.stubs.map((stub: string) => path.join(extensionTypingsPath, stub));
+                        const extraPaths = boardConfig.stubs.map((stub: string) => path.join(extensionTypingsPath, stub));
+                        
+                        await mpConfig.update('stubPath', path.join(extensionTypingsPath, primaryStub), vscode.ConfigurationTarget.Workspace);
+                        await mpConfig.update('typeshedPaths', typeshedPaths, vscode.ConfigurationTarget.Workspace);
+                        await mpConfig.update('extraPaths', extraPaths, vscode.ConfigurationTarget.Workspace);
+                    }
+                    
+                    pythonConfigUpdated = true;
+                    this._logger.info('已使用插件内部配置存储类型定义信息');
+                } else {
+                    // 如果是其他错误，重新抛出
+                    throw pythonConfigError;
+                }
             }
             
             // 保存用户选择的开发板到配置中
             const mpConfig = vscode.workspace.getConfiguration('mpy-studio');
             await mpConfig.update('selectedBoard', boardKey, vscode.ConfigurationTarget.Workspace);
             
-            this._logger.info(`已更新 Python 分析配置并保存用户选择`);
+            if (pythonConfigUpdated) {
+                this._logger.info(`已更新开发板配置并保存用户选择: ${boardKey}`);
+            }
             
         } catch (error) {
             const errorMsg = error instanceof Error ? error.message : String(error);
