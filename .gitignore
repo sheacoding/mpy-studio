@@ -19,3 +19,7 @@ yarn-error.log*
 
 # VS Code 扩展包
 *.vsix
+
+# Claude Code 相关文件（本地开发文档，不提交到远程）
+.claude/
+CLAUDE.md
